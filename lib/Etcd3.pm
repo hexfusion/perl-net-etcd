@@ -276,6 +276,36 @@ sub value {
     return decode_base64($value);
 }
 
+=head2 all
+
+returns list containing for example:
+
+  {
+    'mod_revision' => '3',
+    'version' => '1',
+    'value' => 'bar',
+    'create_revision' => '3',
+    'key' => 'foo0'
+  }
+
+where key and value have been decoded for your pleasure.
+
+=cut
+
+sub all {
+    my ($self) = @_;
+    my $response = $self->request;
+    my $content = from_json($response->[0]{content});
+    my $kvs = $content->{kvs};
+    for my $row (@$kvs) {
+        $row->{value} = decode_base64($row->{value});
+        $row->{key} = decode_base64($row->{key});
+    }
+    return $kvs;
+}
+
+
+
 =head2 configuration
 
 Initialize configuration checks to see it etcd is installed locally.

@@ -83,6 +83,20 @@ outputs an AoH defining action class results
 
 returns single decoded value or the first.
 
+=head2 all
+
+returns list containing for example:
+
+  {
+    'mod_revision' => '3',
+    'version' => '1',
+    'value' => 'bar',
+    'create_revision' => '3',
+    'key' => 'foo0'
+  }
+
+where key and value have been decoded for your pleasure.
+
 =head2 configuration
 
 Initialize configuration checks to see it etcd is installed locally.
