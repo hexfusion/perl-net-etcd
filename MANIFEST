@@ -1,0 +1,15 @@
+Changes
+MANIFEST
+MANIFEST.SKIP
+Makefile.PL
+README.pod
+lib/Etcd3.pm
+lib/Etcd3/Config.pm
+lib/Etcd3/Range.pm
+lib/Etcd3/Type.pm
+t/00-load.t
+t/10-basic.t
+t/manifest.t
+t/pod-coverage.t
+t/pod-spelling.t
+t/pod.t
