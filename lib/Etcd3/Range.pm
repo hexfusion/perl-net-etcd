@@ -14,6 +14,10 @@ use namespace::clean;
 
 Etcd3::Range
 
+=head1 DESCRIPTION
+
+Range gets the keys in the range from the key-value store.
+
 =head2 endpoint
 
 =cut
@@ -44,14 +48,13 @@ range_end is the upper bound on the requested range [key, range_end). If range_e
 the range is all keys >= key. If the range_end is one bit larger than the given key, then
 the range requests get the all keys with the prefix (the given key). If both key and 
 range_end are '\0', then range requests returns all keys. the key is encoded with base64.
-type bytes
+type bytes.  NOTE: If range_end is not given, the request only looks up key.
 
 =cut
 
 has range_end => (
     is       => 'ro',
     isa      => Str,
-    required => 1,
     coerce => sub { return encode_base64($_[0],'') }
 );
 
@@ -75,7 +78,7 @@ ErrCompaction is returned as a response. type int64
 
 =cut 
 
-has revision => {
+has revision => (
     is    => 'ro',
     isa   => Int,
 );

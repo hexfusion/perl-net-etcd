@@ -12,7 +12,13 @@ use namespace::clean;
 
 =head1 NAME
 
-Etcd3::Range
+Etcd3::Put
+
+=head1 DESCRIPTION
+
+Put puts the given key into the key-value store. A put request increments
+the revision of the key-value store and generates one event in the event
+history.
 
 =head2 endpoint
 
@@ -21,7 +27,7 @@ Etcd3::Range
 has endpoint => (
     is       => 'ro',
     isa      => Str,
-    default => '/v3alpha/kv/put'
+    default => '/kv/put'
 );
 
 =head2 key

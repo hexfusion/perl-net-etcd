@@ -31,6 +31,23 @@ Version 0.001
 
 our $VERSION = '0.001';
 
+=head1 SYNOPSIS
+
+    Etcd3->new({ host => 'my-etcd.com', port => 4001, user => 'etcd-user' pass => 'P@$$' });
+
+    # put key
+    $etcd->put({ key =>'foo1', value => 'bar' });
+
+    # get single key
+    $etcd->range({ key =>'test0' });
+
+    # get range of keys
+    $etcd->range({ key =>'test0', range_end => 'test100' });
+
+=head1 DESCRIPTION
+
+Perl access to Etcd v3 API.
+
 =head2 host
 
 =cut
@@ -89,8 +106,7 @@ has auth => (
 
 sub _build_auth {
    my ($self) = @_;
-   return 1 if ($self->user and $self->pass);
-   return;
+   return { 'Authorization' => 'Basic ' . $self->auth } if ($self->user and $self->pass);
 }
 
 =head2 api_prefix
@@ -113,21 +129,22 @@ returns proper headers for api call.
 
 has headers => (
     is    => 'lazy',
-    isa   => HashRef
+#    isa   => HashRef
 );
 
 sub _build_headers {
-    my $self   = @_;
-    my @headers = $self->headers;
-    push @headers, { 'Content-Type'  => 'application/json' };
-    push @headers, { 'Authorization' => 'Basic ' . $self->auth } if $self->auth;
+    my ($self) = @_;
+    my @headers;
+    push @headers, $self->auth if $self->auth;
     @headers or return;
-    return { headers => @headers };
+    return \@headers;
 }
 
 =head2 range
 
 returns a Etcd3::Range object via Type magic.
+
+$etcd->range({ key =>'test0', range_end => 'test100', serializable => 1 })
 
 =cut
 
@@ -149,36 +166,76 @@ has put => (
    coerce => PutRequest,
 );
 
-=head2 base_api
+=head2 api_root
 
 =cut
 
-has base_api => (
+has api_root => (
     is => 'lazy'
 );
 
-sub _build_base_api {
+sub _build_api_root {
     my ($self) = @_;
-    ($self->ssl ? 'https' : 'http') .'://'.$self->host.':'.$self->port;
+    return ($self->ssl ? 'https' : 'http') .'://'.$self->host.':'.$self->port;
+}
+
+=head2 api_path
+
+=cut
+
+has api_path => (
+    is => 'lazy'
+);
+
+sub _build_api_path {
+    my ($self) = @_;
+    return $self->api_root . $self->api_prefix;
+}
+
+
+=head2 actions
+
+outputa aoh defining action class results
+
+=cut
+
+has actions => (
+   is => 'lazy'
+);
+
+sub _build_actions {
+    my ($self) = @_;
+    my @methods =  qw(put range);
+    my @actions = map { if ($self->{$_}) {
+         {
+             endpoint => $self->{$_}{endpoint},
+             json_args => $self->{$_}{json_args}
+         }
+    } else {()} } @methods;
+    return \@actions;
 }
 
 has request => (
     is => 'lazy',
-    isa => class_type('HTTP::Tiny')
+#    isa => class_type('HTTP::Tiny')
 );
 
-sub _build_http {
+sub _build_request {
    my ($self) = @_;
-
-#   my $response = "HTTP::Tiny"->new->post(
-#       "http://api.metacpan.org/v0/release/_search" => {
-#          content => to_json($query),
-#          headers => {
-#             "Content-Type" => "application/json",
-#          },       },
-#    );
-#   my $request = "HTTP::Tiny"->new();
-   return;# $request;
+   my @response;
+   for my $action (@{$self->actions}) {
+      my $request = "HTTP::Tiny"->new->post(
+         $self->api_path . $action->{endpoint} => {
+           content => $action->{json_args},
+             headers => {
+               "Content-Type" => "application/json",
+             #   $self->headers
+             },       
+         },
+      );
+      push @response, $request
+   }
+   return \@response;
 }
 
 =head2
@@ -200,5 +257,34 @@ sub BUILD {
         die $msg;
     }
 }
+
+=head1 AUTHOR
+
+Sam Batschelet, <sbatschelet at mac.com>
+
+=head1 ACKNOWLEDGEMENTS
+
+The L<etcd> developers and community.
+
+=head1 CAVEATS
+
+The L<etcd> v3 API is in heavy development and can change at anytime please see
+https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md
+for latest details.
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2016 Sam Batschelet (hexfusion).
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
+
+=cut
+
+
 1;
 
