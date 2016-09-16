@@ -44,8 +44,18 @@ our $VERSION = '0.001';
     # get single key
     $etcd->range({ key =>'test0' });
 
+    [or]
+
+    $etcd->get({ key =>'test0' });
+
+    # return single key value or the first in a list.
+    $etcd->value
+
     # get range of keys
     $etcd->range({ key =>'test0', range_end => 'test100' });
+
+    # return array { key => value } pairs from range request.
+    my @users = $etcd->all
 
 =head1 DESCRIPTION
 
@@ -205,7 +215,7 @@ sub _build_api_path {
 
 =head2 actions
 
-outputa aoh defining action class results
+outputs an AoH defining action class results
 
 =cut
 
