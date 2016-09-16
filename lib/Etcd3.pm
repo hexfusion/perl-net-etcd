@@ -5,12 +5,15 @@ use strict;
 use warnings;
 
 use Moo;
+use JSON;
 use HTTP::Tiny;
+use MIME::Base64;
 use Type::Tiny;
 use Etcd3::Config;
 use Etcd3::Types qw(:all);
 use Etcd3::Range;
 use Etcd3::Put;
+use MooX::Aliases;
 use Type::Utils qw(class_type);
 use Types::Standard qw(Str Int Bool HashRef);
 use MIME::Base64;
@@ -150,9 +153,16 @@ $etcd->range({ key =>'test0', range_end => 'test100', serializable => 1 })
 
 has range => (
    is => 'rw',
+   alias => 'get',
    isa => Range,
    coerce => RangeRequest,
 );
+
+=head2 get
+
+alias for range to reduce confusion v2 -> v3. This may go away in future versions.
+
+=cut
 
 =head2 put
 
@@ -215,6 +225,10 @@ sub _build_actions {
     return \@actions;
 }
 
+=head2 request
+
+=cut
+
 has request => (
     is => 'lazy',
 #    isa => class_type('HTTP::Tiny')
@@ -238,7 +252,21 @@ sub _build_request {
    return \@response;
 }
 
-=head2
+=head2 value
+
+returns single decoded value or the first.
+
+=cut
+
+sub value {
+    my ($self) = @_;
+    my $response = $self->request;
+    my $content = from_json($response->[0]{content});
+    my $value = $content->{kvs}[0]->{value};
+    return decode_base64($value);
+}
+
+=head2 configuration
 
 Initialize configuration checks to see it etcd is installed locally.
 
