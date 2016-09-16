@@ -10,12 +10,12 @@ use Type::Tiny;
 use Etcd3::Config;
 use Etcd3::Types qw(:all);
 use Etcd3::Range;
+use Etcd3::Put;
 use Type::Utils qw(class_type);
 use Types::Standard qw(Str Int Bool HashRef);
 use MIME::Base64;
 
 use namespace::clean;
-#with 'Etcd3::Role::Request';
 
 =encoding utf8
 
@@ -95,10 +95,7 @@ sub _build_auth {
 
 =head2 api_prefix
 
-=cut
-
-
-=head2 api_prefix
+base enpoint for api call, refurs to api version.
 
 =cut
 
@@ -109,6 +106,8 @@ has api_prefix => (
 );
 
 =head2 headers
+
+returns proper headers for api call.
 
 =cut
 
@@ -128,6 +127,8 @@ sub _build_headers {
 
 =head2 range
 
+returns a Etcd3::Range object via Type magic.
+
 =cut
 
 has range => (
@@ -135,6 +136,22 @@ has range => (
    isa => Range,
    coerce => RangeRequest,
 );
+
+=head2 put
+
+returns a Etcd3::Put object via Type magic.
+
+=cut
+
+has put => (
+   is => 'rw',
+   isa => Put,
+   coerce => PutRequest,
+);
+
+=head2 base_api
+
+=cut
 
 has base_api => (
     is => 'lazy'
@@ -163,6 +180,13 @@ sub _build_http {
 #   my $request = "HTTP::Tiny"->new();
    return;# $request;
 }
+
+=head2
+
+Initialize configuration checks to see it etcd is installed locally.
+
+=cut
+
 
 sub configuration {
     Etcd3::Config->configuration

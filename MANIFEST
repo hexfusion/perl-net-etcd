@@ -5,6 +5,7 @@ Makefile.PL
 README.pod
 lib/Etcd3.pm
 lib/Etcd3/Config.pm
+lib/Etcd3/Put.pm
 lib/Etcd3/Range.pm
 lib/Etcd3/Type.pm
 t/00-load.t
