@@ -55,6 +55,12 @@ base enpoint for api call, refurs to api version.
 
 returns proper headers for api call.
 
+=head2 authenticate
+
+returns an Etcd3::Authenticate object
+
+$etcd->new( user => 'heman', password => 'greyskull' );
+
 =head2 range
 
 returns a Etcd3::Range object via Type magic.

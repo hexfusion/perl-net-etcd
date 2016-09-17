@@ -4,6 +4,7 @@ MANIFEST.SKIP
 Makefile.PL
 README.pod
 lib/Etcd3.pm
+lib/Etcd3/Authenticate.pm
 lib/Etcd3/Config.pm
 lib/Etcd3/Put.pm
 lib/Etcd3/Range.pm

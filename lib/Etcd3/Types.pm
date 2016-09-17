@@ -28,4 +28,17 @@ declare_coercion "PutRequest",
         return Etcd3::Put->new($_)->request
     };
 
+=head2 Authenticate, AuthenticateRequest
+
+=cut
+
+class_type Authenticate, { class => "Etcd3::Authenticate" };
+
+declare_coercion "AuthenticateRequest",
+    to_type Put,
+    from HashRef, via {
+        return Etcd3::Authenticate->new($_)->request
+    };
+
+
 1;

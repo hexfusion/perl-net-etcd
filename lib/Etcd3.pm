@@ -119,7 +119,8 @@ has auth => (
 
 sub _build_auth {
    my ($self) = @_;
-   return { 'Authorization' => 'Basic ' . $self->auth } if ($self->user and $self->pass);
+   return 1 if ($self->user and $self->password);
+   return;
 }
 
 =head2 api_prefix
@@ -147,11 +148,30 @@ has headers => (
 
 sub _build_headers {
     my ($self) = @_;
-    my @headers;
-    push @headers, $self->auth if $self->auth;
-    @headers or return;
-    return \@headers;
+    my $user = $self->user;
+    my $password = $self->password;
+    my $ref = ({});
+
+    $ref->{'Content-Type'} = 'application/json';
+    if ( (defined($user)) && (defined($password)) ) {
+        $ref->{'Authorization'} = 'Basic ' . encode_base64("$user:$password", "");
+    }
+    return { headers => $ref };
 }
+
+=head2 authenticate
+
+returns an Etcd3::Authenticate object
+
+$etcd->new( user => 'heman', password => 'greyskull' );
+
+=cut
+
+has authenticate => (
+   is => 'rw',
+   isa => Authenticate,
+   coerce => AuthenticateRequest,
+);
 
 =head2 range
 
@@ -251,10 +271,7 @@ sub _build_request {
       my $request = "HTTP::Tiny"->new->post(
          $self->api_path . $action->{endpoint} => {
            content => $action->{json_args},
-             headers => {
-               "Content-Type" => "application/json",
-             #   $self->headers
-             },       
+           %{$self->headers}
          },
       );
       push @response, $request
