@@ -52,7 +52,7 @@ Perl access to Etcd v3 API.
 
 =head2 api_prefix
 
-base enpoint for api call, refurs to api version.
+base endpoint for api call, refers to api version.
 
 =head2 headers
 
@@ -73,6 +73,16 @@ $etcd->range({ key =>'test0', range_end => 'test100', serializable => 1 })
 =head2 get
 
 alias for range to reduce confusion v2 -> v3. This may go away in future versions.
+
+=head2 deleterange
+
+returns a Etcd3::Range object via Type magic.
+
+$etcd->deleterange({ key =>'test0', range_end => 'test100', prev_key => 1 })
+
+=head2 delete
+
+alias for delete to reduce confusion v2 -> v3. This may go away in future versions.
 
 =head2 put
 

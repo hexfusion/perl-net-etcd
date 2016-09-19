@@ -174,7 +174,7 @@ has max_mod_revision => (
 =head2 min_create_revision
 
 min_create_revision is the lower bound for returned key create revisions;
-all keys with lesser create trevisions will be filtered away.
+all keys with lesser create revisions will be filtered away.
 
 =cut
 

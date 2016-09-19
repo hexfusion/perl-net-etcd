@@ -1,4 +1,4 @@
-package Etcd3::Types;
+package Etcd3::Type;
 
 use Type::Library -base;
 use Type::Utils -all;
@@ -39,6 +39,19 @@ declare_coercion "AuthenticateRequest",
     from HashRef, via {
         return Etcd3::Authenticate->new($_)->request
     };
+
+=head2 DeleteRange, DeleteRangeRequest
+
+=cut
+
+class_type DeleteRange, { class => "Etcd3::DeleteRange" };
+
+declare_coercion "DeleteRangeRequest",
+    to_type DeleteRange,
+    from HashRef, via {
+        return Etcd3::DeleteRange->new($_)->request
+    };
+
 
 
 1;

@@ -28,15 +28,15 @@ has endpoint => (
     default => '/auth/authenticate'
 );
 
-=head2 user
+=head2 name
 
 =cut
 
-has user => (
+has name => (
     is       => 'ro',
     isa      => Str,
     required => 1,
-    coerce => sub { return encode_base64($_[0],'') }
+#    coerce => sub { return encode_base64($_[0],'') }
 );
 
 =head2 password
@@ -47,7 +47,7 @@ has password => (
     is       => 'ro',
     isa      => Str,
     required => 1,
-    coerce => sub { return encode_base64($_[0],'') }
+#    coerce => sub { return encode_base64($_[0],'') }
 );
 =head2 json_args
 

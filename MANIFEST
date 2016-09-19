@@ -6,6 +6,7 @@ README.pod
 lib/Etcd3.pm
 lib/Etcd3/Authenticate.pm
 lib/Etcd3/Config.pm
+lib/Etcd3/DeleteRange.pm
 lib/Etcd3/Put.pm
 lib/Etcd3/Range.pm
 lib/Etcd3/Type.pm

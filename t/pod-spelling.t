@@ -19,5 +19,16 @@ etcdctl
 serializable
 ssl
 sku
+AuthenticateRequest
+DeleteRangeRequest
+ErrCompaction
+PutRequest
+RangeRequest
+DeleteRange
+deleterange
+greyskull
+heman
+linearizable
+api
 Batschelet
 hexfusion

@@ -9,9 +9,11 @@ use JSON;
 use HTTP::Tiny;
 use MIME::Base64;
 use Type::Tiny;
+use Etcd3::Authenticate;
 use Etcd3::Config;
-use Etcd3::Types qw(:all);
+use Etcd3::Type qw(:all);
 use Etcd3::Range;
+use Etcd3::DeleteRange;
 use Etcd3::Put;
 use MooX::Aliases;
 use Type::Utils qw(class_type);
@@ -128,7 +130,7 @@ sub _build_auth {
 
 =head2 api_prefix
 
-base enpoint for api call, refurs to api version.
+base endpoint for api call, refers to api version.
 
 =cut
 
@@ -197,17 +199,32 @@ alias for range to reduce confusion v2 -> v3. This may go away in future version
 
 =cut
 
+=head2 deleterange
+
+returns a Etcd3::Range object via Type magic.
+
+$etcd->deleterange({ key =>'test0', range_end => 'test100', prev_key => 1 })
+
+=cut
+
+has deleterange => (
+   is => 'rw',
+   alias => 'delete',
+   isa => DeleteRange,
+   coerce => DeleteRangeRequest,
+);
+
+=head2 delete
+
+alias for delete to reduce confusion v2 -> v3. This may go away in future versions.
+
+=cut
+
 =head2 put
 
 returns a Etcd3::Put object via Type magic.
 
 =cut
-
-has put => (
-   is => 'rw',
-   isa => Put,
-   coerce => PutRequest,
-);
 
 =head2 api_root
 
@@ -248,7 +265,7 @@ has actions => (
 
 sub _build_actions {
     my ($self) = @_;
-    my @methods =  qw(put range);
+    my @methods =  qw(put range authenticate);
     my @actions = map { if ($self->{$_}) {
          {
              endpoint => $self->{$_}{endpoint},
