@@ -9,6 +9,7 @@ Etcd3
 Version 0.001
 
 =head1 SYNOPSIS
+
     Etcd v3.1.0-alpha.0 or greater is required.   To use the v3 API make sure to set environment
     variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
 
