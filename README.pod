@@ -9,6 +9,8 @@ Etcd3
 Version 0.001
 
 =head1 SYNOPSIS
+    Etcd v3.1.0-alpha.0 or greater is required.   To use the v3 API make sure to set environment
+    variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
 
     Etcd3->new({ host => 'my-etcd.com', port => 4001, user => 'etcd-user' pass => 'P@$$' });
 
