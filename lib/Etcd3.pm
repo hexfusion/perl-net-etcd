@@ -216,13 +216,12 @@ $etcd->watch({ key =>'foo', range_end => 'fop' })
 
 has watch => (
    is => 'rw',
-   alias => 'get',
    isa => Watch,
    coerce => WatchRequest,
    trigger => 1,
 );
 
-sub _trigger_range {
+sub _trigger_watch {
     my ($self) = @_;
     my $action = $self->request;
     return $action;
