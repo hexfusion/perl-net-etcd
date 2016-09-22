@@ -34,6 +34,9 @@ Version 0.001
     # return array { key => value } pairs from range request.
     my @users = $etcd->all
 
+    # watch key
+    $etcd->range({ key =>'foo', range_end => 'fop' });
+
 =head1 DESCRIPTION
 
 Perl access to Etcd v3 API.
@@ -69,6 +72,12 @@ $etcd->new( user => 'heman', password => 'greyskull' );
 returns a Etcd3::Range object via Type magic.
 
 $etcd->range({ key =>'test0', range_end => 'test100', serializable => 1 })
+
+=head2 watch
+
+returns a Etcd3::Watch object.
+
+$etcd->watch({ key =>'foo', range_end => 'fop' })
 
 =head2 get
 
