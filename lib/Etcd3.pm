@@ -15,10 +15,12 @@ use Etcd3::Type qw(:all);
 use Etcd3::Range;
 use Etcd3::DeleteRange;
 use Etcd3::Put;
+use Etcd3::Watch;
 use MooX::Aliases;
 use Type::Utils qw(class_type);
 use Types::Standard qw(Str Int Bool HashRef);
 use MIME::Base64;
+use Data::Dumper;
 
 use namespace::clean;
 
@@ -61,6 +63,9 @@ our $VERSION = '0.001';
 
     # return array { key => value } pairs from range request.
     my @users = $etcd->all
+
+    # watch key
+    $etcd->range({ key =>'foo', range_end => 'fop' });
 
 =head1 DESCRIPTION
 
@@ -191,7 +196,38 @@ has range => (
    alias => 'get',
    isa => Range,
    coerce => RangeRequest,
+   trigger => 1,
 );
+
+sub _trigger_range {
+    my ($self) = @_;
+    my $action = $self->request;
+    return $action;
+
+}
+
+=head2 watch
+
+returns a Etcd3::Watch object.
+
+$etcd->watch({ key =>'foo', range_end => 'fop' })
+
+=cut
+
+has watch => (
+   is => 'rw',
+   alias => 'get',
+   isa => Watch,
+   coerce => WatchRequest,
+   trigger => 1,
+);
+
+sub _trigger_range {
+    my ($self) = @_;
+    my $action = $self->request;
+    return $action;
+
+}
 
 =head2 get
 
@@ -225,6 +261,20 @@ alias for delete to reduce confusion v2 -> v3. This may go away in future versio
 returns a Etcd3::Put object via Type magic.
 
 =cut
+
+has put => (
+   is => 'rw',
+   isa => Put,
+   coerce => PutRequest,
+   trigger => 1,
+);
+
+sub _trigger_put {
+    my ($self) = @_;
+    my $action = $self->request;
+    return $action;
+    
+}
 
 =head2 api_root
 
@@ -265,7 +315,7 @@ has actions => (
 
 sub _build_actions {
     my ($self) = @_;
-    my @methods =  qw(put range authenticate);
+    my @methods =  qw(watch put range rangedelete authenticate);
     my @actions = map { if ($self->{$_}) {
          {
              endpoint => $self->{$_}{endpoint},
@@ -281,7 +331,6 @@ sub _build_actions {
 
 has request => (
     is => 'lazy',
-#    isa => class_type('HTTP::Tiny')
 );
 
 sub _build_request {
@@ -291,9 +340,11 @@ sub _build_request {
       my $request = "HTTP::Tiny"->new->post(
          $self->api_path . $action->{endpoint} => {
            content => $action->{json_args},
-           %{$self->headers}
+      #     %{$self->headers}
          },
       );
+#      print STDERR Dumper($action->{json_args});
+#      print STDERR Dumper($request);
       push @response, $request
    }
    return \@response;
@@ -310,6 +361,7 @@ sub value {
     my $response = $self->request;
     my $content = from_json($response->[0]{content});
     my $value = $content->{kvs}[0]->{value};
+    $value or return;
     return decode_base64($value);
 }
 

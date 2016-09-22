@@ -216,7 +216,7 @@ sub _build_json_args {
     return to_json($args);
 }
 
-sub request {
+sub init {
     my ($self)  = @_;
     $self->json_args;
     return $self;

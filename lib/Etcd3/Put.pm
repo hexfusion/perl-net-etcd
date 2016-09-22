@@ -40,7 +40,7 @@ has key => (
     is       => 'ro',
     isa      => Str,
     required => 1,
-    coerce => sub { return encode_base64($_[0],'') }
+    coerce => sub { return encode_base64($_[0],'') },
 );
 
 =head2 value
@@ -53,7 +53,7 @@ has value => (
     is       => 'ro',
     isa      => Str,
     required => 1,
-    coerce => sub { return encode_base64($_[0],'') }
+    coerce => sub { return encode_base64($_[0],'') },
 );
 
 =head2 lease
@@ -75,7 +75,7 @@ The previous key-value pair will be returned in the put response.
 
 =cut
 
-has prev_key => (
+has prev_kv => (
     is       => 'ro',
     isa      => Bool,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
@@ -104,9 +104,11 @@ sub _build_json_args {
     return to_json($args);
 }
 
-sub request {
+sub init {
     my ($self)  = @_;
-    $self->json_args;
+    my $init = $self->json_args;
+    $init or return;
     return $self;
 }
+
 1;
