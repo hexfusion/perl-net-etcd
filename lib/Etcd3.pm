@@ -42,7 +42,7 @@ our $VERSION = '0.001';
     $key = $etcd->get({ key =>'test0' });
 
     # return single key value or the first in a list.
-    $key->value
+    $key->get_value
 
     # get range of keys
     $range = $etcd->range({ key =>'test0', range_end => 'test100' });
@@ -62,6 +62,7 @@ Perl access to Etcd v3 API.
 =cut
 
 =head2 connect
+
     $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
     $etcd = Etcd3->connect($host);
     $etcd = Etcd3->connect($host, $options);
