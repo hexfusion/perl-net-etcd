@@ -20,6 +20,6 @@ unless (($exec && -x $exec)) {
 my %args;
 my $etcd;
 
-throws_ok { $etcd = Etcd3->new() } qr/id/, "fail new with undef id";
+throws_ok { $etcd = Etcd3->connect() } qr/id/, "fail new with undef id";
 
 

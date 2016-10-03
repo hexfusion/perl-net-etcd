@@ -13,26 +13,27 @@ Version 0.001
     Etcd v3.1.0-alpha.0 or greater is required.   To use the v3 API make sure to set environment
     variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
 
-    Etcd3->new({ host => 'my-etcd.com', port => 4001, user => 'etcd-user' pass => 'P@$$' });
+    $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
+    $etcd = Etcd3->connect($host, $options);
 
     # put key
-    $etcd->put({ key =>'foo1', value => 'bar' });
+    $result = $etcd->put({ key =>'foo1', value => 'bar' });
 
     # get single key
-    $etcd->range({ key =>'test0' });
+    $key = $etcd->range({ key =>'test0' });
 
     [or]
 
-    $etcd->get({ key =>'test0' });
+    $key = $etcd->get({ key =>'test0' });
 
     # return single key value or the first in a list.
-    $etcd->value
+    $key->value
 
     # get range of keys
-    $etcd->range({ key =>'test0', range_end => 'test100' });
+    $range = $etcd->range({ key =>'test0', range_end => 'test100' });
 
     # return array { key => value } pairs from range request.
-    my @users = $etcd->all
+    my @users = $range->all
 
     # watch key
     $etcd->range({ key =>'foo', range_end => 'fop' });
@@ -43,91 +44,13 @@ Perl access to Etcd v3 API.
 
 =head2 host
 
-=head2 port
+=head2 connect
+    $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
+    $etcd = Etcd3->connect($host);
+    $etcd = Etcd3->connect($host, $options);
 
-=head2 user
-
-=head2 password
-
-=head2 ssl
-
-=head2 auth
-
-=head2 api_prefix
-
-base endpoint for api call, refers to api version.
-
-=head2 headers
-
-returns proper headers for api call.
-
-=head2 authenticate
-
-returns an Etcd3::Authenticate object
-
-$etcd->new( user => 'heman', password => 'greyskull' );
-
-=head2 range
-
-returns a Etcd3::Range object via Type magic.
-
-$etcd->range({ key =>'test0', range_end => 'test100', serializable => 1 })
-
-=head2 watch
-
-returns a Etcd3::Watch object.
-
-$etcd->watch({ key =>'foo', range_end => 'fop' })
-
-=head2 get
-
-alias for range to reduce confusion v2 -> v3. This may go away in future versions.
-
-=head2 deleterange
-
-returns a Etcd3::Range object via Type magic.
-
-$etcd->deleterange({ key =>'test0', range_end => 'test100', prev_key => 1 })
-
-=head2 delete
-
-alias for delete to reduce confusion v2 -> v3. This may go away in future versions.
-
-=head2 put
-
-returns a Etcd3::Put object via Type magic.
-
-=head2 api_root
-
-=head2 api_path
-
-=head2 actions
-
-outputs an AoH defining action class results
-
-=head2 request
-
-=head2 value
-
-returns single decoded value or the first.
-
-=head2 all
-
-returns list containing for example:
-
-  {
-    'mod_revision' => '3',
-    'version' => '1',
-    'value' => 'bar',
-    'create_revision' => '3',
-    'key' => 'foo0'
-  }
-
-where key and value have been decoded for your pleasure.
-
-=head2 configuration
-
-Initialize configuration checks to see it etcd is installed locally.
+This function returns a L<Etcd3::Client> object.  The first parameter is the 
+C<host> argument.  The second C<options> is a hashref.
 
 =head1 AUTHOR
 

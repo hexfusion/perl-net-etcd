@@ -4,22 +4,7 @@ package Etcd3;
 use strict;
 use warnings;
 
-use Moo;
-use JSON;
-use HTTP::Tiny;
-use MIME::Base64;
-use Type::Tiny;
-use Etcd3::Authenticate;
-use Etcd3::Config;
-use Etcd3::Type qw(:all);
-use Etcd3::Range;
-use Etcd3::DeleteRange;
-use Etcd3::Put;
-use Etcd3::Watch;
-use MooX::Aliases;
-use Type::Utils qw(class_type);
-use Types::Standard qw(Str Int Bool HashRef);
-use MIME::Base64;
+use Etcd3::Client;
 use Data::Dumper;
 
 use namespace::clean;
@@ -43,26 +28,27 @@ our $VERSION = '0.001';
     Etcd v3.1.0-alpha.0 or greater is required.   To use the v3 API make sure to set environment
     variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
 
-    Etcd3->new({ host => 'my-etcd.com', port => 4001, user => 'etcd-user' pass => 'P@$$' });
+    $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
+    $etcd = Etcd3->connect($host, $options);
 
     # put key
-    $etcd->put({ key =>'foo1', value => 'bar' });
+    $result = $etcd->put({ key =>'foo1', value => 'bar' });
 
     # get single key
-    $etcd->range({ key =>'test0' });
+    $key = $etcd->range({ key =>'test0' });
 
     [or]
 
-    $etcd->get({ key =>'test0' });
+    $key = $etcd->get({ key =>'test0' });
 
     # return single key value or the first in a list.
-    $etcd->value
+    $key->value
 
     # get range of keys
-    $etcd->range({ key =>'test0', range_end => 'test100' });
+    $range = $etcd->range({ key =>'test0', range_end => 'test100' });
 
     # return array { key => value } pairs from range request.
-    my @users = $etcd->all
+    my @users = $range->all
 
     # watch key
     $etcd->range({ key =>'foo', range_end => 'fop' });
@@ -75,343 +61,22 @@ Perl access to Etcd v3 API.
 
 =cut
 
-has host => (
-    is => 'ro',
-    isa => Str,
-    default => '127.0.0.1'
-);
+=head2 connect
+    $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
+    $etcd = Etcd3->connect($host);
+    $etcd = Etcd3->connect($host, $options);
 
-=head2 port
-
-=cut
-
-has port => (
-    is => 'ro',
-    isa => Int,
-    default => '2379'
-);
-
-=head2 user
+This function returns a L<Etcd3::Client> object.  The first parameter is the 
+C<host> argument.  The second C<options> is a hashref.
 
 =cut
 
-has user => (
-    is => 'ro',
-    isa => Str
-);
-
-=head2 password
-
-=cut
-
-has password => (
-    is => 'ro',
-    isa => Str
-);
-
-=head2 ssl
-
-=cut
-
-has ssl => (
-    is => 'ro',
-    isa => Bool,
-);
-
-=head2 auth
-
-=cut
-
-has auth => (
-    is => 'lazy',
-    isa => Bool,
-);
-
-sub _build_auth {
-   my ($self) = @_;
-   return 1 if ($self->user and $self->password);
-   return;
-}
-
-=head2 api_prefix
-
-base endpoint for api call, refers to api version.
-
-=cut
-
-has api_prefix => (
-    is      => 'ro',
-    isa     => Str,
-    default => '/v3alpha'
-);
-
-=head2 headers
-
-returns proper headers for api call.
-
-=cut
-
-has headers => (
-    is    => 'lazy',
-#    isa   => HashRef
-);
-
-sub _build_headers {
-    my ($self) = @_;
-    my $user = $self->user;
-    my $password = $self->password;
-    my $ref = ({});
-
-    $ref->{'Content-Type'} = 'application/json';
-    if ( (defined($user)) && (defined($password)) ) {
-        $ref->{'Authorization'} = 'Basic ' . encode_base64("$user:$password", "");
-    }
-    return { headers => $ref };
-}
-
-=head2 authenticate
-
-returns an Etcd3::Authenticate object
-
-$etcd->new( user => 'heman', password => 'greyskull' );
-
-=cut
-
-has authenticate => (
-   is => 'rw',
-   isa => Authenticate,
-   coerce => AuthenticateRequest,
-);
-
-=head2 range
-
-returns a Etcd3::Range object via Type magic.
-
-$etcd->range({ key =>'test0', range_end => 'test100', serializable => 1 })
-
-=cut
-
-has range => (
-   is => 'rw',
-   alias => 'get',
-   isa => Range,
-   coerce => RangeRequest,
-   trigger => 1,
-);
-
-sub _trigger_range {
-    my ($self) = @_;
-    my $action = $self->request;
-    return $action;
-
-}
-
-=head2 watch
-
-returns a Etcd3::Watch object.
-
-$etcd->watch({ key =>'foo', range_end => 'fop' })
-
-=cut
-
-has watch => (
-   is => 'rw',
-   isa => Watch,
-   coerce => WatchRequest,
-   trigger => 1,
-);
-
-sub _trigger_watch {
-    my ($self) = @_;
-    my $action = $self->request;
-    return $action;
-
-}
-
-=head2 get
-
-alias for range to reduce confusion v2 -> v3. This may go away in future versions.
-
-=cut
-
-=head2 deleterange
-
-returns a Etcd3::Range object via Type magic.
-
-$etcd->deleterange({ key =>'test0', range_end => 'test100', prev_key => 1 })
-
-=cut
-
-has deleterange => (
-   is => 'rw',
-   alias => 'delete',
-   isa => DeleteRange,
-   coerce => DeleteRangeRequest,
-);
-
-=head2 delete
-
-alias for delete to reduce confusion v2 -> v3. This may go away in future versions.
-
-=cut
-
-=head2 put
-
-returns a Etcd3::Put object via Type magic.
-
-=cut
-
-has put => (
-   is => 'rw',
-   isa => Put,
-   coerce => PutRequest,
-   trigger => 1,
-);
-
-sub _trigger_put {
-    my ($self) = @_;
-    my $action = $self->request;
-    return $action;
-    
-}
-
-=head2 api_root
-
-=cut
-
-has api_root => (
-    is => 'lazy'
-);
-
-sub _build_api_root {
-    my ($self) = @_;
-    return ($self->ssl ? 'https' : 'http') .'://'.$self->host.':'.$self->port;
-}
-
-=head2 api_path
-
-=cut
-
-has api_path => (
-    is => 'lazy'
-);
-
-sub _build_api_path {
-    my ($self) = @_;
-    return $self->api_root . $self->api_prefix;
-}
-
-
-=head2 actions
-
-outputs an AoH defining action class results
-
-=cut
-
-has actions => (
-   is => 'lazy'
-);
-
-sub _build_actions {
-    my ($self) = @_;
-    my @methods =  qw(watch put range rangedelete authenticate);
-    my @actions = map { if ($self->{$_}) {
-         {
-             endpoint => $self->{$_}{endpoint},
-             json_args => $self->{$_}{json_args}
-         }
-    } else {()} } @methods;
-    return \@actions;
-}
-
-=head2 request
-
-=cut
-
-has request => (
-    is => 'lazy',
-);
-
-sub _build_request {
-   my ($self) = @_;
-   my @response;
-   for my $action (@{$self->actions}) {
-      my $request = "HTTP::Tiny"->new->post(
-         $self->api_path . $action->{endpoint} => {
-           content => $action->{json_args},
-      #     %{$self->headers}
-         },
-      );
-#      print STDERR Dumper($action->{json_args});
-#      print STDERR Dumper($request);
-      push @response, $request
-   }
-   return \@response;
-}
-
-=head2 value
-
-returns single decoded value or the first.
-
-=cut
-
-sub value {
-    my ($self) = @_;
-    my $response = $self->request;
-    my $content = from_json($response->[0]{content});
-    my $value = $content->{kvs}[0]->{value};
-    $value or return;
-    return decode_base64($value);
-}
-
-=head2 all
-
-returns list containing for example:
-
-  {
-    'mod_revision' => '3',
-    'version' => '1',
-    'value' => 'bar',
-    'create_revision' => '3',
-    'key' => 'foo0'
-  }
-
-where key and value have been decoded for your pleasure.
-
-=cut
-
-sub all {
-    my ($self) = @_;
-    my $response = $self->request;
-    my $content = from_json($response->[0]{content});
-    my $kvs = $content->{kvs};
-    for my $row (@$kvs) {
-        $row->{value} = decode_base64($row->{value});
-        $row->{key} = decode_base64($row->{key});
-    }
-    return $kvs;
-}
-
-
-
-=head2 configuration
-
-Initialize configuration checks to see it etcd is installed locally.
-
-=cut
-
-
-sub configuration {
-    Etcd3::Config->configuration
-}
-
-sub BUILD {
-    my ($self,$args) = @_;
-    if (not -e $self->configuration->etcd) {
-        my $msg = "No etcd executable found\n";
-        $msg   .= ">> Please install etcd - https://coreos.com/etcd/docs/latest/";
-        die $msg;
-    }
+sub connect {
+    my ($self, $host, $options) = @_;
+    $host ||= "127.0.0.1";
+    $options ||= {};
+    $options->{host} = $host;
+    return Etcd3::Client->new( $options );
 }
 
 =head1 AUTHOR

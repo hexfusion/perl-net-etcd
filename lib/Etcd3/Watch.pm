@@ -8,6 +8,8 @@ use Types::Standard qw(Str Int Bool HashRef ArrayRef);
 use MIME::Base64;
 use JSON;
 
+with 'Etcd3::Role::Actions';
+
 use namespace::clean;
 
 =head1 NAME
@@ -112,12 +114,11 @@ sub _build_json_args {
     my ($self) = @_;
     my $args;
     for my $key ( keys %{ $self }) {
-        unless ( $key =~  /(?:args|endpoint)$/ ) {
+        unless ( $key =~  /(?:_client|json_args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
-    
-    return to_json({ create_request => $args} );
+    return to_json({ create_request => $args});
 }
 
 sub init {
@@ -125,4 +126,5 @@ sub init {
     $self->json_args;
     return $self;
 }
+
 1;

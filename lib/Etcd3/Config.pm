@@ -29,9 +29,17 @@ sub _build_etcd {
     return;
  }
 
+=head2 configuration
+
+=cut
+
 sub configuration {
   return Etcd3::Config->new;
 }
+
+=head2 configure
+
+=cut
 
 sub configure {
     my $class = shift;

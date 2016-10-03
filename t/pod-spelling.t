@@ -19,6 +19,9 @@ etcdctl
 serializable
 ssl
 sku
+KV
+RPC
+WatchResponse
 AuthenticateRequest
 DeleteRangeRequest
 ErrCompaction
