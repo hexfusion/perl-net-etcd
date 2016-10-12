@@ -5,6 +5,7 @@ Makefile.PL
 README.pod
 lib/Etcd3.pm
 lib/Etcd3/Authenticate.pm
+lib/Etcd3/AuthEnable.pm
 lib/Etcd3/Client.pm
 lib/Etcd3/Config.pm
 lib/Etcd3/DeleteRange.pm

@@ -10,11 +10,11 @@ use MIME::Base64;
 use Type::Tiny;
 use Etcd3::Authenticate;
 use Etcd3::Config;
-use Etcd3::Type qw(:all);
 use Etcd3::Range;
 use Etcd3::DeleteRange;
 use Etcd3::Put;
 use Etcd3::Watch;
+use Etcd3::AuthEnable;
 use Type::Utils qw(class_type);
 use Types::Standard qw(Str Int Bool HashRef);
 use MIME::Base64;
@@ -58,7 +58,7 @@ has port => (
 
 =cut
 
-has user => (
+has name => (
     is => 'ro',
     isa => Str
 );
@@ -92,6 +92,12 @@ has auth => (
 
 sub _build_auth {
    my ($self) = @_;
+   my $auth = Etcd3::AuthEnable->new(
+    _client => $self,
+    %$self
+    );
+   
+   print STDERR Dumper($auth);
    return 1 if ($self->user and $self->password);
    return;
 }
@@ -134,20 +140,46 @@ sub _build_api_path {
     return $self->api_root . $self->api_prefix;
 }
 
-=head2 authenticate
-
-returns an Etcd3::Authenticate object
-
-$etcd->new( user => 'heman', password => 'greyskull' );
+=head2 auth_token
 
 =cut
 
-sub authenticate {
-    my ( $self, $options ) = @_;
-    return Etcd3::Authenticate->new(
-        _client => $self,
-        ( $options ? %$options : () ),
+has auth_token => (
+    is => 'lazy'
+);
+
+sub _build_auth_token {
+    my ($self) = @_;
+   my $auth = Etcd3::AuthEnable->new(
+    _client => $self,
+    %$self
     )->init;
+
+   print STDERR Dumper($auth->request);
+    return Etcd3::Authenticate->new(
+    _client => $self,
+    %$self
+    )->token;
+}
+
+=head2 headers
+
+=cut
+
+has headers => (
+    is => 'lazy'
+);
+
+sub _build_headers {
+    my ($self) = @_;
+    my $headers;
+    my $auth_token = $self->auth_token;
+#    $headers->{'Content-Type'} = 'application/json';
+#    $headers->{'Authorization'} = 'Bearer ' . encode_base64($auth_token,"") if $auth_token;
+#    $headers->{'Grpc-Metadata-Authorization'} = encode_base64($auth_token,"");
+    $headers->{'Grpc-Metadata-Foo'} = 'Bar';
+    $headers->{'authorization'} =  $auth_token;
+    return $headers;
 }
 
 =head2 watch
@@ -224,6 +256,7 @@ sub configuration {
 
 sub BUILD {
     my ($self,$args) = @_;
+    $self->headers;
     if (not -e $self->configuration->etcd) {
         my $msg = "No etcd executable found\n";
         $msg   .= ">> Please install etcd - https://coreos.com/etcd/docs/latest/";

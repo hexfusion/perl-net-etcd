@@ -7,6 +7,7 @@ use Moo;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
 use MIME::Base64;
 use JSON;
+use Data::Dumper;
 
 with 'Etcd3::Role::Actions';
 
@@ -49,6 +50,7 @@ has password => (
     isa      => Str,
     required => 1,
 );
+
 =head2 json_args
 
 arguments that will be sent to the api
@@ -63,16 +65,21 @@ sub _build_json_args {
     my ($self) = @_;
     my $args;
     for my $key ( keys %{ $self }) {
-        unless ( $key =~  /(?:_client|json_args|endpoint)$/ ) {
+        unless ( $key =~  /(?:ssl|_client|json_args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
     return to_json($args);
 }
 
-sub init {
+sub token {
     my ($self)  = @_;
     $self->json_args;
-    return $self;
+    my $response = $self->request;
+    my $content = from_json($response->{content});
+    print STDERR Dumper($content);
+    my $token = $content->{token};
+    return $token;
 }
+
 1;

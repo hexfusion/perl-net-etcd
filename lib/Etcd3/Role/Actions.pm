@@ -25,6 +25,10 @@ has _client => (
     isa  => InstanceOf['Etcd3::Client'],
 );
 
+has headers => (
+   is => 'ro'
+);
+
 =head2 request
 
 =cut
@@ -39,7 +43,7 @@ sub _build_request {
    my $request = "HTTP::Tiny"->new->post(
        $self->_client->api_path . $self->{endpoint} => {
            content => $self->{json_args},
-      #     %{$self->headers}
+           headers => $self->headers
          },
       );
 #      print STDERR Dumper($self->{json_args});
@@ -89,6 +93,22 @@ sub all {
         $row->{key} = decode_base64($row->{key});
     }
     return $kvs;
+}
+
+=head2 authenticate
+
+returns an Etcd3::Authenticate object
+
+$etcd->new( user => 'heman', password => 'greyskull' );
+
+=cut
+
+sub authenticate {
+    my ( $self, $options ) = @_;
+    return Etcd3::Authenticate->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
 }
 
 1;

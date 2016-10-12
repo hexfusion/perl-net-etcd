@@ -77,6 +77,7 @@ sub connect {
     $host ||= "127.0.0.1";
     $options ||= {};
     $options->{host} = $host;
+    $options->{name} = $options->{user} if defined $options->{user};
     return Etcd3::Client->new( $options );
 }
 
