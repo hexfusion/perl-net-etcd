@@ -1,3 +1,4 @@
+use utf8;
 package Etcd3::Range;
 
 use strict;
@@ -25,8 +26,8 @@ Range gets the keys in the range from the key-value store.
 =cut
 
 has endpoint => (
-    is       => 'ro',
-    isa      => Str,
+    is      => 'ro',
+    isa     => Str,
     default => '/kv/range'
 );
 
@@ -41,23 +42,23 @@ has key => (
     is       => 'ro',
     isa      => Str,
     required => 1,
-    coerce => sub { return encode_base64($_[0],'') }
+    coerce   => sub { return encode_base64( $_[0], '' ) }
 );
 
 =head2 range_end
 
 range_end is the upper bound on the requested range [key, range_end). If range_end is '\0',
 the range is all keys >= key. If the range_end is one bit larger than the given key, then
-the range requests get the all keys with the prefix (the given key). If both key and 
+the range requests get the all keys with the prefix (the given key). If both key and
 range_end are '\0', then range requests returns all keys. the key is encoded with base64.
 type bytes.  NOTE: If range_end is not given, the request only looks up key.
 
 =cut
 
 has range_end => (
-    is       => 'ro',
-    isa      => Str,
-    coerce => sub { return encode_base64($_[0],'') }
+    is     => 'ro',
+    isa    => Str,
+    coerce => sub { return encode_base64( $_[0], '' ) }
 );
 
 =head2 limit
@@ -67,8 +68,8 @@ limit is a limit on the number of keys returned for the request. type int64
 =cut
 
 has limit => (
-    is       => 'ro',
-    isa      => Int,
+    is  => 'ro',
+    isa => Int,
 );
 
 =head2 revision
@@ -78,11 +79,11 @@ the range. If revision is less or equal to zero, the range is over
 the newest key-value store. If the revision has been compacted,
 ErrCompaction is returned as a response. type int64
 
-=cut 
+=cut
 
 has revision => (
-    is    => 'ro',
-    isa   => Int,
+    is  => 'ro',
+    isa => Int,
 );
 
 =head2 sort_order
@@ -92,8 +93,8 @@ sort_order is the order for returned sorted results.
 =cut
 
 has sort_order => (
-    is       => 'ro',
-    isa      => Int,
+    is  => 'ro',
+    isa => Int,
 );
 
 =head2 sort_target
@@ -103,8 +104,8 @@ sort_target is the key-value field to use for sorting.
 =cut
 
 has sort_target => (
-    is       => 'ro',
-    isa      => Str,
+    is  => 'ro',
+    isa => Str,
 );
 
 =head2 serializable
@@ -119,8 +120,8 @@ consensus with other nodes in the cluster.
 =cut
 
 has serializable => (
-    is       => 'ro',
-    isa      => Bool,
+    is     => 'ro',
+    isa    => Bool,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 
@@ -131,8 +132,8 @@ keys_only when set returns only the keys and not the values.
 =cut
 
 has keys_only => (
-    is       => 'ro',
-    isa      => Bool,
+    is     => 'ro',
+    isa    => Bool,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 
@@ -143,8 +144,8 @@ count_only when set returns only the count of the keys in the range.
 =cut
 
 has count_only => (
-    is       => 'ro',
-    isa      => Bool,
+    is     => 'ro',
+    isa    => Bool,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 
@@ -156,8 +157,8 @@ all keys with lesser mod revisions will be filtered away.
 =cut
 
 has min_mod_revision => (
-    is       => 'ro',
-    isa      => Int,
+    is  => 'ro',
+    isa => Int,
 );
 
 =head2 max_mod_revision
@@ -168,10 +169,9 @@ all keys with greater mod revisions will be filtered away.
 =cut
 
 has max_mod_revision => (
-    is       => 'ro',
-    isa      => Int,
+    is  => 'ro',
+    isa => Int,
 );
-
 
 =head2 min_create_revision
 
@@ -181,8 +181,8 @@ all keys with lesser create revisions will be filtered away.
 =cut
 
 has min_create_revision => (
-    is       => 'ro',
-    isa      => Int,
+    is  => 'ro',
+    isa => Int,
 );
 
 =head2 max_create_revision
@@ -193,8 +193,8 @@ all keys with greater create revisions will be filtered away.
 =cut
 
 has max_create_revision => (
-    is       => 'ro',
-    isa      => Int,
+    is  => 'ro',
+    isa => Int,
 );
 
 =head2 json_args
@@ -203,15 +203,13 @@ arguments that will be sent to the api
 
 =cut
 
-has json_args => (
-    is => 'lazy',
-);
+has json_args => ( is => 'lazy', );
 
 sub _build_json_args {
     my ($self) = @_;
     my $args;
-    for my $key ( keys %{ $self }) {
-        unless ( $key =~  /(?:_client|args|endpoint)$/ ) {
+    for my $key ( keys %{$self} ) {
+        unless ( $key =~ /(?:_client|args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
@@ -219,7 +217,7 @@ sub _build_json_args {
 }
 
 sub init {
-    my ($self)  = @_;
+    my ($self) = @_;
     $self->json_args;
     return $self;
 }

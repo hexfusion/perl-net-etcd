@@ -1,3 +1,4 @@
+use utf8;
 package Etcd3::Role::Actions;
 
 use strict;
@@ -21,34 +22,32 @@ Etcd3::Role::Actions
 =cut
 
 has _client => (
-    is => 'ro',
-    isa  => InstanceOf['Etcd3::Client'],
+    is  => 'ro',
+    isa => InstanceOf ['Etcd3::Client'],
 );
 
-has headers => (
-   is => 'ro'
-);
+has headers => ( is => 'ro' );
 
 =head2 request
 
 =cut
 
-has request => (
-    is => 'lazy',
-);
+has request => ( is => 'lazy', );
 
 sub _build_request {
-   my ($self) = @_;
-   my @response;
-   my $request = "HTTP::Tiny"->new->post(
-       $self->_client->api_path . $self->{endpoint} => {
-           content => $self->{json_args},
-           headers => $self->headers
-         },
-      );
-#      print STDERR Dumper($self->{json_args});
-#      print STDERR Dumper($self);
-   return $request;
+    my ($self) = @_;
+    my @response;
+    my $request = "HTTP::Tiny"->new->post(
+        $self->_client->api_path
+          . $self->{endpoint} => {
+            content => $self->{json_args},
+            headers => $self->headers
+          },
+    );
+
+    #      print STDERR Dumper($self->{json_args});
+    #      print STDERR Dumper($self);
+    return $request;
 }
 
 =head2 get_value
@@ -58,9 +57,9 @@ returns single decoded value or the first.
 =cut
 
 sub get_value {
-    my ($self) = @_;
+    my ($self)   = @_;
     my $response = $self->request;
-    my $content = from_json($response->{content});
+    my $content  = from_json( $response->{content} );
     print STDERR Dumper($content);
     my $value = $content->{kvs}->[0]->{value};
     $value or return;
@@ -84,13 +83,13 @@ where key and value have been decoded for your pleasure.
 =cut
 
 sub all {
-    my ($self) = @_;
+    my ($self)   = @_;
     my $response = $self->request;
-    my $content = from_json($response->{content});
-    my $kvs = $content->{kvs};
+    my $content  = from_json( $response->{content} );
+    my $kvs      = $content->{kvs};
     for my $row (@$kvs) {
-        $row->{value} = decode_base64($row->{value});
-        $row->{key} = decode_base64($row->{key});
+        $row->{value} = decode_base64( $row->{value} );
+        $row->{key}   = decode_base64( $row->{key} );
     }
     return $kvs;
 }

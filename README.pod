@@ -14,7 +14,7 @@ Version 0.001
     variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
 
     $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
-    $etcd = Etcd3->connect($host, $options);
+    $etcd = Etcd3->connect( $host, { username => 'HeMan', password =>'GreySkuLz', ssl => '1'});
 
     # put key
     $result = $etcd->put({ key =>'foo1', value => 'bar' });

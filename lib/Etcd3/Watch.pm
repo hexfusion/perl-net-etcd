@@ -1,3 +1,4 @@
+use utf8;
 package Etcd3::Watch;
 
 use strict;
@@ -28,8 +29,8 @@ The entire event history can be watched starting from the\nlast compaction revis
 =cut
 
 has endpoint => (
-    is       => 'ro',
-    isa      => Str,
+    is      => 'ro',
+    isa     => Str,
     default => '/watch'
 );
 
@@ -44,7 +45,7 @@ has key => (
     is       => 'ro',
     isa      => Str,
     required => 1,
-    coerce => sub { return encode_base64($_[0],'') }
+    coerce   => sub { return encode_base64( $_[0], '' ) }
 );
 
 =head2 range_end
@@ -56,9 +57,9 @@ the key argument are watched.
 =cut
 
 has range_end => (
-    is       => 'ro',
-    isa      => Str,
-    coerce => sub { return encode_base64($_[0],'') }
+    is     => 'ro',
+    isa    => Str,
+    coerce => sub { return encode_base64( $_[0], '' ) }
 );
 
 =head2 start_revision
@@ -68,8 +69,8 @@ start_revision is an optional revision to watch from (inclusive). No start_revis
 =cut
 
 has limit => (
-    is       => 'ro',
-    isa      => Int,
+    is  => 'ro',
+    isa => Int,
 );
 
 =head2 progress_notify
@@ -82,8 +83,8 @@ it will send notifications based on current load.
 =cut
 
 has progress_notify => (
-    is       => 'ro',
-    isa      => Bool,
+    is     => 'ro',
+    isa    => Bool,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 
@@ -95,8 +96,8 @@ KV is already compacted, nothing will be returned.
 =cut
 
 has prev_key => (
-    is       => 'ro',
-    isa      => Bool,
+    is     => 'ro',
+    isa    => Bool,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 
@@ -106,23 +107,21 @@ arguments that will be sent to the api
 
 =cut
 
-has json_args => (
-    is => 'lazy',
-);
+has json_args => ( is => 'lazy', );
 
 sub _build_json_args {
     my ($self) = @_;
     my $args;
-    for my $key ( keys %{ $self }) {
-        unless ( $key =~  /(?:_client|json_args|endpoint)$/ ) {
+    for my $key ( keys %{$self} ) {
+        unless ( $key =~ /(?:_client|json_args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
-    return to_json({ create_request => $args});
+    return to_json( { create_request => $args } );
 }
 
 sub init {
-    my ($self)  = @_;
+    my ($self) = @_;
     $self->json_args;
     return $self;
 }

@@ -1,3 +1,4 @@
+use utf8;
 package Etcd3::DeleteRange;
 
 use strict;
@@ -25,8 +26,8 @@ deleted key.
 =cut
 
 has endpoint => (
-    is       => 'ro',
-    isa      => Str,
+    is      => 'ro',
+    isa     => Str,
     default => '/kv/deleterange'
 );
 
@@ -40,7 +41,7 @@ has key => (
     is       => 'ro',
     isa      => Str,
     required => 1,
-    coerce => sub { return encode_base64($_[0],'') }
+    coerce   => sub { return encode_base64( $_[0], '' ) }
 );
 
 =head2 range_end
@@ -52,9 +53,9 @@ is all keys greater than or equal to the key argument.
 =cut
 
 has range_end => (
-    is       => 'ro',
-    isa      => Str,
-    coerce => sub { return encode_base64($_[0],'') }
+    is     => 'ro',
+    isa    => Str,
+    coerce => sub { return encode_base64( $_[0], '' ) }
 );
 
 =head2 prev_key
@@ -65,8 +66,8 @@ pairs will be returned in the delete response.
 =cut
 
 has prev_key => (
-    is       => 'ro',
-    isa      => Bool,
+    is     => 'ro',
+    isa    => Bool,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 
@@ -76,15 +77,13 @@ arguments that will be sent to the api
 
 =cut
 
-has json_args => (
-    is => 'lazy',
-);
+has json_args => ( is => 'lazy', );
 
 sub _build_json_args {
     my ($self) = @_;
     my $args;
-    for my $key ( keys %{ $self }) {
-        unless ( $key =~  /(?:args|endpoint)$/ ) {
+    for my $key ( keys %{$self} ) {
+        unless ( $key =~ /(?:args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
@@ -92,7 +91,7 @@ sub _build_json_args {
 }
 
 sub init {
-    my ($self)  = @_;
+    my ($self) = @_;
     $self->json_args;
     return $self;
 }

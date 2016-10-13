@@ -1,4 +1,5 @@
-package Etcd3::AuthRoleAdd;
+use utf8;
+package Etcd3::Auth::UserGrantRole;
 
 use strict;
 use warnings;
@@ -14,11 +15,11 @@ use namespace::clean;
 
 =head1 NAME
 
-Etcd3::AuthRoleAdd
+Etcd3:::Auth::UserGrantRole
 
 =head1 DESCRIPTION
 
-Add user
+Add role to user
 
 =head2 endpoint
 
@@ -27,20 +28,34 @@ Add user
 has endpoint => (
     is       => 'ro',
     isa      => Str,
-    default => '/auth/role/add'
+    default => '/auth/user/grant'
 );
 
-=head2 name
+=head2 user
 
 name of role
 
 =cut
 
-has name => (
+has user => (
     is       => 'ro',
     isa      => Str,
     required => 1,
 );
+
+
+=head2 role
+
+name of role
+
+=cut
+
+has role => (
+    is       => 'ro',
+    isa      => Str,
+    required => 1,
+);
+
 
 =head2 json_args
 

@@ -1,4 +1,6 @@
+use utf8;
 package Etcd3;
+
 # ABSTRACT: Provide access to the etcd v3 API.
 
 use strict;
@@ -29,7 +31,7 @@ our $VERSION = '0.001';
     variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
 
     $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
-    $etcd = Etcd3->connect($host, $options);
+    $etcd = Etcd3->connect( $host, { username => 'HeMan', password =>'GreySkuLz', ssl => '1'});
 
     # put key
     $result = $etcd->put({ key =>'foo1', value => 'bar' });
@@ -73,12 +75,12 @@ C<host> argument.  The second C<options> is a hashref.
 =cut
 
 sub connect {
-    my ($self, $host, $options) = @_;
+    my ( $self, $host, $options ) = @_;
     $host ||= "127.0.0.1";
     $options ||= {};
     $options->{host} = $host;
     $options->{name} = $options->{user} if defined $options->{user};
-    return Etcd3::Client->new( $options );
+    return Etcd3::Client->new($options);
 }
 
 =head1 AUTHOR
@@ -107,7 +109,6 @@ by the Free Software Foundation; or the Artistic License.
 See http://dev.perl.org/licenses/ for more information.
 
 =cut
-
 
 1;
 

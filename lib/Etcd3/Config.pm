@@ -1,3 +1,4 @@
+use utf8;
 package Etcd3::Config;
 
 use strict;
@@ -5,7 +6,6 @@ use warnings;
 
 use Moo;
 use namespace::clean;
-
 
 =head1 NAME
 
@@ -15,26 +15,24 @@ Etcd3::Config
 
 =cut
 
-has etcd => (
-    is => 'lazy'
-);
+has etcd => ( is => 'lazy' );
 
 sub _build_etcd {
-    my $self = shift;
+    my $self  = shift;
     my $found = `which etcd`;
-    if ($? == 0) {
+    if ( $? == 0 ) {
         chomp($found);
         return $found;
     }
     return;
- }
+}
 
 =head2 configuration
 
 =cut
 
 sub configuration {
-  return Etcd3::Config->new;
+    return Etcd3::Config->new;
 }
 
 =head2 configure
@@ -43,9 +41,10 @@ sub configuration {
 
 sub configure {
     my $class = shift;
-    my $code = shift;
+    my $code  = shift;
     local $_ = $class->configuration;
     $code->($_);
+    return;
 }
 
 1;

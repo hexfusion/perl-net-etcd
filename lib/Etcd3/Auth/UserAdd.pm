@@ -1,4 +1,5 @@
-package Etcd3::Authenticate;
+use utf8;
+package Etcd3::Auth::UserAdd;
 
 use strict;
 use warnings;
@@ -7,7 +8,6 @@ use Moo;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
 use MIME::Base64;
 use JSON;
-use Data::Dumper;
 
 with 'Etcd3::Role::Actions';
 
@@ -15,11 +15,11 @@ use namespace::clean;
 
 =head1 NAME
 
-Etcd3:Authenticate
+Etcd3::Auth::UserAdd
 
 =head1 DESCRIPTION
 
-Authentication request
+Add user
 
 =head2 endpoint
 
@@ -28,19 +28,20 @@ Authentication request
 has endpoint => (
     is       => 'ro',
     isa      => Str,
-    default => '/auth/authenticate'
+    default => '/auth/user/add'
 );
 
-=head2 username
+=head2 name
 
-the actual api uses name so we handle this in json_args
+name of user
 
 =cut
 
-has username => (
+has name => (
     is       => 'ro',
     isa      => Str,
     required => 1,
+#    coerce => sub { return encode_base64($_[0],'') },
 );
 
 =head2 password
@@ -51,6 +52,7 @@ has password => (
     is       => 'ro',
     isa      => Str,
     required => 1,
+#    coerce => sub { return encode_base64($_[0],'') },
 );
 
 =head2 json_args
@@ -66,23 +68,19 @@ has json_args => (
 sub _build_json_args {
     my ($self) = @_;
     my $args;
-    $args->{user} = $self->{username};
     for my $key ( keys %{ $self }) {
-        unless ( $key =~  /(?:username|ssl|_client|json_args|endpoint)$/ ) {
+        unless ( $key =~  /(?:_client|json_args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
     return to_json($args);
 }
 
-sub token {
+sub init {
     my ($self)  = @_;
-    $self->json_args;
-    my $response = $self->request;
-    my $content = from_json($response->{content});
-    print STDERR Dumper($content);
-    my $token = $content->{token};
-    return $token;
+    my $init = $self->json_args;
+    $init or return;
+    return $self;
 }
 
 1;

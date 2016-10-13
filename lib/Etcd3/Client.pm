@@ -1,3 +1,4 @@
+use utf8;
 package Etcd3::Client;
 
 use strict;
@@ -8,16 +9,19 @@ use JSON;
 use HTTP::Tiny;
 use MIME::Base64;
 use Type::Tiny;
-use Etcd3::Authenticate;
-use Etcd3::AuthUserAdd;
-use Etcd3::AuthRoleAdd;
-use Etcd3::AuthUserGrantRole;
+use Etcd3::Auth::Authenticate;
+use Etcd3::Auth::Enable;
+use Etcd3::Auth::UserAdd;
+use Etcd3::Auth::UserDelete;
+use Etcd3::Auth::RoleAdd;
+use Etcd3::Auth::RoleDelete;
+use Etcd3::Auth::UserGrantRole;
+use Etcd3::Auth::UserRevokeRole;
 use Etcd3::Config;
 use Etcd3::Range;
 use Etcd3::DeleteRange;
 use Etcd3::Put;
 use Etcd3::Watch;
-use Etcd3::AuthEnable;
 use Type::Utils qw(class_type);
 use Types::Standard qw(Str Int Bool HashRef);
 use MIME::Base64;
@@ -42,8 +46,8 @@ Client data for etcd connection
 =cut
 
 has host => (
-    is => 'ro',
-    isa => Str,
+    is      => 'ro',
+    isa     => Str,
     default => '127.0.0.1'
 );
 
@@ -52,8 +56,8 @@ has host => (
 =cut
 
 has port => (
-    is => 'ro',
-    isa => Int,
+    is      => 'ro',
+    isa     => Int,
     default => '2379'
 );
 
@@ -62,7 +66,7 @@ has port => (
 =cut
 
 has username => (
-    is => 'ro',
+    is  => 'ro',
     isa => Str
 );
 
@@ -71,7 +75,7 @@ has username => (
 =cut
 
 has password => (
-    is => 'ro',
+    is  => 'ro',
     isa => Str
 );
 
@@ -80,7 +84,7 @@ has password => (
 =cut
 
 has ssl => (
-    is => 'ro',
+    is  => 'ro',
     isa => Bool,
 );
 
@@ -89,33 +93,28 @@ has ssl => (
 =cut
 
 has auth => (
-    is => 'lazy',
+    is  => 'lazy',
     isa => Bool,
 );
 
 sub _build_auth {
-   my ($self) = @_;
-   my $auth = Etcd3::AuthEnable->new(
-    _client => $self,
-    %$self
-    );
-   
-   print STDERR Dumper($auth);
-   return 1 if ($self->username and $self->password);
-   return;
+    my ($self) = @_;
+    return 1 if ( $self->username and $self->password );
+    return;
 }
 
 =head2 api_root
 
 =cut
 
-has api_root => (
-    is => 'lazy'
-);
+has api_root => ( is => 'lazy' );
 
 sub _build_api_root {
     my ($self) = @_;
-    return ($self->ssl ? 'https' : 'http') .'://'.$self->host.':'.$self->port;
+    return
+        ( $self->ssl ? 'https' : 'http' ) . '://'
+      . $self->host . ':'
+      . $self->port;
 }
 
 =head2 api_prefix
@@ -134,9 +133,7 @@ has api_prefix => (
 
 =cut
 
-has api_path => (
-    is => 'lazy'
-);
+has api_path => ( is => 'lazy' );
 
 sub _build_api_path {
     my ($self) = @_;
@@ -147,21 +144,13 @@ sub _build_api_path {
 
 =cut
 
-has auth_token => (
-    is => 'lazy'
-);
+has auth_token => ( is => 'lazy' );
 
 sub _build_auth_token {
     my ($self) = @_;
-   my $auth = Etcd3::AuthEnable->new(
-    _client => $self,
-    %$self
-    )->init;
-
-   print STDERR Dumper($auth->request);
-    return Etcd3::Authenticate->new(
-    _client => $self,
-    %$self
+    return Etcd3::Auth::Authenticate->new(
+        _client => $self,
+        %$self
     )->token;
 }
 
@@ -169,19 +158,14 @@ sub _build_auth_token {
 
 =cut
 
-has headers => (
-    is => 'lazy'
-);
+has headers => ( is => 'lazy' );
 
 sub _build_headers {
     my ($self) = @_;
     my $headers;
-    my $auth_token = $self->auth_token;
-#    $headers->{'Content-Type'} = 'application/json';
-#    $headers->{'Authorization'} = 'Bearer ' . encode_base64($auth_token,"") if $auth_token;
-#    $headers->{'Grpc-Metadata-Authorization'} = encode_base64($auth_token,"");
-    $headers->{'Grpc-Metadata-Foo'} = 'Bar';
-    $headers->{'authorization'} =  $auth_token;
+    my $auth_token = $self->auth_token if $self->auth;
+    $headers->{'Content-Type'} = 'application/json';
+    $headers->{'authorization'} = 'Bearer ' . encode_base64( $auth_token, "" ) if $auth_token;
     return $headers;
 }
 
@@ -201,41 +185,97 @@ sub watch {
     )->init;
 }
 
+=head2 user_add
 
-=head2 user_add 
+$etcd->user_add({ name =>'foo' password => 'bar' })
 
 =cut
 
 sub user_add {
     my ( $self, $options ) = @_;
-    return Etcd3::AuthUserAdd->new(
+    return Etcd3::Auth::UserAdd->new(
         _client => $self,
         ( $options ? %$options : () ),
     )->init;
 }
 
-=head2 role_add 
+=head2 user_delete
+
+$etcd->user_delete({ name =>'foo' })
+
+=cut
+
+sub user_delete {
+    my ( $self, $options ) = @_;
+    return Etcd3::Auth::UserDelete->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
+=head2 role_add
+
+name is the name of the role to add to the authentication system.
+
+$etcd->role_add({ name =>'foo' })
 
 =cut
 
 sub role_add {
     my ( $self, $options ) = @_;
-    return Etcd3::AuthRoleAdd->new(
+    return Etcd3::Auth::RoleAdd->new(
         _client => $self,
         ( $options ? %$options : () ),
     )->init;
 }
 
-=head2 grant_role 
+=head2 role_delete
+
+$etcd->role_delete({ name =>'foo' })
 
 =cut
 
-sub grant_role{
+sub role_delete {
     my ( $self, $options ) = @_;
-    return Etcd3::AuthUserGrantRole->new(
+    return Etcd3::Auth::RoleDelete->new(
         _client => $self,
         ( $options ? %$options : () ),
     )->init;
+}
+
+
+=head2 grant_role
+
+=cut
+
+sub grant_role {
+    my ( $self, $options ) = @_;
+    return Etcd3::Auth::UserGrantRole->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
+=head2 revoke_role
+
+=cut
+
+sub revoke_role {
+    my ( $self, $options ) = @_;
+    return Etcd3::Auth::UserRevokeRole->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
+=head2 auth_enable
+
+=cut
+
+sub auth_enable {
+    my ( $self, $options ) = @_;
+    my $auth = Etcd3::Auth::Enable->new( _client => $self )->init;
+    return $auth->request;
 }
 
 =head2 deleterange
@@ -291,15 +331,15 @@ Initialize configuration checks to see it etcd is installed locally.
 =cut
 
 sub configuration {
-    Etcd3::Config->configuration
+    Etcd3::Config->configuration;
 }
 
 sub BUILD {
-    my ($self,$args) = @_;
+    my ( $self, $args ) = @_;
     $self->headers;
-    if (not -e $self->configuration->etcd) {
+    if ( not -e $self->configuration->etcd ) {
         my $msg = "No etcd executable found\n";
-        $msg   .= ">> Please install etcd - https://coreos.com/etcd/docs/latest/";
+        $msg .= ">> Please install etcd - https://coreos.com/etcd/docs/latest/";
         die $msg;
     }
 }
@@ -330,7 +370,6 @@ by the Free Software Foundation; or the Artistic License.
 See http://dev.perl.org/licenses/ for more information.
 
 =cut
-
 
 1;
 

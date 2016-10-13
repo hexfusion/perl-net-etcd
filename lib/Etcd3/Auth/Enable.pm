@@ -1,4 +1,5 @@
-package Etcd3::AuthEnable;
+use utf8;
+package Etcd3::Auth::Enable;
 
 use strict;
 use warnings;
@@ -15,7 +16,7 @@ use namespace::clean;
 
 =head1 NAME
 
-Etcd3:AuthEnable
+Etcd3:Auth::Enable
 
 =head1 DESCRIPTION
 

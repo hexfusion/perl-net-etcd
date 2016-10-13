@@ -1,4 +1,5 @@
-package Etcd3::AuthUserAdd;
+use utf8;
+package Etcd3::Auth::UserDelete;
 
 use strict;
 use warnings;
@@ -14,11 +15,11 @@ use namespace::clean;
 
 =head1 NAME
 
-Etcd3::AuthUSerAdd
+Etcd3::Auth::UserDelete
 
 =head1 DESCRIPTION
 
-Add user
+Delete user
 
 =head2 endpoint
 
@@ -27,7 +28,7 @@ Add user
 has endpoint => (
     is       => 'ro',
     isa      => Str,
-    default => '/auth/user/add'
+    default => '/auth/user/delete'
 );
 
 =head2 name
@@ -40,18 +41,6 @@ has name => (
     is       => 'ro',
     isa      => Str,
     required => 1,
-#    coerce => sub { return encode_base64($_[0],'') },
-);
-
-=head2 password
-
-=cut
-
-has password => (
-    is       => 'ro',
-    isa      => Str,
-    required => 1,
-#    coerce => sub { return encode_base64($_[0],'') },
 );
 
 =head2 json_args

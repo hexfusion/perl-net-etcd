@@ -1,4 +1,5 @@
-package Etcd3::AuthUserGrantRole;
+use utf8;
+package Etcd3::Auth::RoleDelete;
 
 use strict;
 use warnings;
@@ -14,11 +15,11 @@ use namespace::clean;
 
 =head1 NAME
 
-Etcd3:::AuthUserGrantRole
+Etcd3::Auth::RoleDelete
 
 =head1 DESCRIPTION
 
-Add role to user
+Add user
 
 =head2 endpoint
 
@@ -27,25 +28,12 @@ Add role to user
 has endpoint => (
     is       => 'ro',
     isa      => Str,
-    default => '/auth/user/grant'
+    default => '/auth/role/delete'
 );
 
-=head2 user
+=head2 role 
 
-name of role
-
-=cut
-
-has user => (
-    is       => 'ro',
-    isa      => Str,
-    required => 1,
-);
-
-
-=head2 role
-
-name of role
+name of role to delete
 
 =cut
 
@@ -54,7 +42,6 @@ has role => (
     isa      => Str,
     required => 1,
 );
-
 
 =head2 json_args
 
