@@ -9,6 +9,9 @@ use HTTP::Tiny;
 use MIME::Base64;
 use Type::Tiny;
 use Etcd3::Authenticate;
+use Etcd3::AuthUserAdd;
+use Etcd3::AuthRoleAdd;
+use Etcd3::AuthUserGrantRole;
 use Etcd3::Config;
 use Etcd3::Range;
 use Etcd3::DeleteRange;
@@ -54,11 +57,11 @@ has port => (
     default => '2379'
 );
 
-=head2 user
+=head2 username
 
 =cut
 
-has name => (
+has username => (
     is => 'ro',
     isa => Str
 );
@@ -98,7 +101,7 @@ sub _build_auth {
     );
    
    print STDERR Dumper($auth);
-   return 1 if ($self->user and $self->password);
+   return 1 if ($self->username and $self->password);
    return;
 }
 
@@ -193,6 +196,43 @@ $etcd->watch({ key =>'foo', range_end => 'fop' })
 sub watch {
     my ( $self, $options ) = @_;
     return Etcd3::Watch->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
+
+=head2 user_add 
+
+=cut
+
+sub user_add {
+    my ( $self, $options ) = @_;
+    return Etcd3::AuthUserAdd->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
+=head2 role_add 
+
+=cut
+
+sub role_add {
+    my ( $self, $options ) = @_;
+    return Etcd3::AuthRoleAdd->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
+=head2 grant_role 
+
+=cut
+
+sub grant_role{
+    my ( $self, $options ) = @_;
+    return Etcd3::AuthUserGrantRole->new(
         _client => $self,
         ( $options ? %$options : () ),
     )->init;
