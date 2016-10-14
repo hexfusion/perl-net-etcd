@@ -18,6 +18,10 @@ use namespace::clean;
 
 Etcd3:Auth::Enable
 
+=cut
+
+our $VERSION = '0.001';
+
 =head1 DESCRIPTION
 
 Enable authentication

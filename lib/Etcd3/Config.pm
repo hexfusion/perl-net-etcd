@@ -11,6 +11,10 @@ use namespace::clean;
 
 Etcd3::Config
 
+=cut
+
+our $VERSION = '0.001';
+
 =head2 etcd
 
 =cut

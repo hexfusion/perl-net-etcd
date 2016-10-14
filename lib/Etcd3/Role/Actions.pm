@@ -21,6 +21,8 @@ Etcd3::Role::Actions
 
 =cut
 
+our $VERSION = '0.001';
+
 has _client => (
     is  => 'ro',
     isa => InstanceOf ['Etcd3::Client'],

@@ -17,6 +17,10 @@ use namespace::clean;
 
 Etcd3::Range
 
+=cut
+
+our $VERSION = '0.001';
+
 =head1 DESCRIPTION
 
 Range gets the keys in the range from the key-value store.

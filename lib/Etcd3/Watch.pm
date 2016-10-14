@@ -17,6 +17,10 @@ use namespace::clean;
 
 Etcd3::Range
 
+=cut
+
+our $VERSION = '0.001';
+
 =head1 DESCRIPTION
 
 Watch watches for events happening or that have happened. Both input and output\nare streams;

@@ -17,6 +17,10 @@ use namespace::clean;
 
 Etcd3::Auth::RoleAdd
 
+=cut
+
+our $VERSION = '0.001';
+
 =head1 DESCRIPTION
 
 Add user
