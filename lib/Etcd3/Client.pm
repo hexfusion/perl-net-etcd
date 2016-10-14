@@ -8,7 +8,6 @@ use Moo;
 use JSON;
 use HTTP::Tiny;
 use MIME::Base64;
-use Type::Tiny;
 use Etcd3::Auth::Authenticate;
 use Etcd3::Auth::Enable;
 use Etcd3::Auth::UserAdd;
@@ -22,9 +21,7 @@ use Etcd3::Range;
 use Etcd3::DeleteRange;
 use Etcd3::Put;
 use Etcd3::Watch;
-use Type::Utils qw(class_type);
 use Types::Standard qw(Str Int Bool HashRef);
-use MIME::Base64;
 use Data::Dumper;
 
 use namespace::clean;

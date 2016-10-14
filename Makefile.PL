@@ -19,12 +19,15 @@ WriteMakefile(
         'File::Temp'            => 0,
         'JSON'                  => 0,
         'Test::More'            => 0,
+        'Test::Exception'       => 0,
     },
     PREREQ_PM => {
         'Moo'                   => '2.000',
         'namespace::clean'      => 0,
         'Sub::Quote'            => 0,
         'URI'                   => 0,
+        'HTTP::Tiny'            => 0,
+        'Types::Standard'       => 0,
     },
     dist => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     META_MERGE => {
