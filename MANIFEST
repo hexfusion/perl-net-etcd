@@ -22,6 +22,7 @@ lib/Etcd3/Range.pm
 lib/Etcd3/Watch.pm
 t/00-load.t
 t/10-basic.t
+t/key_value.t
 t/manifest.t
 t/pod-coverage.t
 t/pod-spelling.t

@@ -62,9 +62,7 @@ has range_end => (
     coerce => sub { return encode_base64( $_[0], '' ) }
 );
 
-=head2 start_revision
-
-start_revision is an optional revision to watch from (inclusive). No start_revision is "now".
+=head2 limit
 
 =cut
 
@@ -119,6 +117,10 @@ sub _build_json_args {
     }
     return to_json( { create_request => $args } );
 }
+
+=head2 init
+
+=cut
 
 sub init {
     my ($self) = @_;

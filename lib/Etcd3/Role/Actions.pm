@@ -26,6 +26,10 @@ has _client => (
     isa => InstanceOf ['Etcd3::Client'],
 );
 
+=head2 headers
+
+=cut
+
 has headers => ( is => 'ro' );
 
 =head2 request
@@ -44,9 +48,7 @@ sub _build_request {
             headers => $self->headers
           },
     );
-
-    #      print STDERR Dumper($self->{json_args});
-    #      print STDERR Dumper($self);
+#    print STDERR Dumper($self);
     return $request;
 }
 
@@ -60,7 +62,7 @@ sub get_value {
     my ($self)   = @_;
     my $response = $self->request;
     my $content  = from_json( $response->{content} );
-    print STDERR Dumper($content);
+#    print STDERR Dumper($content);
     my $value = $content->{kvs}->[0]->{value};
     $value or return;
     return decode_base64($value);
@@ -96,15 +98,13 @@ sub all {
 
 =head2 authenticate
 
-returns an Etcd3::Authenticate object
-
-$etcd->new( user => 'heman', password => 'greyskull' );
+returns an Etcd3::Auth::Authenticate object
 
 =cut
 
 sub authenticate {
     my ( $self, $options ) = @_;
-    return Etcd3::Authenticate->new(
+    return Etcd3::Auth::Authenticate->new(
         _client => $self,
         ( $options ? %$options : () ),
     )->init;

@@ -43,6 +43,10 @@ has json_args => (
     default => '{}',
 );
 
+=head2 init
+
+=cut
+
 sub init {
     my ($self)  = @_;
     $self->json_args;
