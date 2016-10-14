@@ -278,15 +278,13 @@ sub auth_enable {
     return $auth->request;
 }
 
-=head2 deleterange
+=head2 delete_range
 
-returns a Etcd3::Range object via Type magic.
-
-$etcd->deleterange({ key =>'test0', range_end => 'test100', prev_key => 1 })
+$etcd->delete_range({ key =>'test0', range_end => 'test100', prev_key => 1 })
 
 =cut
 
-sub deleterange {
+sub delete_range {
     my ( $self, $options ) = @_;
     return Etcd3::DeleteRange->new(
         _client => $self,

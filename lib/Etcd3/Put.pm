@@ -103,6 +103,10 @@ sub _build_json_args {
     return to_json($args);
 }
 
+=head2 init
+
+=cut
+
 sub init {
     my ($self) = @_;
     my $init = $self->json_args;
