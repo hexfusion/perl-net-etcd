@@ -17,6 +17,10 @@ use namespace::clean;
 
 Etcd3::Put
 
+=cut
+
+our $VERSION = '0.001';
+
 =head1 DESCRIPTION
 
 Put puts the given key into the key-value store. A put request increments

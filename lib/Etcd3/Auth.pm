@@ -9,6 +9,8 @@ Etcd3::Auth
 
 =cut
 
+our $VERSION = '0.001';
+
 =head1 DESCRIPTION
 
 Authentication

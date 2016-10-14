@@ -17,6 +17,10 @@ use namespace::clean;
 
 Etcd3::DeleteRange
 
+=cut
+
+our $VERSION = '0.001';
+
 =head1 DESCRIPTION
 
 DeleteRange deletes the given range from the key-value store. A delete request increments the

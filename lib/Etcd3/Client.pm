@@ -34,6 +34,14 @@ Etcd3::Client
 
 =cut
 
+=head1 VERSION
+
+Version 0.001
+
+=cut
+
+our $VERSION = '0.001';
+
 =head1 DESCRIPTION
 
 Client data for etcd connection
