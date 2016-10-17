@@ -5,24 +5,17 @@ use warnings;
 
 use Etcd3;
 use Test::More;
-use Test::Exception tests => 3;
+use Test::Exception;
 
-my $host;
+my ($host, $port);
 
-if ( $ENV{ETCD_TEST_HOST} ) {
+if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $host = $ENV{ETCD_TEST_HOST};
-}
-else {
-    plan skip_all => "Please set environment variable ETCD_TEST_HOST.";
-}
-
-my $port;
-
-if ( $ENV{ETCD_TEST_PORT} ) {
     $port = $ENV{ETCD_TEST_PORT};
+    plan tests => 3;
 }
 else {
-    plan skip_all => "Please set environment variable ETCD_TEST_PORT.";
+    plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
 }
 
 my $etcd = Etcd3->connect( $host, { port => $port } );
