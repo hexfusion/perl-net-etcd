@@ -19,11 +19,11 @@ Etcd3
 
 =head1 VERSION
 
-Version 0.001
+Version 0.003
 
 =cut
 
-our $VERSION = '0.001';
+our $VERSION = '0.003';
 
 =head1 SYNOPSIS
 

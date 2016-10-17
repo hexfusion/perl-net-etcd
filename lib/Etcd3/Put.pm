@@ -19,7 +19,7 @@ Etcd3::Put
 
 =cut
 
-our $VERSION = '0.001';
+our $VERSION = '0.003';
 
 =head1 DESCRIPTION
 

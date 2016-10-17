@@ -13,7 +13,7 @@ Etcd3::Config
 
 =cut
 
-our $VERSION = '0.001';
+our $VERSION = '0.003';
 
 =head2 etcd
 
