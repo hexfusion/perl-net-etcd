@@ -34,13 +34,7 @@ Etcd3::Client
 
 =cut
 
-=head1 VERSION
-
-Version 0.001
-
-=cut
-
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 =head1 DESCRIPTION
 

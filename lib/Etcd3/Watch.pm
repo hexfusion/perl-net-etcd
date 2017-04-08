@@ -19,14 +19,14 @@ Etcd3::Range
 
 =cut
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 =head1 DESCRIPTION
 
-Watch watches for events happening or that have happened. Both input and output\nare streams;
-the input stream is for creating and canceling watchers and the output\nstream sends events.
-One watch RPC can watch on multiple key ranges, streaming events\nfor several watches at once.
-The entire event history can be watched starting from the\nlast compaction revision.
+Watch watches for events happening or that have happened. Both input and output are streams;
+the input stream is for creating and canceling watchers and the output stream sends events.
+One watch RPC can watch on multiple key ranges, streaming events for several watches at once.
+The entire event history can be watched starting from the last compaction revision.
 
 =head2 endpoint
 

@@ -21,7 +21,7 @@ Etcd3::Role::Actions
 
 =cut
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 has _client => (
     is  => 'ro',
