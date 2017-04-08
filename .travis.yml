@@ -20,7 +20,7 @@ before_install:
   - wget https://github.com/coreos/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -O /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
   - mkdir -p /tmp/test-etcd
   - tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/test-etcd --strip-components=1
-  - /tmp/test-etcd/etcd
+  - nohup /tmp/test-etcd/etc &>/dev/null &
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
   - build-perl
@@ -36,5 +36,5 @@ script:
 env:
   - ETCD_VER=v3.1.5
   - ETCDCTL_API=3
-  - ETCD_TEST_HOST=127.0.0.1
+  - ETCD_TEST_HOST=localhost
   - ETCD_TEST_PORT=2379
