@@ -1,5 +1,11 @@
 sudo: required
-env: RELEASE_TESTING=1
+env:
+  global:
+    - ETCD_VER=v3.1.5
+	- ETCDCTL_API=3
+    - ETCD_TEST_HOST=localhost
+	- ETCD_TEST_PORT=2379
+	- RELEASE_TESTING=1
 language: perl
 perl:
   - "5.24"
@@ -33,8 +39,3 @@ script:
   - perl Makefile.PL
   - make
   - prove -b -r -s -j$(test-jobs) $(test-files)
-env:
-  - ETCD_VER=v3.1.5
-  - ETCDCTL_API=3
-  - ETCD_TEST_HOST=localhost
-  - ETCD_TEST_PORT=2379
