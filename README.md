@@ -1,14 +1,14 @@
-=encoding utf8
+[![Build Status](https://api.travis-ci.org/hexfusion/perl-etcd3.svg?branch=master)](https://travis-ci.org/hexfusion/perl-etcd3)
 
-=head1 NAME
+# NAME
 
 Etcd3
 
-=head1 VERSION
+# VERSION
 
 Version 0.004
 
-=head1 SYNOPSIS
+# SYNOPSIS
 
     Etcd v3.1.0-alpha.0 or greater is required.   To use the v3 API make sure to set environment
     variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
@@ -38,37 +38,36 @@ Version 0.004
     # watch key
     $etcd->range({ key =>'foo', range_end => 'fop' });
 
-=head1 DESCRIPTION
+# DESCRIPTION
 
 Perl access to Etcd v3 API.
 
-=head2 host
+## host
 
-=head2 connect
+## connect
 
     $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
     $etcd = Etcd3->connect($host);
     $etcd = Etcd3->connect($host, $options);
 
-This function returns a L<Etcd3::Client> object.  The first parameter is the 
-C<host> argument.  The second C<options> is a hashref.
+This function returns a [Etcd3::Client](https://metacpan.org/pod/Etcd3::Client) object.  The first parameter is the 
+`host` argument.  The second `options` is a hashref.
 
-=head1 AUTHOR
+# AUTHOR
 
-Sam Batschelet, <sbatschelet at mac.com>
+Sam Batschelet, &lt;sbatschelet at mac.com>
 
-=head1 ACKNOWLEDGEMENTS
+# ACKNOWLEDGEMENTS
 
-The L<etcd> developers and community.
+The [etcd](https://metacpan.org/pod/etcd) developers and community.
 
-=head1 CAVEATS
+# CAVEATS
 
-The L<etcd> v3 API is in heavy development and can change at anytime please see
-https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md
+The [etcd](https://metacpan.org/pod/etcd) v3 API is in heavy development and can change at anytime please see
+https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api\_reference\_v3.md
 for latest details.
 
-
-=head1 LICENSE AND COPYRIGHT
+# LICENSE AND COPYRIGHT
 
 Copyright 2016 Sam Batschelet (hexfusion).
 
@@ -77,4 +76,3 @@ under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
 See http://dev.perl.org/licenses/ for more information.
-
