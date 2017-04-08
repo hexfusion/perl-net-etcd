@@ -42,15 +42,14 @@ has request => ( is => 'lazy', );
 
 sub _build_request {
     my ($self) = @_;
-    my @response;
-    my $request = "HTTP::Tiny"->new->post(
+    my $request = HTTP::Tiny->new->request(
+    'POST',
         $self->_client->api_path
           . $self->{endpoint} => {
             content => $self->{json_args},
             headers => $self->headers
           },
     );
-#    print STDERR Dumper($self);
     return $request;
 }
 
