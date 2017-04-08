@@ -2,10 +2,10 @@ sudo: required
 env:
   global:
     - ETCD_VER=v3.1.5
-	- ETCDCTL_API=3
+    - ETCDCTL_API=3
     - ETCD_TEST_HOST=localhost
-	- ETCD_TEST_PORT=2379
-	- RELEASE_TESTING=1
+    - ETCD_TEST_PORT=2379
+    - RELEASE_TESTING=1
 language: perl
 perl:
   - "5.24"
