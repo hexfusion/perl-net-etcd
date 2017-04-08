@@ -6,6 +6,7 @@ env:
     - ETCD_TEST_HOST=localhost
     - ETCD_TEST_PORT=2379
     - RELEASE_TESTING=1
+    - PATH=$PATH:/tmp/test-etcd/
 language: perl
 perl:
   - "5.24"
