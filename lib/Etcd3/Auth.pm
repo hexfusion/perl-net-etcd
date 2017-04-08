@@ -1,6 +1,9 @@
 use utf8;
 package Etcd3::Auth;
 
+use strict;
+use warnings;
+
 =encoding utf8
 
 =head1 NAME
