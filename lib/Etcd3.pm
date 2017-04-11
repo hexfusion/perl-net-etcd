@@ -100,7 +100,7 @@ for latest details.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2016 Sam Batschelet (hexfusion).
+Copyright 2017 Sam Batschelet (hexfusion).
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published

@@ -33,9 +33,9 @@ WriteMakefile(
     META_MERGE => {
         resources => {
             repository =>
-              'https://github.com/sbatschelet/Etcd3',
+              'https://github.com/hexfusion/Etcd3',
             bugtracker =>
-              'https://github.com/sbatschelet/Etcd3',
+              'https://github.com/hexfusion/Etcd3',
         },
     },
 );
