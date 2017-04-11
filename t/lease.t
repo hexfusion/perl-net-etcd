@@ -32,12 +32,12 @@ lives_ok(
     "add a new lease"
 );
 
-print STDERR Dumper($lease);
+#print STDERR Dumper($lease);
 
 # delete user
 lives_ok( sub {  $lease = $etcd->put( { key => 'foo1', value => 'bar', lease => 7587821338341002662 } )->request },
     "add a new lease to a put" );
 
- print STDERR Dumper($lease);
+#print STDERR Dumper($lease);
 
 1;
