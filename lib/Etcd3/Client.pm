@@ -21,6 +21,7 @@ use Etcd3::Range;
 use Etcd3::DeleteRange;
 use Etcd3::Put;
 use Etcd3::Watch;
+use Etcd3::Lease;
 use Types::Standard qw(Str Int Bool HashRef);
 use Data::Dumper;
 
@@ -321,6 +322,58 @@ sub range {
     )->init;
 }
 
+=head1 LEASE
+
+=head2 lease_grant 
+
+returns a Etcd3::Lease::Grant object
+If ID is set to 0, the lessor chooses an ID.
+
+$etcd->lease_grant({ ttl => 20, id => 0 })
+
+=cut
+
+sub lease_grant {
+    my ( $self, $options ) = @_;
+    return Etcd3::Lease::Grant->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
+=head2 lease_revoke 
+
+returns a Etcd3::Lease::Revoke object
+
+$etcd->lease_revoke({ id => 123456 })
+
+=cut
+
+sub lease_revoke {
+    my ( $self, $options ) = @_;
+    return Etcd3::Lease::Revoke->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
+=head2 lease_keep_alive 
+
+returns a Etcd3::Lease::KeepAlive object
+If ID is set to 0, the lessor chooses an ID.
+
+$etcd->lease_keep_alive({ id => 12345 })
+
+=cut
+
+sub lease_keep_alive {
+    my ( $self, $options ) = @_;
+    return Etcd3::Lease::KeepAlive->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
 =head2 configuration
 
 Initialize configuration checks to see it etcd is installed locally.
@@ -358,7 +411,7 @@ for latest details.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2016 Sam Batschelet (hexfusion).
+Copyright 2017 Sam Batschelet (hexfusion).
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
