@@ -27,6 +27,8 @@ revokes a role of specified user.
 
 =head2 endpoint
 
+/auth/user/revoke
+
 =cut
 
 has endpoint => (
@@ -37,7 +39,7 @@ has endpoint => (
 
 =head2 name
 
-name of role
+name of user
 
 =cut
 
