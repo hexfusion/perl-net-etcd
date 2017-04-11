@@ -6,6 +6,8 @@ use warnings;
 
 use Etcd3::Lease::Grant;
 use Etcd3::Lease::KeepAlive;
+use Etcd3::Lease::Revoke;
+use Etcd3::Lease::TimeToLive;
 
 =head1 NAME
 

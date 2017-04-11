@@ -341,6 +341,22 @@ sub lease_grant {
     )->init;
 }
 
+=head2 lease_revoke 
+
+returns a Etcd3::Lease::Revoke object
+
+$etcd->lease_revoke({ id => 123456 })
+
+=cut
+
+sub lease_revoke {
+    my ( $self, $options ) = @_;
+    return Etcd3::Lease::Revoke->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
 =head2 lease_keep_alive 
 
 returns a Etcd3::Lease::KeepAlive object
