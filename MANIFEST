@@ -16,7 +16,9 @@ lib/Etcd3/Auth/UserRevokeRole.pm
 lib/Etcd3/Client.pm
 lib/Etcd3/Config.pm
 lib/Etcd3/DeleteRange.pm
+lib/Etcd3/Lease.pm
 lib/Etcd3/Lease/Grant.pm
+lib/Etcd3/Lease/KeepAlive.pm
 lib/Etcd3/Put.pm
 lib/Etcd3/Role/Actions.pm
 lib/Etcd3/Range.pm

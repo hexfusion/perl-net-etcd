@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::Lease::Grant;
+package Etcd3::Lease::KeepAlive;
 
 use strict;
 use warnings;
@@ -15,7 +15,7 @@ use namespace::clean;
 
 =head1 NAME
 
-Etcd3::LeaseGrant
+Etcd3::Lease::KeepAlive
 
 =cut
 
@@ -23,9 +23,8 @@ our $VERSION = '0.004';
 
 =head1 DESCRIPTION
 
-LeaseGrant creates a lease which expires if the server does not receive a keepAlive within
-a given time to live period. All keys attached to the lease will be expired and deleted if
-the lease expires. Each expired key generates a delete event in the event history.
+LeaseKeepAlive keeps the lease alive by streaming keep alive requests from the client
+to the server and streaming keep alive responses from the server to the client."
 
 =head2 endpoint
 
@@ -34,25 +33,12 @@ the lease expires. Each expired key generates a delete event in the event histor
 has endpoint => (
     is      => 'ro',
     isa     => Str,
-    default => '/lease/grant'
-);
-
-=head2 TTL
-
-TTL is the advisory time-to-live in seconds.
-
-=cut
-
-has TTL => (
-    is       => 'ro',
-    isa      => Str,
-    required => 1,
-    coerce   => sub { return encode_base64( $_[0], '' ) }
+    default => '/lease/keepalive'
 );
 
 =head2 ID
 
-ID is the requested ID for the lease. If ID is set to 0, the lessor chooses an ID.
+ID is the lease ID for the lease to keep alive.
 
 =cut
 
