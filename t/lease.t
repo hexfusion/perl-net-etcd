@@ -13,7 +13,7 @@ my ($host, $port);
 if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $host = $ENV{ETCD_TEST_HOST};
     $port = $ENV{ETCD_TEST_PORT};
-    plan tests => 2;
+    plan tests => 10;
 }
 else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
@@ -32,12 +32,35 @@ lives_ok(
     "add a new lease"
 );
 
+cmp_ok( $lease->{success}, '==', 1, "add lease success" );
+
+# add lease to key
+lives_ok( sub {  $lease = $etcd->put( { key => 'foo2', value => 'bar2', lease => 7587821338341002662 } )->request },
+    "add a new lease to a key" );
+
+cmp_ok( $lease->{success}, '==', 1, "add lease to key success" );
+
+my $key;
+
+# validate key
+lives_ok( sub { $key = $etcd->range( { key => 'foo2' } )->get_value },
+    "check value for key" );
+
+cmp_ok( $key, 'eq', 'bar2', "lease key value" );
+
+# revoke lease
+lives_ok( sub {  $lease = $etcd->lease_revoke( { ID => 7587821338341002662 } )->request },
+    "revoke lease" );
+
 #print STDERR Dumper($lease);
 
-# delete user
-lives_ok( sub {  $lease = $etcd->put( { key => 'foo1', value => 'bar', lease => 7587821338341002662 } )->request },
-    "add a new lease to a put" );
+cmp_ok( $lease->{success}, '==', 1, "revoke lease success" );
 
-#print STDERR Dumper($lease);
+# validate key
+lives_ok( sub { $key = $etcd->range( { key => 'foo2' } )->get_value },
+    "check value for revoked lease key" );
+
+is( $key, undef, "lease key revoked" );
 
 1;
+

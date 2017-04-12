@@ -27,14 +27,14 @@ LeaseRevoke revokes a lease. All keys attached to the lease will expire and be d
 
 =head2 endpoint
 
-/lease/revoke
+/kv/lease/revoke
 
 =cut
 
 has endpoint => (
     is      => 'ro',
     isa     => Str,
-    default => '/lease/revoke'
+    default => '/kv/lease/revoke'
 );
 
 =head2 ID
@@ -45,9 +45,8 @@ ID is the lease ID to revoke. When the ID is revoked, all associated keys will b
 
 has ID => (
     is       => 'ro',
-    isa      => Str,
+    isa      => Int,
     required => 1,
-    coerce   => sub { return encode_base64( $_[0], '' ) }
 );
 
 =head2 json_args
