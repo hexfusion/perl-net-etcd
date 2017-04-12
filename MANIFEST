@@ -2,7 +2,8 @@ Changes
 MANIFEST
 MANIFEST.SKIP
 Makefile.PL
-README.pod
+README
+README.md
 lib/Etcd3.pm
 lib/Etcd3/Auth.pm
 lib/Etcd3/Auth/Authenticate.pm
