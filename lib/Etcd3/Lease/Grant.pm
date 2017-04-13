@@ -73,7 +73,7 @@ has json_args => ( is => 'lazy', );
 
 sub _build_json_args {
     my ($self) = @_;
-print STDERR Dumper($self);
+#    print STDERR Dumper($self);
     my $args;
     for my $key ( keys %{$self} ) {
         unless ( $key =~ /(?:_client|json_args|endpoint)$/ ) {
