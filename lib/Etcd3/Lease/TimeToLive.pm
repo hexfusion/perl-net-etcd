@@ -6,7 +6,6 @@ use warnings;
 
 use Moo;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
-use MIME::Base64;
 use JSON;
 
 with 'Etcd3::Role::Actions';
@@ -27,14 +26,14 @@ LeaseTimeToLive retrieves lease information.
 
 =head2 endpoint
 
-/lease/timetolive
+/kv/lease/timetolive
 
 =cut
 
 has endpoint => (
     is      => 'ro',
     isa     => Str,
-    default => '/lease/timetolive'
+    default => '/kv/lease/timetolive'
 );
 
 =head2 ID
@@ -45,9 +44,8 @@ ID is the requested ID for the lease. If ID is set to 0, the lessor chooses an I
 
 has ID => (
     is       => 'ro',
-    isa      => Str,
+    isa      => Int,
     required => 1,
-    coerce   => sub { return encode_base64( $_[0], '' ) }
 );
 
 =head2 keys
@@ -58,7 +56,8 @@ keys is true to query all the keys attached to this lease.
 
 has keys => (
     is       => 'ro',
-    isa      => Bool
+    isa      => Bool,
+	coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 
 =head2 json_args

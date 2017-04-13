@@ -1,5 +1,9 @@
 Revision history for Etcd3
 
+0.005
+[new]
+  * Add lease support
+
 0.004
 [new]
   * travis testing added

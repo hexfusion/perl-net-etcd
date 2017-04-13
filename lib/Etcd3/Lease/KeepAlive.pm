@@ -44,9 +44,8 @@ ID is the lease ID for the lease to keep alive.
 
 has ID => (
     is       => 'ro',
-    isa      => Str,
+    isa      => Int,
     required => 1,
-    coerce   => sub { return encode_base64( $_[0], '' ) }
 );
 
 =head2 json_args
