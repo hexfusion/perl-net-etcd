@@ -35,7 +35,7 @@ Etcd3::Client
 
 =cut
 
-our $VERSION = '0.004';
+our $VERSION = '0.005';
 
 =head1 DESCRIPTION
 
@@ -329,7 +329,7 @@ sub range {
 returns a Etcd3::Lease::Grant object
 If ID is set to 0, the lessor chooses an ID.
 
-$etcd->lease_grant({ ttl => 20, id => 0 })
+$etcd->lease_grant({ TTL => 20, ID => 7587821338341002662 })
 
 =cut
 
@@ -345,7 +345,7 @@ sub lease_grant {
 
 returns a Etcd3::Lease::Revoke object
 
-$etcd->lease_revoke({ id => 123456 })
+$etcd->lease_revoke({ ID => 7587821338341002662 })
 
 =cut
 
@@ -360,15 +360,30 @@ sub lease_revoke {
 =head2 lease_keep_alive 
 
 returns a Etcd3::Lease::KeepAlive object
-If ID is set to 0, the lessor chooses an ID.
 
-$etcd->lease_keep_alive({ id => 12345 })
+$etcd->lease_keep_alive({ ID => 7587821338341002662 })
 
 =cut
 
 sub lease_keep_alive {
     my ( $self, $options ) = @_;
     return Etcd3::Lease::KeepAlive->new(
+        _client => $self,
+        ( $options ? %$options : () ),
+    )->init;
+}
+
+=head2 lease_ttl 
+
+returns a Etcd3::Lease::TimeToLive object
+
+$etcd->lease_ttl({ ID => 7587821338341002662, keys => 1 })
+
+=cut
+
+sub lease_ttl {
+    my ( $self, $options ) = @_;
+    return Etcd3::Lease::TimeToLive->new(
         _client => $self,
         ( $options ? %$options : () ),
     )->init;

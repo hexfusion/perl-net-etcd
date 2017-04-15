@@ -12,7 +12,7 @@ Etcd3::Auth
 
 =cut
 
-our $VERSION = '0.004';
+our $VERSION = '0.005';
 
 =head1 DESCRIPTION
 

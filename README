@@ -2,7 +2,7 @@ NAME
     Etcd3
 
 VERSION
-    Version 0.004
+    Version 0.005
 
 SYNOPSIS
         Etcd v3.1.0-alpha.0 or greater is required.   To use the v3 API make sure to set environment

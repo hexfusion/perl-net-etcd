@@ -19,7 +19,7 @@ Etcd3::Auth::RoleAdd
 
 =cut
 
-our $VERSION = '0.004';
+our $VERSION = '0.005';
 
 =head1 DESCRIPTION
 
