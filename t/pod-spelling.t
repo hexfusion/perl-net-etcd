@@ -29,6 +29,12 @@ PutRequest
 RangeRequest
 DeleteRange
 deleterange
+LeaseGrant
+LeaseKeepAlive
+LeaseRevoke
+LeaseTimeToLive
+keepAlive
+TTL
 greyskull
 heman
 linearizable
