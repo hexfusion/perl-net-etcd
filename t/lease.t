@@ -13,7 +13,7 @@ my ($host, $port);
 if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $host = $ENV{ETCD_TEST_HOST};
     $port = $ENV{ETCD_TEST_PORT};
-    plan tests => 10;
+    plan tests => 14;
 }
 else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
@@ -47,6 +47,18 @@ lives_ok( sub { $key = $etcd->range( { key => 'foo2' } )->get_value },
     "check value for key" );
 
 cmp_ok( $key, 'eq', 'bar2', "lease key value" );
+
+# lease keep alive
+lives_ok( sub {  $lease = $etcd->lease_keep_alive( { ID => 7587821338341002662 } )->request },
+    "lease_keep_alive" );
+
+cmp_ok( $lease->{success}, '==', 1, "reset lease keep alive success" );
+
+# lease ttl
+lives_ok( sub {  $lease = $etcd->lease_ttl( { ID => 7587821338341002662, keys => 1 } )->request },
+    "lease_ttl" );
+
+cmp_ok( $lease->{success}, '==', 1, "return lease_ttl success" );
 
 # revoke lease
 lives_ok( sub {  $lease = $etcd->lease_revoke( { ID => 7587821338341002662 } )->request },
