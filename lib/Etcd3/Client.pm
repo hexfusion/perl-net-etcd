@@ -8,20 +8,12 @@ use Moo;
 use JSON;
 use HTTP::Tiny;
 use MIME::Base64;
-use Etcd3::Auth::Authenticate;
-use Etcd3::Auth::Enable;
-use Etcd3::Auth::UserAdd;
-use Etcd3::Auth::UserDelete;
-use Etcd3::Auth::RoleAdd;
-use Etcd3::Auth::RoleDelete;
-use Etcd3::Auth::UserGrantRole;
-use Etcd3::Auth::UserRevokeRole;
+use Etcd3::Auth;
 use Etcd3::Config;
-use Etcd3::Range;
-use Etcd3::DeleteRange;
-use Etcd3::Put;
+use Etcd3::KV;
 use Etcd3::Watch;
 use Etcd3::Lease;
+use Etcd3::User;
 use Types::Standard qw(Str Int Bool HashRef);
 use Data::Dumper;
 
@@ -169,9 +161,11 @@ sub _build_headers {
     return $headers;
 }
 
+=head1 PUBLIC METHODS
+
 =head2 watch
 
-returns a Etcd3::Watch object.
+returns a L<Etcd3::Watch> object.
 
 $etcd->watch({ key =>'foo', range_end => 'fop' })
 
@@ -185,87 +179,32 @@ sub watch {
     )->init;
 }
 
-=head2 user_add
+=head2 role
 
-$etcd->user_add({ name =>'foo' password => 'bar' })
+$etcd->role({ role => 'foo' });
 
 =cut
 
-sub user_add {
+sub role {
     my ( $self, $options ) = @_;
-    return Etcd3::Auth::UserAdd->new(
+    return Etcd3::Auth::Role->new(
         _client => $self,
         ( $options ? %$options : () ),
-    )->init;
+    );
 }
 
-=head2 user_delete
+=head2 user_role
 
-$etcd->user_delete({ name =>'foo' })
-
-=cut
-
-sub user_delete {
-    my ( $self, $options ) = @_;
-    return Etcd3::Auth::UserDelete->new(
-        _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
-}
-
-=head2 role_add
-
-name is the name of the role to add to the authentication system.
-
-$etcd->role_add({ name =>'foo' })
+$etcd->user_role({ name => 'samba', role => 'foo' });
 
 =cut
 
-sub role_add {
+sub user_role {
     my ( $self, $options ) = @_;
-    return Etcd3::Auth::RoleAdd->new(
+    return Etcd3::User::Role->new(
         _client => $self,
         ( $options ? %$options : () ),
-    )->init;
-}
-
-=head2 role_delete
-
-$etcd->role_delete({ name =>'foo' })
-
-=cut
-
-sub role_delete {
-    my ( $self, $options ) = @_;
-    return Etcd3::Auth::RoleDelete->new(
-        _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
-}
-
-
-=head2 grant_role
-
-=cut
-
-sub grant_role {
-    my ( $self, $options ) = @_;
-    return Etcd3::Auth::UserGrantRole->new(
-        _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
-}
-
-=head2 revoke_role
-
-=cut
-
-sub revoke_role {
-    my ( $self, $options ) = @_;
-    return Etcd3::Auth::UserRevokeRole->new(
-        _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
+    );
 }
 
 =head2 auth_enable
@@ -278,115 +217,47 @@ sub auth_enable {
     return $auth->request;
 }
 
-=head2 delete_range
 
-$etcd->delete_range({ key =>'test0', range_end => 'test100', prev_key => 1 })
+=head2 lease
+
+L<Etcd3::Lease>
 
 =cut
 
-sub delete_range {
+sub lease {
     my ( $self, $options ) = @_;
-    return Etcd3::DeleteRange->new(
-        _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
+	return Etcd3::Lease->new(
+	    _client => $self,
+     ( $options ? %$options : () ),
+    );
 }
 
-=head2 put
+=head2 user
 
-returns a Etcd3::Put object.
+L<Etcd3::User>
 
 =cut
 
-sub put {
+sub user {
     my ( $self, $options ) = @_;
-    return Etcd3::Put->new(
+    return Etcd3::User->new(
         _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
+     ( $options ? %$options : () ),
+    );
 }
 
-=head2 range
+=head2 kv
 
-returns a Etcd3::Range object
-
-$etcd->range({ key =>'test0', range_end => 'test100', serializable => 1 })
+L<Etcd3::KV>
 
 =cut
 
-sub range {
+sub kv {
     my ( $self, $options ) = @_;
-    return Etcd3::Range->new(
+    return Etcd3::KV->new(
         _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
-}
-
-=head1 LEASE
-
-=head2 lease_grant 
-
-returns a Etcd3::Lease::Grant object
-If ID is set to 0, the lessor chooses an ID.
-
-$etcd->lease_grant({ TTL => 20, ID => 7587821338341002662 })
-
-=cut
-
-sub lease_grant {
-    my ( $self, $options ) = @_;
-    return Etcd3::Lease::Grant->new(
-        _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
-}
-
-=head2 lease_revoke 
-
-returns a Etcd3::Lease::Revoke object
-
-$etcd->lease_revoke({ ID => 7587821338341002662 })
-
-=cut
-
-sub lease_revoke {
-    my ( $self, $options ) = @_;
-    return Etcd3::Lease::Revoke->new(
-        _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
-}
-
-=head2 lease_keep_alive 
-
-returns a Etcd3::Lease::KeepAlive object
-
-$etcd->lease_keep_alive({ ID => 7587821338341002662 })
-
-=cut
-
-sub lease_keep_alive {
-    my ( $self, $options ) = @_;
-    return Etcd3::Lease::KeepAlive->new(
-        _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
-}
-
-=head2 lease_ttl 
-
-returns a Etcd3::Lease::TimeToLive object
-
-$etcd->lease_ttl({ ID => 7587821338341002662, keys => 1 })
-
-=cut
-
-sub lease_ttl {
-    my ( $self, $options ) = @_;
-    return Etcd3::Lease::TimeToLive->new(
-        _client => $self,
-        ( $options ? %$options : () ),
-    )->init;
+		options => $options
+    );
 }
 
 =head2 configuration

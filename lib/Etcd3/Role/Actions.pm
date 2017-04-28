@@ -28,6 +28,36 @@ has _client => (
     isa => InstanceOf ['Etcd3::Client'],
 );
 
+=head2 json_args
+
+arguments that will be sent to the api
+
+=cut
+
+has json_args => ( is => 'lazy', );
+
+sub _build_json_args {
+    my ($self) = @_;
+    my $args;
+    for my $key ( keys %{$self} ) {
+        unless ( $key =~ /(?:_client|args|endpoint)$/ ) {
+            $args->{$key} = $self->{$key};
+        }
+    }
+    return to_json($args);
+}
+
+=head2 init
+
+=cut
+
+sub init {
+    my ($self)  = @_;
+    my $init = $self->json_args;
+    $init or return;
+    return $self;
+}
+
 =head2 headers
 
 =cut
@@ -42,14 +72,17 @@ has request => ( is => 'lazy', );
 
 sub _build_request {
     my ($self) = @_;
+    $self->init;
     my $request = HTTP::Tiny->new->request(
     'POST',
         $self->_client->api_path
           . $self->{endpoint} => {
-            content => $self->{json_args},
+            content => $self->json_args,
             headers => $self->headers
           },
     );
+    $self->{response} = $request;
+    #print STDERR Dumper($self);
     return $request;
 }
 

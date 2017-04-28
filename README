@@ -5,33 +5,26 @@ VERSION
     Version 0.005
 
 SYNOPSIS
-        Etcd v3.1.0-alpha.0 or greater is required.   To use the v3 API make sure to set environment
+        Etcd v3.1.0 or greater is required.   To use the v3 API make sure to set environment
         variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
 
         $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
         $etcd = Etcd3->connect( $host, { username => 'HeMan', password =>'GreySkuLz', ssl => '1'});
 
         # put key
-        $result = $etcd->put({ key =>'foo1', value => 'bar' });
+        $result = $etcd->kv({ key =>'foo1', value => 'bar' })->put;
 
         # get single key
-        $key = $etcd->range({ key =>'test0' });
-
-        [or]
-
-        $key = $etcd->get({ key =>'test0' });
+        $key = $etcd->kv({ key =>'test0' })->range;
 
         # return single key value or the first in a list.
         $key->get_value
 
         # get range of keys
-        $range = $etcd->range({ key =>'test0', range_end => 'test100' });
+        $range = $etcd->kv({ key =>'test0', range_end => 'test100' })->range;
 
         # return array { key => value } pairs from range request.
         my @users = $range->all
-
-        # watch key
-        $etcd->range({ key =>'foo', range_end => 'fop' });
 
 DESCRIPTION
     Perl access to Etcd v3 API.
@@ -53,9 +46,8 @@ ACKNOWLEDGEMENTS
 
 CAVEATS
     The etcd v3 API is in heavy development and can change at anytime please
-    see
-    https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_r
-    eference_v3.md for latest details.
+    see https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md
+	for latest details.
 
 LICENSE AND COPYRIGHT
     Copyright 2017 Sam Batschelet (hexfusion).

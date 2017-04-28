@@ -42,19 +42,8 @@ arguments that will be sent to the api
 
 =cut
 
-has json_args => (
-    is => 'ro',
+has '+json_args' => (
     default => '{}',
 );
-
-=head2 init
-
-=cut
-
-sub init {
-    my ($self)  = @_;
-    $self->json_args;
-    return $self;
-}
 
 1;

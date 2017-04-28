@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::Range;
+package Etcd3::KV::Range;
 
 use strict;
 use warnings;
@@ -10,6 +10,7 @@ use MIME::Base64;
 use JSON;
 
 with 'Etcd3::Role::Actions';
+extends 'Etcd3::KV';
 
 use namespace::clean;
 
@@ -32,7 +33,6 @@ Range gets the keys in the range from the key-value store.
 has endpoint => (
     is      => 'ro',
     isa     => Str,
-    default => '/kv/range'
 );
 
 =head2 key
@@ -64,6 +64,20 @@ has range_end => (
     isa    => Str,
     coerce => sub { return encode_base64( $_[0], '' ) }
 );
+
+=head2 prev_key
+
+If prev_kv is set, etcd gets the previous key-value pairs before deleting it. The previous key-value
+pairs will be returned in the delete response.  This is only used for delete.
+
+=cut
+
+has prev_key => (
+    is     => 'ro',
+    isa    => Bool,
+    coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
+);
+
 
 =head2 limit
 
@@ -201,32 +215,4 @@ has max_create_revision => (
     isa => Int,
 );
 
-=head2 json_args
-
-arguments that will be sent to the api
-
-=cut
-
-has json_args => ( is => 'lazy', );
-
-sub _build_json_args {
-    my ($self) = @_;
-    my $args;
-    for my $key ( keys %{$self} ) {
-        unless ( $key =~ /(?:_client|args|endpoint)$/ ) {
-            $args->{$key} = $self->{$key};
-        }
-    }
-    return to_json($args);
-}
-
-=head2 init
-
-=cut
-
-sub init {
-    my ($self) = @_;
-    $self->json_args;
-    return $self;
-}
 1;

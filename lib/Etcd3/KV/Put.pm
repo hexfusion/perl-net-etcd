@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::Put;
+package Etcd3::KV::Put;
 
 use strict;
 use warnings;

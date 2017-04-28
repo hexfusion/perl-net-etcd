@@ -20,6 +20,7 @@ serializable
 ssl
 sku
 KV
+kv
 RPC
 WatchResponse
 AuthenticateRequest
@@ -34,7 +35,9 @@ LeaseKeepAlive
 LeaseRevoke
 LeaseTimeToLive
 keepAlive
+keepalive
 TTL
+ttl
 greyskull
 heman
 linearizable

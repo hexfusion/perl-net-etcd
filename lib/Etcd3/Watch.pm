@@ -103,33 +103,4 @@ has prev_key => (
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 
-=head2 json_args
-
-arguments that will be sent to the api
-
-=cut
-
-has json_args => ( is => 'lazy', );
-
-sub _build_json_args {
-    my ($self) = @_;
-    my $args;
-    for my $key ( keys %{$self} ) {
-        unless ( $key =~ /(?:_client|json_args|endpoint)$/ ) {
-            $args->{$key} = $self->{$key};
-        }
-    }
-    return to_json( { create_request => $args } );
-}
-
-=head2 init
-
-=cut
-
-sub init {
-    my ($self) = @_;
-    $self->json_args;
-    return $self;
-}
-
 1;
