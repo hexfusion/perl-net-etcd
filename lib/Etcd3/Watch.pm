@@ -7,6 +7,7 @@ use warnings;
 use Moo;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
 use MIME::Base64;
+use Data::Dumper;
 use JSON;
 
 with 'Etcd3::Role::Actions';
@@ -66,11 +67,14 @@ has range_end => (
     coerce => sub { return encode_base64( $_[0], '' ) }
 );
 
-=head2 limit
+=head2 start_revision
+
+start_revision is an optional revision to watch from (inclusive). No start_revision is "now".
+int64
 
 =cut
 
-has limit => (
+has start_revision => (
     is  => 'ro',
     isa => Int,
 );
@@ -90,6 +94,20 @@ has progress_notify => (
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 
+=head2 filters
+
+filter out put event. filter out delete event. filters filter the events at server side before it sends back to the watcher.
+Options:
+- NOPUT: filter out put event. (default)
+- NODELETE: filter out delete event.
+
+=cut
+
+has filters => (
+    is     => 'ro',
+    isa    => Str,
+);
+
 =head2 prev_key
 
 If prev_kv is set, created watcher gets the previous KV before the event happens. If the previous
@@ -102,5 +120,29 @@ has prev_key => (
     isa    => Bool,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
+
+=head2 watch_id
+
+watch_id is the watcher id to cancel so that no more events are transmitted. This is only used for a
+cancel request.
+int64
+
+=cut
+
+has watch_id => (
+    is  => 'ro',
+    isa => Int,
+);
+
+=head2 create
+
+=cut
+
+sub create {
+    my $self = shift;
+    $self->{json_args} = '{"create_request": '. $self->json_args . '}';
+    $self->request;
+    return $self;
+}
 
 1;
