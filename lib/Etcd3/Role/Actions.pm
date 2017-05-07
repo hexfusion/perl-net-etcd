@@ -9,7 +9,6 @@ use AE;
 use JSON;
 use MIME::Base64;
 use Types::Standard qw(InstanceOf);
-use AnyEvent::Handle;
 use AnyEvent::HTTP;
 use Data::Dumper;
 
@@ -58,7 +57,7 @@ AnyEvent callback must be a CodeRef
 has cb => (
     is  => 'ro',
     isa => sub {
-        die "$_[0] is not a CodeRef!" if ( $_[0] && ref($_[0]) eq 'CODE')
+        die "$_[0] is not a CodeRef!" if ( $_[0] && ref($_[0]) ne 'CODE')
     },
 );
 
@@ -78,6 +77,12 @@ sub init {
 =cut
 
 has headers => ( is => 'ro' );
+
+=head2 response
+
+=cut
+
+has response => ( is => 'ro' );
 
 =head2 request
 
@@ -101,7 +106,7 @@ sub _build_request {
         },
         on_body   => sub {
             my ($data, $hdr) = @_;
-            $self->{response}{body} = $data;
+            $self->{response}{content} = $data;
             $cb->(undef, $data);
             1
         },
@@ -109,6 +114,7 @@ sub _build_request {
             my (undef, $hdr) = @_;
             #print STDERR Dumper($hdr, $test);
             my $status = $hdr->{Status};
+            $self->{response}{success} = 1 if $status == 200;
             if ($status == 200 || $status == 206 || $status == 416) {
                 # download ok || resume ok || file already fully downloaded
                 $cb->(1, $hdr);
@@ -117,7 +123,7 @@ sub _build_request {
             }
         }
     );
-    $cb->recv if $self->cb;
+    $cb->recv unless $self->cb;
     return $self;
 }
 
@@ -129,9 +135,9 @@ returns single decoded value or the first.
 
 sub get_value {
     my ($self)   = @_;
-    my $response = $self->request;
+    my $response = $self->response;
     my $content  = from_json( $response->{content} );
-#    print STDERR Dumper($content);
+    #print STDERR Dumper($content);
     my $value = $content->{kvs}->[0]->{value};
     $value or return;
     return decode_base64($value);
@@ -155,7 +161,7 @@ where key and value have been decoded for your pleasure.
 
 sub all {
     my ($self)   = @_;
-    my $response = $self->request;
+    my $response = $self->response;
     my $content  = from_json( $response->{content} );
     my $kvs      = $content->{kvs};
     for my $row (@$kvs) {
