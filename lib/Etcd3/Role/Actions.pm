@@ -5,10 +5,12 @@ use strict;
 use warnings;
 
 use Moo::Role;
+use AE;
 use JSON;
-use HTTP::Tiny;
 use MIME::Base64;
 use Types::Standard qw(InstanceOf);
+use AnyEvent::Handle;
+use AnyEvent::HTTP;
 use Data::Dumper;
 
 use namespace::clean;
@@ -40,12 +42,25 @@ sub _build_json_args {
     my ($self) = @_;
     my $args;
     for my $key ( keys %{$self} ) {
-        unless ( $key =~ /(?:_client|args|endpoint)$/ ) {
+        unless ( $key =~ /(?:_client|cb|json_args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
     return to_json($args);
 }
+
+=head2 cb
+
+AnyEvent callback must be a CodeRef
+
+=cut
+
+has cb => (
+    is  => 'ro',
+    isa => sub {
+        die "$_[0] is not a CodeRef!" if ( $_[0] && ref($_[0]) eq 'CODE')
+    },
+);
 
 =head2 init
 
@@ -73,17 +88,37 @@ has request => ( is => 'lazy', );
 sub _build_request {
     my ($self) = @_;
     $self->init;
-    my $request = HTTP::Tiny->new->request(
-    'POST',
-        $self->_client->api_path
-          . $self->{endpoint} => {
-            content => $self->json_args,
-            headers => $self->headers
-          },
+    my $cb = $self->cb // AE::cv;
+    http_request(
+        'POST',
+        $self->_client->api_path . $self->{endpoint},
+        headers => $self->headers,
+
+        body => $self->json_args,
+        on_header => sub {
+            my($headers) = @_;
+            $self->{response}{headers} = $headers;
+        },
+        on_body   => sub {
+            my ($data, $hdr) = @_;
+            $self->{response}{body} = $data;
+            $cb->(undef, $data);
+            1
+        },
+        sub {
+            my (undef, $hdr) = @_;
+            #print STDERR Dumper($hdr, $test);
+            my $status = $hdr->{Status};
+            if ($status == 200 || $status == 206 || $status == 416) {
+                # download ok || resume ok || file already fully downloaded
+                $cb->(1, $hdr);
+            } else {
+                $cb->(undef, $hdr);
+            }
+        }
     );
-    $self->{response} = $request;
-    #print STDERR Dumper($self);
-    return $request;
+    $cb->recv if $self->cb;
+    return $self;
 }
 
 =head2 get_value
@@ -145,4 +180,3 @@ sub authenticate {
 }
 
 1;
-

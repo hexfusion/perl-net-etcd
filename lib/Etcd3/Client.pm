@@ -173,10 +173,12 @@ $etcd->watch({ key =>'foo', range_end => 'fop' })
 
 sub watch {
     my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
     return Etcd3::Watch->new(
         _client => $self,
+        cb      => $cb,
         ( $options ? %$options : () ),
-    )->init;
+    );
 }
 
 =head2 role
@@ -187,8 +189,10 @@ $etcd->role({ role => 'foo' });
 
 sub role {
     my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
     return Etcd3::Auth::Role->new(
         _client => $self,
+        cb      => $cb,
         ( $options ? %$options : () ),
     );
 }
@@ -201,8 +205,10 @@ $etcd->user_role({ name => 'samba', role => 'foo' });
 
 sub user_role {
     my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
     return Etcd3::User::Role->new(
         _client => $self,
+        cb      => $cb,
         ( $options ? %$options : () ),
     );
 }
@@ -226,9 +232,11 @@ L<Etcd3::Lease>
 
 sub lease {
     my ( $self, $options ) = @_;
-	return Etcd3::Lease->new(
-	    _client => $self,
-     ( $options ? %$options : () ),
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    return Etcd3::Lease->new(
+        _client => $self,
+        cb      => $cb,
+        ( $options ? %$options : () ),
     );
 }
 
@@ -240,9 +248,11 @@ L<Etcd3::User>
 
 sub user {
     my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
     return Etcd3::User->new(
         _client => $self,
-     ( $options ? %$options : () ),
+        cb      => $cb,
+        ( $options ? %$options : () ),
     );
 }
 
@@ -254,9 +264,11 @@ L<Etcd3::KV>
 
 sub kv {
     my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
     return Etcd3::KV->new(
         _client => $self,
-		options => $options
+        options => $options,
+        cb      => $cb
     );
 }
 
