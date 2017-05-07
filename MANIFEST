@@ -27,4 +27,5 @@ t/pod-coverage.t
 t/pod-spelling.t
 t/pod.t
 t/user.t
+t/watch.t
 .travis.yml
