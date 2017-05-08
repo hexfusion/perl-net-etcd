@@ -44,3 +44,12 @@ linearizable
 api
 Batschelet
 hexfusion
+MemberAdd
+MemberRemove
+NODELETE
+NOPUT
+Str
+cb
+ro
+wishto
+peerURLs

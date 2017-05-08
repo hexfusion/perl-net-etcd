@@ -136,11 +136,26 @@ has watch_id => (
 
 =head2 create
 
+create watch
+
 =cut
 
 sub create {
     my $self = shift;
     $self->{json_args} = '{"create_request": '. $self->json_args . '}';
+    $self->request;
+    return $self;
+}
+
+=head2 cancel
+
+cancel watch
+
+=cut
+
+sub cancel {
+    my $self = shift;
+    $self->{json_args} = '{"cancel_request": '. $self->json_args . '}';
     $self->request;
     return $self;
 }

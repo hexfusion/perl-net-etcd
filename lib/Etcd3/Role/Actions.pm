@@ -41,7 +41,7 @@ sub _build_json_args {
     my ($self) = @_;
     my $args;
     for my $key ( keys %{$self} ) {
-        unless ( $key =~ /(?:_client|cb|json_args|endpoint)$/ ) {
+        unless ( $key =~ /(?:_client|cb|cv|json_args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
@@ -59,6 +59,14 @@ has cb => (
     isa => sub {
         die "$_[0] is not a CodeRef!" if ( $_[0] && ref($_[0]) ne 'CODE')
     },
+);
+
+=head2 cv
+
+=cut
+
+has cv => (
+    is  => 'ro',
 );
 
 =head2 init
@@ -93,12 +101,13 @@ has request => ( is => 'lazy', );
 sub _build_request {
     my ($self) = @_;
     $self->init;
-    my $cb = $self->cb // AE::cv;
+    my $cb = $self->cb;
+    my $cv = $self->cv ? $self->cv : AE::cv;
+    $cv->begin;
     http_request(
         'POST',
         $self->_client->api_path . $self->{endpoint},
         headers => $self->headers,
-
         body => $self->json_args,
         on_header => sub {
             my($headers) = @_;
@@ -107,23 +116,19 @@ sub _build_request {
         on_body   => sub {
             my ($data, $hdr) = @_;
             $self->{response}{content} = $data;
-            $cb->(undef, $data);
+            $cb->($data, $hdr) if $cb;
+            $cv->end;
             1
         },
         sub {
             my (undef, $hdr) = @_;
-            #print STDERR Dumper($hdr, $test);
+            #print STDERR Dumper($hdr);
             my $status = $hdr->{Status};
             $self->{response}{success} = 1 if $status == 200;
-            if ($status == 200 || $status == 206 || $status == 416) {
-                # download ok || resume ok || file already fully downloaded
-                $cb->(1, $hdr);
-            } else {
-                $cb->(undef, $hdr);
-            }
+            $cv->end;
         }
     );
-    $cb->recv unless $self->cb;
+    $cv->recv;
     return $self;
 }
 
