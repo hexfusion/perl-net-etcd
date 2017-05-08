@@ -11,7 +11,7 @@ my ($host, $port);
 if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $host = $ENV{ETCD_TEST_HOST};
     $port = $ENV{ETCD_TEST_PORT};
-    plan tests => 7;
+    plan tests => 8;
 }
 else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
