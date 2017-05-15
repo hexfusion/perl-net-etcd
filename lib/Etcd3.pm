@@ -1,13 +1,20 @@
 use utf8;
 package Etcd3;
-
 # ABSTRACT: Provide access to the etcd v3 API.
 
 use strict;
 use warnings;
 
-use Etcd3::Client;
-use Data::Dumper;
+use Moo;
+use JSON;
+use MIME::Base64;
+use Etcd3::Auth;
+use Etcd3::Config;
+use Etcd3::KV;
+use Etcd3::Watch;
+use Etcd3::Lease;
+use Etcd3::User;
+use Types::Standard qw(Str Int Bool HashRef);
 
 use namespace::clean;
 
@@ -17,70 +24,271 @@ use namespace::clean;
 
 Etcd3
 
-=head1 VERSION
-
-Version 0.004
-
 =cut
 
 our $VERSION = '0.005';
 
-=head1 SYNOPSIS
-
-    Etcd v3.1.0-alpha.0 or greater is required.   To use the v3 API make sure to set environment
-    variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
-
-    $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
-    $etcd = Etcd3->connect( $host, { username => 'HeMan', password =>'GreySkuLz', ssl => '1'});
-
-    # put key
-    $result = $etcd->put({ key =>'foo1', value => 'bar' });
-
-    # get single key
-    $key = $etcd->range({ key =>'test0' });
-
-    [or]
-
-    $key = $etcd->get({ key =>'test0' });
-
-    # return single key value or the first in a list.
-    $key->get_value
-
-    # get range of keys
-    $range = $etcd->range({ key =>'test0', range_end => 'test100' });
-
-    # return array { key => value } pairs from range request.
-    my @users = $range->all
-
-    # watch key
-    $etcd->range({ key =>'foo', range_end => 'fop' });
-
 =head1 DESCRIPTION
-
-Perl access to Etcd v3 API.
 
 =head2 host
 
 =cut
 
-=head2 connect
+has host => (
+    is      => 'ro',
+    isa     => Str,
+    default => '127.0.0.1'
+);
 
-    $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
-    $etcd = Etcd3->connect($host);
-    $etcd = Etcd3->connect($host, $options);
-
-This function returns a L<Etcd3::Client> object.  The first parameter is the 
-C<host> argument.  The second C<options> is a hashref.
+=head2 port
 
 =cut
 
-sub connect {
-    my ( $self, $host, $options ) = @_;
-    $host ||= "127.0.0.1";
-    $options ||= {};
-    $options->{host} = $host;
-    $options->{name} = $options->{user} if defined $options->{user};
-    return Etcd3::Client->new($options);
+has port => (
+    is      => 'ro',
+    isa     => Int,
+    default => '2379'
+);
+
+=head2 username
+
+=cut
+
+has username => (
+    is  => 'ro',
+    isa => Str
+);
+
+=head2 password
+
+=cut
+
+has password => (
+    is  => 'ro',
+    isa => Str
+);
+
+=head2 ssl
+
+=cut
+
+has ssl => (
+    is  => 'ro',
+    isa => Bool,
+);
+
+=head2 auth
+
+=cut
+
+has auth => (
+    is  => 'lazy',
+    isa => Bool,
+);
+
+sub _build_auth {
+    my ($self) = @_;
+    return 1 if ( $self->username and $self->password );
+    return;
+}
+
+=head2 api_root
+
+=cut
+
+has api_root => ( is => 'lazy' );
+
+sub _build_api_root {
+    my ($self) = @_;
+    return
+        ( $self->ssl ? 'https' : 'http' ) . '://'
+      . $self->host . ':'
+      . $self->port;
+}
+
+=head2 api_prefix
+
+base endpoint for api call, refers to api version.
+
+=cut
+
+has api_prefix => (
+    is      => 'ro',
+    isa     => Str,
+    default => '/v3alpha'
+);
+
+=head2 api_path
+
+=cut
+
+has api_path => ( is => 'lazy' );
+
+sub _build_api_path {
+    my ($self) = @_;
+    return $self->api_root . $self->api_prefix;
+}
+
+=head2 auth_token
+
+=cut
+
+has auth_token => ( is => 'lazy' );
+
+sub _build_auth_token {
+    my ($self) = @_;
+    return Etcd3::Auth::Authenticate->new(
+        etcd => $self,
+        %$self
+    )->token;
+}
+
+=head2 headers
+
+=cut
+
+has headers => ( is => 'lazy' );
+
+sub _build_headers {
+    my ($self) = @_;
+    my $headers;
+    my $auth_token = $self->auth_token if $self->auth;
+    $headers->{'Content-Type'} = 'application/json';
+    $headers->{'authorization'} = 'Bearer ' . encode_base64( $auth_token, "" ) if $auth_token;
+    return $headers;
+}
+
+=head1 PUBLIC METHODS
+
+=head2 watch
+
+Returns a L<Etcd3::Watch> object.
+
+    $etcd->watch({ key =>'foo', range_end => 'fop' })
+
+=cut
+
+sub watch {
+    my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    return Etcd3::Watch->new(
+        etcd => $self,
+        cb   => $cb,
+        ( $options ? %$options : () ),
+    );
+}
+
+=head2 role
+
+    $etcd->role({ role => 'foo' });
+
+=cut
+
+sub role {
+    my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    return Etcd3::Auth::Role->new(
+        etcd => $self,
+        cb   => $cb,
+        ( $options ? %$options : () ),
+    );
+}
+
+=head2 user_role
+
+Returns a L<Etcd3::User::Role> object.
+
+    $etcd->user_role({ name => 'samba', role => 'foo' });
+
+=cut
+
+sub user_role {
+    my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    return Etcd3::User::Role->new(
+        etcd => $self,
+        cb   => $cb,
+        ( $options ? %$options : () ),
+    );
+}
+
+=head2 auth_enable
+
+=cut
+
+sub auth_enable {
+    my ( $self, $options ) = @_;
+    my $auth = Etcd3::Auth::Enable->new( etcd => $self )->init;
+    return $auth->request;
+}
+
+
+=head2 lease
+
+Returns a L<Etcd3::Lease> object.
+
+=cut
+
+sub lease {
+    my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    return Etcd3::Lease->new(
+        etcd => $self,
+        cb   => $cb,
+        ( $options ? %$options : () ),
+    );
+}
+
+=head2 user
+
+Returns a L<Etcd3::User> object.
+
+=cut
+
+sub user {
+    my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    return Etcd3::User->new(
+        etcd => $self,
+        cb   => $cb,
+        ( $options ? %$options : () ),
+    );
+}
+
+=head2 kv
+
+Returns a L<Etcd3::KV> object.
+
+=cut
+
+sub kv {
+    my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    return Etcd3::KV->new(
+        etcd    => $self,
+        cb      => $cb,
+		options => $options,
+    );
+}
+
+=head2 configuration
+
+Initialize configuration checks to see it etcd is installed locally.
+
+=cut
+
+sub configuration {
+    Etcd3::Config->configuration;
+}
+
+sub BUILD {
+    my ( $self, $args ) = @_;
+    $self->headers;
+    if ( not -e $self->configuration->etcd ) {
+        my $msg = "No etcd executable found\n";
+        $msg .= ">> Please install etcd - https://coreos.com/etcd/docs/latest/";
+        die $msg;
+    }
 }
 
 =head1 AUTHOR
@@ -97,7 +305,6 @@ The L<etcd> v3 API is in heavy development and can change at anytime please see
 https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md
 for latest details.
 
-
 =head1 LICENSE AND COPYRIGHT
 
 Copyright 2017 Sam Batschelet (hexfusion).
@@ -111,4 +318,3 @@ See http://dev.perl.org/licenses/ for more information.
 =cut
 
 1;
-

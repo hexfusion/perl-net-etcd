@@ -18,7 +18,7 @@ else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
 }
 
-my $etcd = Etcd3->connect( $host, { port => $port } );
+my $etcd = Etcd3->new( { host => $host, port => $port } );
 
 my $key;
 

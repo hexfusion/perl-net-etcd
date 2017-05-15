@@ -50,6 +50,7 @@ NODELETE
 NOPUT
 Str
 cb
+cv
 ro
 wishto
 peerURLs
