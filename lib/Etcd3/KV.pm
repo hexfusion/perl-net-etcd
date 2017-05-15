@@ -35,32 +35,35 @@ Key Value
 
 =cut
 
+=head2 options
+
+=cut
+
 has options => (
     is      => 'ro',
-	isa     => HashRef,
+    isa     => HashRef,
 );
 
 =head2 range
 
 Range gets the keys in the range from the key-value store.
 
-$etcd->kv({key =>'test0', range_end => 'test100'})->range
+    $etcd->kv({key =>'test0', range_end => 'test100'})->range
 
 =cut
 
 sub range {
     my ( $self ) = @_;
-	my $options = $self->options;
+    my $options = $self->options;
     my $range = Etcd3::KV::Range->new(
-	    %$self,
-		endpoint => '/kv/range',
-        _client => $self->_client,
-     ( $options ? %$options : () ),
+        %$self,
+        endpoint => '/kv/range',
+        etcd => $self->etcd,
+        ( $options ? %$options : () ),
     );
     $range->request;
     return $range;
 }
-
 
 =head2 range_delete
 
@@ -68,18 +71,18 @@ DeleteRange deletes the given range from the key-value store. A delete request i
 revision of the key-value store and generates a delete event in the event history for every
 deleted key.
 
-$etcd->kv({key =>'test0'})->range_delete
+    $etcd->kv({key =>'test0'})->range_delete
 
 =cut
 
 sub range_delete {
     my ( $self ) = @_;
-	my $options = $self->options;
+    my $options = $self->options;
     my $range = Etcd3::KV::Range->new(
-	    %$self,
-		endpoint => '/kv/deleterange',
-        _client => $self->_client,
-     ( $options ? %$options : () ),
+        %$self,
+        endpoint => '/kv/deleterange',
+        etcd => $self->etcd,
+        ( $options ? %$options : () ),
     );
     $range->request;
     return $range;
@@ -95,12 +98,12 @@ history.
 
 sub put {
     my ( $self ) = @_;
-	my $options = $self->options;
+    my $options = $self->options;
     my $range = Etcd3::KV::Put->new(
-	    %$self,
-		endpoint => '/kv/put',
-        _client => $self->_client,
-     ( $options ? %$options : () ),
+        %$self,
+        endpoint => '/kv/put',
+        etcd => $self->etcd,
+        ( $options ? %$options : () ),
     );
     $range->request;
     return $range;

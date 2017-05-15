@@ -24,9 +24,9 @@ Etcd3::Role::Actions
 
 our $VERSION = '0.005';
 
-has _client => (
+has etcd => (
     is  => 'ro',
-    isa => InstanceOf ['Etcd3::Client'],
+    isa => InstanceOf ['Etcd3'],
 );
 
 =head2 json_args
@@ -41,7 +41,7 @@ sub _build_json_args {
     my ($self) = @_;
     my $args;
     for my $key ( keys %{$self} ) {
-        unless ( $key =~ /(?:_client|cb|cv|json_args|endpoint)$/ ) {
+        unless ( $key =~ /(?:etcd|cb|cv|json_args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
@@ -106,7 +106,7 @@ sub _build_request {
     $cv->begin;
     http_request(
         'POST',
-        $self->_client->api_path . $self->{endpoint},
+        $self->etcd->api_path . $self->{endpoint},
         headers => $self->headers,
         body => $self->json_args,
         on_header => sub {
@@ -185,7 +185,7 @@ returns an Etcd3::Auth::Authenticate object
 sub authenticate {
     my ( $self, $options ) = @_;
     return Etcd3::Auth::Authenticate->new(
-        _client => $self,
+        etcd => $self,
         ( $options ? %$options : () ),
     )->init;
 }

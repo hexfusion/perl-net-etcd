@@ -18,7 +18,7 @@ else {
 }
 
 my ($watch,$key);
-my $etcd = Etcd3->connect( $host, { port => $port } );
+my $etcd = Etcd3->new( { host => $host, port => $port } );
 
 our @events;
 # create watch with callback and store events
