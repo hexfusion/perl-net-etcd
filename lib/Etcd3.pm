@@ -28,7 +28,37 @@ Etcd3
 
 our $VERSION = '0.005';
 
+=head1 SYNOPSIS
+
+    Etcd v3.1.0 or greater is required.   To use the v3 API make sure to set environment
+    variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
+
+    $etcd = Etcd3->new(); # host: 127.0.0.1 port: 2379
+    $etcd = Etcd3->new({ host => $host, port => $port, ssl => 1 });
+
+    # put key
+    $result = $etcd->kv({ key =>'foo1', value => 'bar' })->put;
+
+    # get single key
+    $key = $etcd->({ key =>'test0' })->range;
+
+    # return single key value or the first in a list.
+    $key->get_value
+
+    # get range of keys
+    $range = $etcd->range({ key =>'test0', range_end => 'test100' });
+
+    # return array { key => value } pairs from range request.
+    my @users = $range->all
+
+    # watch key
+    $etcd->range({ key =>'foo', range_end => 'fop' });
+
 =head1 DESCRIPTION
+
+C<Etcd3> An object oriented interface to the v3 REST API provided by the etcd grpc gateway.
+
+=head1 ACCESSORS
 
 =head2 host
 
@@ -107,8 +137,6 @@ sub _build_api_root {
 }
 
 =head2 api_prefix
-
-base endpoint for api call, refers to api version.
 
 =cut
 
@@ -214,6 +242,8 @@ sub user_role {
 
 =head2 auth_enable
 
+Currently not available.
+
 =cut
 
 sub auth_enable {
@@ -297,11 +327,11 @@ Sam Batschelet, <sbatschelet at mac.com>
 
 =head1 ACKNOWLEDGEMENTS
 
-The L<etcd> developers and community.
+The L<etcd|https://github.com/coreos/etcd> developers and community.
 
 =head1 CAVEATS
 
-The L<etcd> v3 API is in heavy development and can change at anytime please see
+The L<etcd|https://github.com/coreos/etcd> v3 API is in heavy development and can change at anytime please see
 https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md
 for latest details.
 

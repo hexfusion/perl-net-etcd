@@ -4,47 +4,97 @@
 
 Etcd3
 
-# VERSION
-
-Version 0.005
-
 # SYNOPSIS
 
     Etcd v3.1.0 or greater is required.   To use the v3 API make sure to set environment
     variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
 
-    $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
-    $etcd = Etcd3->connect( $host, { username => 'HeMan', password =>'GreySkuLz', ssl => '1'});
+    $etcd = Etcd3->new(); # host: 127.0.0.1 port: 2379
+    $etcd = Etcd3->new({ host => $host, port => $port, ssl => 1 });
 
     # put key
     $result = $etcd->kv({ key =>'foo1', value => 'bar' })->put;
 
     # get single key
-    $key = $etcd->kv({ key =>'test0' })->range;
+    $key = $etcd->({ key =>'test0' })->range;
 
     # return single key value or the first in a list.
     $key->get_value
 
     # get range of keys
-    $range = $etcd->kv({ key =>'test0', range_end => 'test100' })->range;
+    $range = $etcd->range({ key =>'test0', range_end => 'test100' });
 
     # return array { key => value } pairs from range request.
     my @users = $range->all
 
+    # watch key
+    $etcd->range({ key =>'foo', range_end => 'fop' });
+
 # DESCRIPTION
 
-Perl access to Etcd v3 API.
+`Etcd3` An object oriented interface to the v3 REST API provided by the etcd grpc gateway.
+
+# ACCESSORS
 
 ## host
 
-## connect
+## port
 
-    $etcd = Etcd3->connect(); # host: 127.0.0.1 port: 2379
-    $etcd = Etcd3->connect($host);
-    $etcd = Etcd3->connect($host, $options);
+## username
 
-This function returns a [Etcd3::Client](https://metacpan.org/pod/Etcd3::Client) object.  The first parameter is the 
-`host` argument.  The second `options` is a hashref.
+## password
+
+## ssl
+
+## auth
+
+## api\_root
+
+## api\_prefix
+
+## api\_path
+
+## auth\_token
+
+## headers
+
+# PUBLIC METHODS
+
+## watch
+
+Returns a [Etcd3::Watch](https://metacpan.org/pod/Etcd3::Watch) object.
+
+    $etcd->watch({ key =>'foo', range_end => 'fop' })
+
+## role
+
+    $etcd->role({ role => 'foo' });
+
+## user\_role
+
+Returns a [Etcd3::User::Role](https://metacpan.org/pod/Etcd3::User::Role) object.
+
+    $etcd->user_role({ name => 'samba', role => 'foo' });
+
+## auth\_enable
+
+Currently not available.
+
+## lease
+
+Returns a [Etcd3::Lease](https://metacpan.org/pod/Etcd3::Lease) object.
+
+## user
+
+Returns a [Etcd3::User](https://metacpan.org/pod/Etcd3::User) object.
+
+## kv
+
+Returns a [Etcd3::KV](https://metacpan.org/pod/Etcd3::KV) object.
+
+## configuration
+
+Initialize configuration checks to see it etcd is installed locally.
 
 # AUTHOR
 
@@ -52,12 +102,12 @@ Sam Batschelet, &lt;sbatschelet at mac.com>
 
 # ACKNOWLEDGEMENTS
 
-The [etcd](https://metacpan.org/pod/etcd) developers and community.
+The [etcd](https://github.com/coreos/etcd) developers and community.
 
 # CAVEATS
 
-The [etcd](https://metacpan.org/pod/etcd) v3 API is in heavy development and can change at anytime please see
-[dev guide](https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md)
+The [etcd](https://github.com/coreos/etcd) v3 API is in heavy development and can change at anytime please see
+https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api\_reference\_v3.md
 for latest details.
 
 # LICENSE AND COPYRIGHT
