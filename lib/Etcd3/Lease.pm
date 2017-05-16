@@ -28,6 +28,8 @@ LeaseGrant creates a lease which expires if the server does not receive a keepAl
 a given time to live period. All keys attached to the lease will be expired and deleted if
 the lease expires. Each expired key generates a delete event in the event history.
 
+=head1 ACCESSORS
+
 =head2 endpoint
 
 =cut
@@ -70,6 +72,8 @@ has keys => (
     isa      => Bool,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
+
+=head1 PUBLIC METHODS
 
 =head2 grant
 

@@ -31,9 +31,7 @@ Key Value
 
 =cut
 
-=head1 SYNOPSIS
-
-=cut
+=head1 ACCESSORS
 
 =head2 options
 
@@ -43,6 +41,8 @@ has options => (
     is      => 'ro',
     isa     => HashRef,
 );
+
+=head1 PUBLIC METHODS
 
 =head2 range
 

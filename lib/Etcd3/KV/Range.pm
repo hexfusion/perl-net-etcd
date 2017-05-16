@@ -26,6 +26,8 @@ our $VERSION = '0.005';
 
 Range gets the keys in the range from the key-value store.
 
+=head1 ACCESSORS
+
 =head2 endpoint
 
 =cut

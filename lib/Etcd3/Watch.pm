@@ -29,6 +29,8 @@ the input stream is for creating and canceling watchers and the output stream se
 One watch RPC can watch on multiple key ranges, streaming events for several watches at once.
 The entire event history can be watched starting from the last compaction revision.
 
+=head1 ACCESSORS
+
 =head2 endpoint
 
 =cut
@@ -120,6 +122,8 @@ has prev_key => (
     isa    => Bool,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
+
+=head1 PUBLIC METHODS
 
 =head2 watch_id
 

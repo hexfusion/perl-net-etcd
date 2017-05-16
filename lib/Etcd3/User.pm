@@ -24,7 +24,11 @@ our $VERSION = '0.005';
 
 =head1 DESCRIPTION
 
+User class
+
 =cut
+
+=head1 ACCESSORS
 
 =head2 endpoint
 
@@ -55,6 +59,8 @@ has password => (
     is       => 'ro',
     isa      => Str,
 );
+
+=head1 PUBLIC METHODS
 
 =head2 add
 

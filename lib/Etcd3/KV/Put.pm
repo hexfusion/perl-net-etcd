@@ -27,6 +27,8 @@ Put puts the given key into the key-value store. A put request increments
 the revision of the key-value store and generates one event in the event
 history.
 
+=head1 ACCESSORS
+
 =head2 endpoint
 
 =cut

@@ -21,7 +21,11 @@ our $VERSION = '0.005';
 
 =head1 DESCRIPTION
 
+Use role
+
 =cut
+
+=head1 ACCESSORS
 
 =head2 endpoint
 
@@ -64,6 +68,8 @@ has role => (
     is       => 'ro',
     isa      => Str,
 );
+
+=head1 PUBLIC METHODS
 
 =head2 grant
 
