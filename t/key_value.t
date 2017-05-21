@@ -25,7 +25,7 @@ my $key;
 # put key/value
 lives_ok(
     sub {
-        $key = $etcd->kv( { key => 'foo1', value => 'bar' } )->put
+        $key = $etcd->put( { key => 'foo1', value => 'bar' } );
     },
     "kv put"
 );
@@ -35,7 +35,7 @@ cmp_ok( $key->{response}{success}, '==', 1, "kv put success" );
 # get range
 lives_ok(
     sub {
-        $key = $etcd->kv( { key => 'foo1' } )->range
+        $key = $etcd->range( { key => 'foo1' } )
     },
     "kv range"
 );
@@ -47,7 +47,7 @@ cmp_ok( $key->{response}{success}, '==', 1, "kv range success" );
 # delete range
 lives_ok(
     sub {
-        $key = $etcd->kv( { key => 'foo1' } )->range_delete
+        $key = $etcd->range( { key => 'foo1' } )->delete
     },
     "kv range_delete"
 );
