@@ -35,7 +35,7 @@ lives_ok(
 
 lives_ok(
     sub {
-        $key = $etcd->kv( { key => 'foo', value => 'bar' } )->put;
+        $key = $etcd->put( { key => 'foo', value => 'bar' } );
     },
     "kv put"
 );
@@ -46,7 +46,7 @@ cmp_ok( $key->{response}{success}, '==', 1, "kv put success" );
 # get range
 lives_ok(
     sub {
-        $key = $etcd->kv( { key => 'foo' } )->range
+        $key = $etcd->range( { key => 'foo' } )
     },
     "kv range"
 );
@@ -60,7 +60,7 @@ cmp_ok( scalar @events, '==', 2, "number of async events stored. (create_watch, 
 # delete range
 lives_ok(
     sub {
-        $key = $etcd->kv( { key => 'foo' } )->range_delete
+        $key = $etcd->range( { key => 'foo' } )->delete
     },
     "kv range_delete"
 );
