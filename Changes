@@ -6,6 +6,8 @@ Revision history for Etcd3
   * Replaced HTTP::Tiny with AnyEvent::HTTP allowing async interaction with etcd.
   * Simplified the internal way $etcd object is initialized.  Replacing ->connect with ->new, also moving ::Client into Etcd3 module.
   * Renamed _client accessor to etcd.
+  * Make Etcd3::KV a Moo::Role allowing easier interaction with other KV classes.
+
 
 [ BUG FIXES ]
   * Fixed Watch support
