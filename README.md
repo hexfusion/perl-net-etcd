@@ -13,10 +13,10 @@ Etcd3
     $etcd = Etcd3->new({ host => $host, port => $port, ssl => 1 });
 
     # put key
-    $result = $etcd->kv({ key =>'foo1', value => 'bar' })->put;
+    $result = $etcd->put({ key =>'foo1', value => 'bar' });
 
     # get single key
-    $key = $etcd->({ key =>'test0' })->range;
+    $key = $etcd->range({ key =>'test0' });
 
     # return single key value or the first in a list.
     $key->get_value
@@ -27,8 +27,17 @@ Etcd3
     # return array { key => value } pairs from range request.
     my @users = $range->all
 
-    # watch key
-    $etcd->range({ key =>'foo', range_end => 'fop' });
+    # watch key range, streaming.
+    $watch = $etcd->watch( { key => 'foo', range_end => 'fop'}, sub {
+        my ($result) =  @_;
+        print STDERR Dumper($result);
+    })->create;
+
+    # create/grant 20 second lease
+    $etcd->lease( { ID => 7587821338341002662, TTL => 20 } )->grant;
+
+    # attach lease to put
+    $etcd->put( { key => 'foo2', value => 'bar2', lease => 7587821338341002662 } );
 
 # DESCRIPTION
 
@@ -52,11 +61,11 @@ Etcd3
 
 ## api\_prefix
 
+defaults to /v3alpha
+
 ## api\_path
 
 ## auth\_token
-
-## headers
 
 # PUBLIC METHODS
 
@@ -67,6 +76,8 @@ Returns a [Etcd3::Watch](https://metacpan.org/pod/Etcd3::Watch) object.
     $etcd->watch({ key =>'foo', range_end => 'fop' })
 
 ## role
+
+Returns a [Etcd3::Auth::Role](https://metacpan.org/pod/Etcd3::Auth::Role) object.
 
     $etcd->role({ role => 'foo' });
 
@@ -88,9 +99,13 @@ Returns a [Etcd3::Lease](https://metacpan.org/pod/Etcd3::Lease) object.
 
 Returns a [Etcd3::User](https://metacpan.org/pod/Etcd3::User) object.
 
-## kv
+## put
 
-Returns a [Etcd3::KV](https://metacpan.org/pod/Etcd3::KV) object.
+Returns a [Etcd3::KV::Put](https://metacpan.org/pod/Etcd3::KV::Put) object.
+
+## range
+
+Returns a [Etcd3::KV::Range](https://metacpan.org/pod/Etcd3::KV::Range) object.
 
 ## configuration
 

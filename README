@@ -9,10 +9,10 @@ SYNOPSIS
         $etcd = Etcd3->new({ host => $host, port => $port, ssl => 1 });
 
         # put key
-        $result = $etcd->kv({ key =>'foo1', value => 'bar' })->put;
+        $result = $etcd->put({ key =>'foo1', value => 'bar' });
 
         # get single key
-        $key = $etcd->({ key =>'test0' })->range;
+        $key = $etcd->range({ key =>'test0' });
 
         # return single key value or the first in a list.
         $key->get_value
@@ -23,8 +23,17 @@ SYNOPSIS
         # return array { key => value } pairs from range request.
         my @users = $range->all
 
-        # watch key
-        $etcd->range({ key =>'foo', range_end => 'fop' });
+        # watch key range, streaming.
+        $watch = $etcd->watch( { key => 'foo', range_end => 'fop'}, sub {
+            my ($result) =  @_;
+            print STDERR Dumper($result);
+        })->create;
+
+        # create/grant 20 second lease
+        $etcd->lease( { ID => 7587821338341002662, TTL => 20 } )->grant;
+
+        # attach lease to put
+        $etcd->put( { key => 'foo2', value => 'bar2', lease => 7587821338341002662 } );
 
 DESCRIPTION
     "Etcd3" An object oriented interface to the v3 REST API provided by the
@@ -39,12 +48,10 @@ ACCESSORS
   auth
   api_root
   api_prefix
-    base endpoint for api call, refers to api version.
+    defaults to /v3alpha
 
   api_path
   auth_token
-  headers
-
 PUBLIC METHODS
   watch
     Returns a Etcd3::Watch object.
@@ -52,6 +59,8 @@ PUBLIC METHODS
         $etcd->watch({ key =>'foo', range_end => 'fop' })
 
   role
+    Returns a Etcd3::Auth::Role object.
+
         $etcd->role({ role => 'foo' });
 
   user_role
@@ -68,8 +77,11 @@ PUBLIC METHODS
   user
     Returns a Etcd3::User object.
 
-  kv
-    Returns a Etcd3::KV object.
+  put
+    Returns a Etcd3::KV::Put object.
+
+  range
+    Returns a Etcd3::KV::Range object.
 
   configuration
     Initialize configuration checks to see it etcd is installed locally.
