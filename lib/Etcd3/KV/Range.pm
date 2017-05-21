@@ -10,7 +10,7 @@ use MIME::Base64;
 use JSON;
 
 with 'Etcd3::Role::Actions';
-extends 'Etcd3::KV';
+#extends 'Etcd3::KV';
 
 use namespace::clean;
 
@@ -216,5 +216,21 @@ has max_create_revision => (
     is  => 'ro',
     isa => Int,
 );
+
+=head2 delete
+
+DeleteRange deletes the given range from the key-value store. A delete request increments the
+revision of the key-value store and generates a delete event in the event history for every
+deleted key.
+
+    $etcd->range({key =>'test0'})->delete
+
+=cut
+
+sub delete {
+    my ( $self ) = @_;
+    $self->{endpoint} => '/kv/deleterange',
+    return $self->request;
+}
 
 1;

@@ -35,7 +35,7 @@ lives_ok(
 cmp_ok( $lease->{response}{success}, '==', 1, "add lease success" );
 
 # add lease to key
-lives_ok( sub {  $lease = $etcd->kv( { key => 'foo2', value => 'bar2', lease => 7587821338341002662 } )->put },
+lives_ok( sub {  $lease = $etcd->put( { key => 'foo2', value => 'bar2', lease => 7587821338341002662 } ) },
     "add a new lease to a key" );
 
 cmp_ok( $lease->{response}{success}, '==', 1, "add lease to key success" );
@@ -43,7 +43,7 @@ cmp_ok( $lease->{response}{success}, '==', 1, "add lease to key success" );
 my $key;
 
 # validate key
-lives_ok( sub { $key = $etcd->kv( { key => 'foo2' } )->range->get_value },
+lives_ok( sub { $key = $etcd->range( { key => 'foo2' } )->get_value },
     "check value for key" );
 
 cmp_ok( $key, 'eq', 'bar2', "lease key value" );
@@ -69,7 +69,7 @@ lives_ok( sub {  $lease = $etcd->lease( { ID => 7587821338341002662 } )->revoke 
 cmp_ok( $lease->{response}{success}, '==', 1, "revoke lease success" );
 
 # validate key
-lives_ok( sub { $key = $etcd->kv( { key => 'foo2' } )->range->get_value },
+lives_ok( sub { $key = $etcd->range( { key => 'foo2' } )->get_value },
     "check value for revoked lease key" );
 
 is( $key, undef, "lease key revoked" );

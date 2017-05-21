@@ -10,11 +10,12 @@ use JSON;
 use MIME::Base64;
 use Etcd3::Auth;
 use Etcd3::Config;
-use Etcd3::KV;
 use Etcd3::Watch;
 use Etcd3::Lease;
 use Etcd3::User;
 use Types::Standard qw(Str Int Bool HashRef);
+
+with('Etcd3::KV');
 
 use namespace::clean;
 
@@ -37,10 +38,10 @@ our $VERSION = '0.005';
     $etcd = Etcd3->new({ host => $host, port => $port, ssl => 1 });
 
     # put key
-    $result = $etcd->kv({ key =>'foo1', value => 'bar' })->put;
+    $result = $etcd->put({ key =>'foo1', value => 'bar' });
 
     # get single key
-    $key = $etcd->({ key =>'test0' })->range;
+    $key = $etcd->range({ key =>'test0' });
 
     # return single key value or the first in a list.
     $key->get_value
@@ -51,8 +52,17 @@ our $VERSION = '0.005';
     # return array { key => value } pairs from range request.
     my @users = $range->all
 
-    # watch key
-    $etcd->range({ key =>'foo', range_end => 'fop' });
+    # watch key range, streaming.
+    $watch = $etcd->watch( { key => 'foo', range_end => 'fop'}, sub {
+        my ($result) =  @_;
+        print STDERR Dumper($result);
+    })->create;
+
+    # create/grant 20 second lease
+    $etcd->lease( { ID => 7587821338341002662, TTL => 20 } )->grant;
+
+    # attach lease to put
+    $etcd->put( { key => 'foo2', value => 'bar2', lease => 7587821338341002662 } );
 
 =head1 DESCRIPTION
 
@@ -138,6 +148,8 @@ sub _build_api_root {
 
 =head2 api_prefix
 
+defaults to /v3alpha
+
 =cut
 
 has api_prefix => (
@@ -171,21 +183,6 @@ sub _build_auth_token {
     )->token;
 }
 
-=head2 headers
-
-=cut
-
-has headers => ( is => 'lazy' );
-
-sub _build_headers {
-    my ($self) = @_;
-    my $headers;
-    my $auth_token = $self->auth_token if $self->auth;
-    $headers->{'Content-Type'} = 'application/json';
-    $headers->{'authorization'} = 'Bearer ' . encode_base64( $auth_token, "" ) if $auth_token;
-    return $headers;
-}
-
 =head1 PUBLIC METHODS
 
 =head2 watch
@@ -207,6 +204,8 @@ sub watch {
 }
 
 =head2 role
+
+Returns a L<Etcd3::Auth::Role> object.
 
     $etcd->role({ role => 'foo' });
 
@@ -285,21 +284,17 @@ sub user {
     );
 }
 
-=head2 kv
+=head2 put
 
-Returns a L<Etcd3::KV> object.
+Returns a L<Etcd3::KV::Put> object.
 
 =cut
 
-sub kv {
-    my ( $self, $options ) = @_;
-    my $cb = pop if ref $_[-1] eq 'CODE';
-    return Etcd3::KV->new(
-        etcd    => $self,
-        cb      => $cb,
-		options => $options,
-    );
-}
+=head2 range
+
+Returns a L<Etcd3::KV::Range> object.
+
+=cut
 
 =head2 configuration
 
@@ -313,7 +308,6 @@ sub configuration {
 
 sub BUILD {
     my ( $self, $args ) = @_;
-    $self->headers;
     if ( not -e $self->configuration->etcd ) {
         my $msg = "No etcd executable found\n";
         $msg .= ">> Please install etcd - https://coreos.com/etcd/docs/latest/";
