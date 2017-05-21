@@ -21,7 +21,7 @@ Etcd3::KV
 
 =cut
 
-our $VERSION = '0.005';
+our $VERSION = '0.006';
 
 =head1 DESCRIPTION
 
