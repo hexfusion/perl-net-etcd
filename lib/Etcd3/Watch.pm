@@ -123,8 +123,6 @@ has prev_key => (
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 
-=head1 PUBLIC METHODS
-
 =head2 watch_id
 
 watch_id is the watcher id to cancel so that no more events are transmitted. This is only used for a
@@ -137,6 +135,8 @@ has watch_id => (
     is  => 'ro',
     isa => Int,
 );
+
+=head1 PUBLIC METHODS
 
 =head2 create
 
