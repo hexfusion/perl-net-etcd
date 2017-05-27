@@ -94,7 +94,7 @@ has port => (
 
 =cut
 
-has username => (
+has name => (
     is  => 'ro',
     isa => Str
 );

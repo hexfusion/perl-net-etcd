@@ -176,18 +176,4 @@ sub all {
     return $kvs;
 }
 
-=head2 authenticate
-
-returns an Etcd3::Auth::Authenticate object
-
-=cut
-
-sub authenticate {
-    my ( $self, $options ) = @_;
-    return Etcd3::Auth::Authenticate->new(
-        etcd => $self,
-        ( $options ? %$options : () ),
-    )->init;
-}
-
 1;

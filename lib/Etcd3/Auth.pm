@@ -9,8 +9,8 @@ use warnings;
 =cut
 
 use Moo;
+use Carp;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
-use Etcd3::Auth::Authenticate;
 use Etcd3::Auth::Role;
 
 with 'Etcd3::Role::Actions';
@@ -57,11 +57,46 @@ has endpoint => (
     isa      => Str,
 );
 
+=head2 password
+
+=cut
+
+has name => (
+    is       => 'ro',
+    isa      => Str,
+);
+
+=head2 password
+
+=cut
+
+has password => (
+    is       => 'ro',
+    isa      => Str,
+);
+
 =head1 PUBLIC METHODS
+
+=head2 authenticate
+
+Enable authentication, this requires name and password.
+
+    $etcd->auth({ name => $user, password => $pass })->authenticate;
+
+=cut
+
+sub authenticate {
+    my ( $self, $options ) = @_;
+    $self->{endpoint} = '/auth/authenticate';
+    confess 'name and password required for ' . __PACKAGE__ . '->authenticate'
+      unless ($self->{password} && $self->{name});
+    $self->request;
+    return $self;
+}
 
 =head2 enable
 
-Enable authentication, this requires the server to be settup with ssl
+Enable authentication.
 
     $etcd->auth()->enable;
 
@@ -77,16 +112,17 @@ sub enable {
 
 =head2 disable
 
-disable authentication, this requires the server to be settup with ssl
+Disable authentication, this requires a valid root password.
 
-    $etcd->auth()->disable;
+    $etcd->auth({ name => 'root', $password => $pass })->disable;
 
 =cut
 
 sub disable {
     my ( $self, $options ) = @_;
     $self->{endpoint} = '/auth/disable';
-    $self->{json_args} = '{}';
+    confess 'root name and password required for ' . __PACKAGE__ . '->disable'
+      unless ($self->{password} && $self->{name});
     $self->request;
     return $self;
 }
