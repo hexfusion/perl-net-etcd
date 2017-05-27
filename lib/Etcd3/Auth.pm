@@ -8,9 +8,15 @@ use warnings;
 
 =cut
 
+use Moo;
+use Types::Standard qw(Str Int Bool HashRef ArrayRef);
 use Etcd3::Auth::Authenticate;
-use Etcd3::Auth::Enable;
 use Etcd3::Auth::Role;
+
+with 'Etcd3::Role::Actions';
+
+use namespace::clean;
+
 
 =head1 NAME
 
@@ -41,5 +47,48 @@ Authentication
     $etcd->user_role( { user => 'samba', role => 'myrole' })->grant;
 
 =cut
+
+=head2 endpoint
+
+=cut
+
+has endpoint => (
+    is       => 'ro',
+    isa      => Str,
+);
+
+=head1 PUBLIC METHODS
+
+=head2 enable
+
+Enable authentication, this requires the server to be settup with ssl
+
+    $etcd->auth()->enable;
+
+=cut
+
+sub enable {
+    my ( $self, $options ) = @_;
+    $self->{endpoint} = '/auth/enable';
+    $self->{json_args} = '{}';
+    $self->request;
+    return $self;
+}
+
+=head2 disable
+
+disable authentication, this requires the server to be settup with ssl
+
+    $etcd->auth()->disable;
+
+=cut
+
+sub disable {
+    my ( $self, $options ) = @_;
+    $self->{endpoint} = '/auth/disable';
+    $self->{json_args} = '{}';
+    $self->request;
+    return $self;
+}
 
 1;

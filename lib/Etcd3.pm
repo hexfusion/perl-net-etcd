@@ -117,21 +117,6 @@ has ssl => (
     isa => Bool,
 );
 
-=head2 auth
-
-=cut
-
-has auth => (
-    is  => 'lazy',
-    isa => Bool,
-);
-
-sub _build_auth {
-    my ($self) = @_;
-    return 1 if ( $self->username and $self->password );
-    return;
-}
-
 =head2 api_root
 
 =cut
@@ -239,18 +224,21 @@ sub user_role {
     );
 }
 
-=head2 auth_enable
+=head2 auth
 
-Currently not available.
+Returns a L<Etcd3::Auth> object.
 
 =cut
 
-sub auth_enable {
+sub auth {
     my ( $self, $options ) = @_;
-    my $auth = Etcd3::Auth::Enable->new( etcd => $self )->init;
-    return $auth->request;
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    return Etcd3::Auth->new(
+        etcd => $self,
+        cb   => $cb,
+        ( $options ? %$options : () ),
+    );
 }
-
 
 =head2 lease
 
