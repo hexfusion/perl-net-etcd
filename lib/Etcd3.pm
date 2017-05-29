@@ -1,6 +1,6 @@
 use utf8;
 package Etcd3;
-# ABSTRACT: Provide access to the etcd v3 API.
+# ABSTRACT: [depricated] Please see Net::Etcd.
 
 use strict;
 use warnings;
@@ -27,7 +27,7 @@ Etcd3
 
 =cut
 
-our $VERSION = '0.006';
+our $VERSION = '0.007';
 
 =head1 SYNOPSIS
 
@@ -66,7 +66,8 @@ our $VERSION = '0.006';
 
 =head1 DESCRIPTION
 
-C<Etcd3> An object oriented interface to the v3 REST API provided by the etcd grpc gateway.
+This module has been superseded by L<Net::Etcd> and will be removed from CPAN on June 29th 2017
+
 
 =head1 ACCESSORS
 
