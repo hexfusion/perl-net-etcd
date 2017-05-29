@@ -1,22 +1,19 @@
 use utf8;
-package Etcd3::User;
+package Net::Etcd::User::Role;
 
 use strict;
 use warnings;
 
 use Moo;
-use Carp;
-use Etcd3::User::Role;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
-use Data::Dumper;
 
-with 'Etcd3::Role::Actions';
+with 'Net::Etcd::Role::Actions';
 
 use namespace::clean;
 
 =head1 NAME
 
-Etcd3::User
+Net::Etcd::User::Role
 
 =cut
 
@@ -24,7 +21,7 @@ our $VERSION = '0.007';
 
 =head1 DESCRIPTION
 
-User class
+Use role
 
 =cut
 
@@ -35,7 +32,18 @@ User class
 =cut
 
 has endpoint => (
-    is       => 'rwp',
+    is       => 'ro',
+    isa      => Str,
+);
+
+=head2 user
+
+name of user
+
+=cut
+
+has user => (
+    is       => 'ro',
     isa      => Str,
 );
 
@@ -48,44 +56,39 @@ name of user
 has name => (
     is       => 'ro',
     isa      => Str,
-    required => 1,
 );
 
-=head2 password
+=head2 role
+
+name of role
 
 =cut
 
-has password => (
+has role => (
     is       => 'ro',
     isa      => Str,
 );
 
 =head1 PUBLIC METHODS
 
-=head2 add
-
-$etcd->user({ name =>'foo' password => 'bar' })->add
+=head2 grant
 
 =cut
 
-sub add {
+sub grant {
     my $self = shift;
-    $self->{endpoint} = '/auth/user/add';
-    confess 'password required for ' . __PACKAGE__ . '->add'
-      unless $self->{password};
+    $self->{endpoint} = '/auth/user/grant';
     $self->request;
     return $self;
 }
 
-=head2 delete
-
-$etcd->user({ name =>'foo' })->delete
+=head2 revoke
 
 =cut
 
-sub delete {
+sub revoke {
     my $self = shift;
-    $self->{endpoint} = '/auth/user/delete';
+    $self->{endpoint} = '/auth/user/revoke';
     $self->request;
     return $self;
 }

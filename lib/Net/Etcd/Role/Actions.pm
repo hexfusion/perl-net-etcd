@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::Role::Actions;
+package Net::Etcd::Role::Actions;
 
 use strict;
 use warnings;
@@ -18,7 +18,7 @@ use namespace::clean;
 
 =head1 NAME
 
-Etcd3::Role::Actions
+Net::Etcd::Role::Actions
 
 =cut
 
@@ -26,7 +26,7 @@ our $VERSION = '0.007';
 
 has etcd => (
     is  => 'ro',
-    isa => InstanceOf ['Etcd3'],
+    isa => InstanceOf ['Net::Etcd'],
 );
 
 =head2 json_args

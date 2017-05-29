@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::Auth;
+package Net::Etcd::Auth;
 
 use strict;
 use warnings;
@@ -11,16 +11,16 @@ use warnings;
 use Moo;
 use Carp;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
-use Etcd3::Auth::Role;
+use Net::Etcd::Auth::Role;
 
-with 'Etcd3::Role::Actions';
+with 'Net::Etcd::Role::Actions';
 
 use namespace::clean;
 
 
 =head1 NAME
 
-Etcd3::Auth
+Net::Etcd::Auth
 
 =cut
 

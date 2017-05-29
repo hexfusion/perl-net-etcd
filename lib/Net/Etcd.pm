@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3;
+package Net::Etcd;
 # ABSTRACT: [depricated] Please see Net::Etcd.
 
 use strict;
@@ -8,14 +8,14 @@ use warnings;
 use Moo;
 use JSON;
 use MIME::Base64;
-use Etcd3::Auth;
-use Etcd3::Config;
-use Etcd3::Watch;
-use Etcd3::Lease;
-use Etcd3::User;
+use Net::Etcd::Auth;
+use Net::Etcd::Config;
+use Net::Etcd::Watch;
+use Net::Etcd::Lease;
+use Net::Etcd::User;
 use Types::Standard qw(Str Int Bool HashRef);
 
-with('Etcd3::KV');
+with('Net::Etcd::KV');
 
 use namespace::clean;
 
@@ -23,7 +23,7 @@ use namespace::clean;
 
 =head1 NAME
 
-Etcd3
+Net::Etcd
 
 =cut
 
@@ -34,8 +34,8 @@ our $VERSION = '0.007';
     Etcd v3.1.0 or greater is required.   To use the v3 API make sure to set environment
     variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
 
-    $etcd = Etcd3->new(); # host: 127.0.0.1 port: 2379
-    $etcd = Etcd3->new({ host => $host, port => $port, ssl => 1 });
+    $etcd = Net::Etcd->new(); # host: 127.0.0.1 port: 2379
+    $etcd = Net::Etcd->new({ host => $host, port => $port, ssl => 1 });
 
     # put key
     $result = $etcd->put({ key =>'foo1', value => 'bar' });
@@ -163,7 +163,7 @@ has auth_token => ( is => 'lazy' );
 
 sub _build_auth_token {
     my ($self) = @_;
-    return Etcd3::Auth::Authenticate->new(
+    return Net::Etcd::Auth::Authenticate->new(
         etcd => $self,
         %$self
     )->token;
@@ -173,7 +173,7 @@ sub _build_auth_token {
 
 =head2 watch
 
-Returns a L<Etcd3::Watch> object.
+Returns a L<Net::Etcd::Watch> object.
 
     $etcd->watch({ key =>'foo', range_end => 'fop' })
 
@@ -182,7 +182,7 @@ Returns a L<Etcd3::Watch> object.
 sub watch {
     my ( $self, $options ) = @_;
     my $cb = pop if ref $_[-1] eq 'CODE';
-    return Etcd3::Watch->new(
+    return Net::Etcd::Watch->new(
         etcd => $self,
         cb   => $cb,
         ( $options ? %$options : () ),
@@ -191,7 +191,7 @@ sub watch {
 
 =head2 role
 
-Returns a L<Etcd3::Auth::Role> object.
+Returns a L<Net::Etcd::Auth::Role> object.
 
     $etcd->role({ role => 'foo' });
 
@@ -200,7 +200,7 @@ Returns a L<Etcd3::Auth::Role> object.
 sub role {
     my ( $self, $options ) = @_;
     my $cb = pop if ref $_[-1] eq 'CODE';
-    return Etcd3::Auth::Role->new(
+    return Net::Etcd::Auth::Role->new(
         etcd => $self,
         cb   => $cb,
         ( $options ? %$options : () ),
@@ -209,7 +209,7 @@ sub role {
 
 =head2 user_role
 
-Returns a L<Etcd3::User::Role> object.
+Returns a L<Net::Etcd::User::Role> object.
 
     $etcd->user_role({ name => 'samba', role => 'foo' });
 
@@ -218,7 +218,7 @@ Returns a L<Etcd3::User::Role> object.
 sub user_role {
     my ( $self, $options ) = @_;
     my $cb = pop if ref $_[-1] eq 'CODE';
-    return Etcd3::User::Role->new(
+    return Net::Etcd::User::Role->new(
         etcd => $self,
         cb   => $cb,
         ( $options ? %$options : () ),
@@ -227,14 +227,14 @@ sub user_role {
 
 =head2 auth
 
-Returns a L<Etcd3::Auth> object.
+Returns a L<Net::Etcd::Auth> object.
 
 =cut
 
 sub auth {
     my ( $self, $options ) = @_;
     my $cb = pop if ref $_[-1] eq 'CODE';
-    return Etcd3::Auth->new(
+    return Net::Etcd::Auth->new(
         etcd => $self,
         cb   => $cb,
         ( $options ? %$options : () ),
@@ -243,14 +243,14 @@ sub auth {
 
 =head2 lease
 
-Returns a L<Etcd3::Lease> object.
+Returns a L<Net::Etcd::Lease> object.
 
 =cut
 
 sub lease {
     my ( $self, $options ) = @_;
     my $cb = pop if ref $_[-1] eq 'CODE';
-    return Etcd3::Lease->new(
+    return Net::Etcd::Lease->new(
         etcd => $self,
         cb   => $cb,
         ( $options ? %$options : () ),
@@ -259,14 +259,14 @@ sub lease {
 
 =head2 user
 
-Returns a L<Etcd3::User> object.
+Returns a L<Net::Etcd::User> object.
 
 =cut
 
 sub user {
     my ( $self, $options ) = @_;
     my $cb = pop if ref $_[-1] eq 'CODE';
-    return Etcd3::User->new(
+    return Net::Etcd::User->new(
         etcd => $self,
         cb   => $cb,
         ( $options ? %$options : () ),
@@ -275,13 +275,13 @@ sub user {
 
 =head2 put
 
-Returns a L<Etcd3::KV::Put> object.
+Returns a L<Net::Etcd::KV::Put> object.
 
 =cut
 
 =head2 range
 
-Returns a L<Etcd3::KV::Range> object.
+Returns a L<Net::Etcd::KV::Range> object.
 
 =cut
 
@@ -292,7 +292,7 @@ Initialize configuration checks to see it etcd is installed locally.
 =cut
 
 sub configuration {
-    Etcd3::Config->configuration;
+    Net::Etcd::Config->configuration;
 }
 
 sub BUILD {

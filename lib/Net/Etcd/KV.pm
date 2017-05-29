@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::KV;
+package Net::Etcd::KV;
 
 use strict;
 use warnings;
@@ -9,15 +9,15 @@ use warnings;
 =cut
 use Moo::Role;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
-use Etcd3::KV::Put;
-use Etcd3::KV::Range;
+use Net::Etcd::KV::Put;
+use Net::Etcd::KV::Range;
 
-with 'Etcd3::Role::Actions';
+with 'Net::Etcd::Role::Actions';
 use namespace::clean;
 
 =head1 NAME
 
-Etcd3::KV
+Net::Etcd::KV
 
 =cut
 
@@ -42,7 +42,7 @@ Range gets the keys in the range from the key-value store.
 sub range {
     my ( $self, $options ) = @_;
 	my $cb = pop if ref $_[-1] eq 'CODE';
-    my $range = Etcd3::KV::Range->new(
+    my $range = Net::Etcd::KV::Range->new(
         %$self,
         endpoint => '/kv/range',
         etcd     => $self,
@@ -66,7 +66,7 @@ history.
 sub put {
     my ( $self, $options ) = @_;
 	my $cb = pop if ref $_[-1] eq 'CODE';
-    my $range = Etcd3::KV::Put->new(
+    my $range = Net::Etcd::KV::Put->new(
         %$self,
         endpoint => '/kv/put',
         etcd     => $self,

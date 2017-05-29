@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Etcd3;
+use Net::Etcd;
 use Test::More;
 use Test::Exception;
 use Data::Dumper;
@@ -20,7 +20,7 @@ else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
 }
 
-my $etcd = Etcd3->new( { host => $host, port => $port } );
+my $etcd = Net::Etcd->new( { host => $host, port => $port } );
 
 my ($user, $role);
 

@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::Config;
+package Net::Etcd::Config;
 
 use strict;
 use warnings;
@@ -9,7 +9,7 @@ use namespace::clean;
 
 =head1 NAME
 
-Etcd3::Config
+Net::Etcd::Config
 
 =cut
 
@@ -38,7 +38,7 @@ sub _build_etcd {
 =cut
 
 sub configuration {
-    return Etcd3::Config->new;
+    return Net::Etcd::Config->new;
 }
 
 =head2 configure

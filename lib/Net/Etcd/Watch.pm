@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::Watch;
+package Net::Etcd::Watch;
 
 use strict;
 use warnings;
@@ -10,13 +10,13 @@ use MIME::Base64;
 use Data::Dumper;
 use JSON;
 
-with 'Etcd3::Role::Actions';
+with 'Net::Etcd::Role::Actions';
 
 use namespace::clean;
 
 =head1 NAME
 
-Etcd3::Range
+Net::Etcd::Range
 
 =cut
 

@@ -1,4 +1,4 @@
-Revision history for Etcd3
+Revision history for Net::Etcd
 0.007
 
 [ ANNOUNCEMENT ]
@@ -9,9 +9,9 @@ Revision history for Etcd3
   * Sweeping changes to usage some not backwards compatible, sorry.
   * Restructuring of classes to consolidate and reduce redundancy, see d323feb5c0.
   * Replaced HTTP::Tiny with AnyEvent::HTTP allowing async interaction with etcd.
-  * Simplified the internal way $etcd object is initialized.  Replacing ->connect with ->new, also moving ::Client into Etcd3 module.
+  * Simplified the internal way $etcd object is initialized.  Replacing ->connect with ->new, also moving ::Client into Net::Etcd module.
   * Renamed _client accessor to etcd.
-  * Make Etcd3::KV a Moo::Role allowing easier interaction with other KV classes.
+  * Make Net::Etcd::KV a Moo::Role allowing easier interaction with other KV classes.
 
 
 [ BUG FIXES ]

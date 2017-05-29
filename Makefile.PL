@@ -4,9 +4,9 @@ use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME         => 'Etcd3',
+    NAME         => 'Net::Etcd',
     AUTHOR       => q{Sam Batschelet (hexfusion) <sbatschelet@mac.com>},
-    VERSION_FROM => 'lib/Etcd3.pm',
+    VERSION_FROM => 'lib/Net::Etcd.pm',
     ABSTRACT => 'Provide access to the etcd v3 API.',
     LICENSE  => 'perl',
     PL_FILES => {},
@@ -35,9 +35,9 @@ WriteMakefile(
     META_MERGE => {
         resources => {
             repository =>
-              'https://github.com/hexfusion/Etcd3',
+              'https://github.com/hexfusion/Net::Etcd',
             bugtracker =>
-              'https://github.com/hexfusion/Etcd3',
+              'https://github.com/hexfusion/Net::Etcd',
         },
     },
 );

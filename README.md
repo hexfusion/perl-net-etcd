@@ -2,15 +2,15 @@
 
 # NAME
 
-Etcd3
+Net::Etcd
 
 # SYNOPSIS
 
     Etcd v3.1.0 or greater is required.   To use the v3 API make sure to set environment
     variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
 
-    $etcd = Etcd3->new(); # host: 127.0.0.1 port: 2379
-    $etcd = Etcd3->new({ host => $host, port => $port, ssl => 1 });
+    $etcd = Net::Etcd->new(); # host: 127.0.0.1 port: 2379
+    $etcd = Net::Etcd->new({ host => $host, port => $port, ssl => 1 });
 
     # put key
     $result = $etcd->put({ key =>'foo1', value => 'bar' });
@@ -41,7 +41,7 @@ Etcd3
 
 # DESCRIPTION
 
-`Etcd3` An object oriented interface to the v3 REST API provided by the etcd grpc gateway.
+`Net::Etcd` An object oriented interface to the v3 REST API provided by the etcd grpc gateway.
 
 # ACCESSORS
 
@@ -71,19 +71,19 @@ defaults to /v3alpha
 
 ## watch
 
-Returns a [Etcd3::Watch](https://metacpan.org/pod/Etcd3::Watch) object.
+Returns a [Net::Etcd::Watch](https://metacpan.org/pod/Net::Etcd::Watch) object.
 
     $etcd->watch({ key =>'foo', range_end => 'fop' })
 
 ## role
 
-Returns a [Etcd3::Auth::Role](https://metacpan.org/pod/Etcd3::Auth::Role) object.
+Returns a [Net::Etcd::Auth::Role](https://metacpan.org/pod/Net::Etcd::Auth::Role) object.
 
     $etcd->role({ role => 'foo' });
 
 ## user\_role
 
-Returns a [Etcd3::User::Role](https://metacpan.org/pod/Etcd3::User::Role) object.
+Returns a [Net::Etcd::User::Role](https://metacpan.org/pod/Net::Etcd::User::Role) object.
 
     $etcd->user_role({ name => 'samba', role => 'foo' });
 
@@ -93,19 +93,19 @@ Currently not available.
 
 ## lease
 
-Returns a [Etcd3::Lease](https://metacpan.org/pod/Etcd3::Lease) object.
+Returns a [Net::Etcd::Lease](https://metacpan.org/pod/Net::Etcd::Lease) object.
 
 ## user
 
-Returns a [Etcd3::User](https://metacpan.org/pod/Etcd3::User) object.
+Returns a [Net::Etcd::User](https://metacpan.org/pod/Net::Etcd::User) object.
 
 ## put
 
-Returns a [Etcd3::KV::Put](https://metacpan.org/pod/Etcd3::KV::Put) object.
+Returns a [Net::Etcd::KV::Put](https://metacpan.org/pod/Net::Etcd::KV::Put) object.
 
 ## range
 
-Returns a [Etcd3::KV::Range](https://metacpan.org/pod/Etcd3::KV::Range) object.
+Returns a [Net::Etcd::KV::Range](https://metacpan.org/pod/Net::Etcd::KV::Range) object.
 
 ## configuration
 

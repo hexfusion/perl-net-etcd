@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Etcd3;
+use Net::Etcd;
 use Test::More;
 use Test::Exception;
 use Data::Dumper;
@@ -18,7 +18,7 @@ else {
 }
 
 my ($watch,$key);
-my $etcd = Etcd3->new( { host => $host, port => $port } );
+my $etcd = Net::Etcd->new( { host => $host, port => $port } );
 
 our @events;
 # create watch with callback and store events

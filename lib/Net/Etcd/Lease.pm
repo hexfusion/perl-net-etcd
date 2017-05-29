@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::Lease;
+package Net::Etcd::Lease;
 
 use strict;
 use warnings;
@@ -10,13 +10,13 @@ use Data::Dumper;
 use Carp;
 use JSON;
 
-with 'Etcd3::Role::Actions';
+with 'Net::Etcd::Role::Actions';
 
 use namespace::clean;
 
 =head1 NAME
 
-Etcd3::Lease
+Net::Etcd::Lease
 
 =cut
 

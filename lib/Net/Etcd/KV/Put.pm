@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::KV::Put;
+package Net::Etcd::KV::Put;
 
 use strict;
 use warnings;
@@ -9,13 +9,13 @@ use Types::Standard qw(Str Int Bool HashRef ArrayRef);
 use MIME::Base64;
 use JSON;
 
-with 'Etcd3::Role::Actions';
+with 'Net::Etcd::Role::Actions';
 
 use namespace::clean;
 
 =head1 NAME
 
-Etcd3::Put
+Net::Etcd::Put
 
 =cut
 

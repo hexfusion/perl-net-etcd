@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::Auth::Role;
+package Net::Etcd::Auth::Role;
 
 use strict;
 use warnings;
@@ -10,13 +10,13 @@ use MIME::Base64;
 use Carp;
 use JSON;
 
-with 'Etcd3::Role::Actions';
+with 'Net::Etcd::Role::Actions';
 
 use namespace::clean;
 
 =head1 NAME
 
-Etcd3::Auth::Role
+Net::Etcd::Auth::Role
 
 =cut
 

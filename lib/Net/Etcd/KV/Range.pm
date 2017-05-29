@@ -1,5 +1,5 @@
 use utf8;
-package Etcd3::KV::Range;
+package Net::Etcd::KV::Range;
 
 use strict;
 use warnings;
@@ -9,14 +9,14 @@ use Types::Standard qw(Str Int Bool HashRef ArrayRef);
 use MIME::Base64;
 use JSON;
 
-with 'Etcd3::Role::Actions';
-#extends 'Etcd3::KV';
+with 'Net::Etcd::Role::Actions';
+#extends 'Net::Etcd::KV';
 
 use namespace::clean;
 
 =head1 NAME
 
-Etcd3::Range
+Net::Etcd::Range
 
 =cut
 
