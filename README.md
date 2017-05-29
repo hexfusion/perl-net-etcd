@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/hexfusion/perl-etcd3.svg?branch=master)](https://travis-ci.org/hexfusion/perl-etcd3)
+[![Build Status](https://api.travis-ci.org/hexfusion/perl-net-etcd.svg?branch=master)](https://travis-ci.org/hexfusion/perl-etcd3)
 
 # NAME
 
