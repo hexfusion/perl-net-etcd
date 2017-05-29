@@ -1,6 +1,6 @@
 use utf8;
 package Net::Etcd;
-# ABSTRACT: [depricated] Please see Net::Etcd.
+# ABSTRACT: Provide access to the etcd v3 API.
 
 use strict;
 use warnings;
