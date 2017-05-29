@@ -6,7 +6,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME         => 'Net::Etcd',
     AUTHOR       => q{Sam Batschelet (hexfusion) <sbatschelet@mac.com>},
-    VERSION_FROM => 'lib/Net::Etcd.pm',
+    VERSION_FROM => 'lib/Net/Etcd.pm',
     ABSTRACT => 'Provide access to the etcd v3 API.',
     LICENSE  => 'perl',
     PL_FILES => {},
@@ -35,9 +35,9 @@ WriteMakefile(
     META_MERGE => {
         resources => {
             repository =>
-              'https://github.com/hexfusion/Net::Etcd',
+              'https://github.com/hexfusion/perl-net-etcd.git',
             bugtracker =>
-              'https://github.com/hexfusion/Net::Etcd',
+              'https://github.com/hexfusion/perl-net-etcd/issues',
         },
     },
 );
