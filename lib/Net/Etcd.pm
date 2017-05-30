@@ -285,6 +285,12 @@ Returns a L<Net::Etcd::KV::Range> object.
 
 =cut
 
+=head2 txn
+
+Returns a L<Net::Etcd::KV::Txn> object.
+
+=cut
+
 =head2 configuration
 
 Initialize configuration checks to see it etcd is installed locally.
