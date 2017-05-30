@@ -90,4 +90,18 @@ sub delete {
     return $self;
 }
 
+
+=head2 changepw
+
+    $etcd->user({ name =>'foo' password => 'bar' })->changepw
+
+=cut
+
+sub changepw {
+    my $self = shift;
+    $self->{endpoint} = '/auth/user/changepw';
+    $self->request;
+    return $self;
+}
+
 1;
