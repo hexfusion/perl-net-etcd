@@ -66,7 +66,7 @@ our $VERSION = '0.009';
 
 =head1 DESCRIPTION
 
-This module has been superseded by L<Net::Etcd> and will be removed from CPAN on June 29th 2017
+L<Net::Etcd> is object oriented interface to the v3 REST API provided by the etcd L<grpc-gateway|https://github.com/grpc-ecosystem/grpc-gateway>.
 
 
 =head1 ACCESSORS

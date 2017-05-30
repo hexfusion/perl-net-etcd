@@ -41,7 +41,7 @@ Net::Etcd
 
 # DESCRIPTION
 
-This module has been superseded by [Net::Etcd](https://metacpan.org/pod/Net::Etcd) and will be removed from CPAN on June 29th 2017
+[Net::Etcd](https://metacpan.org/pod/Net::Etcd) is object oriented interface to the v3 REST API provided by the etcd [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway).
 
 # ACCESSORS
 
