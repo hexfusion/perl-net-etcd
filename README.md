@@ -105,6 +105,10 @@ Returns a [Net::Etcd::KV::Put](https://metacpan.org/pod/Net::Etcd::KV::Put) obje
 
 Returns a [Net::Etcd::KV::Range](https://metacpan.org/pod/Net::Etcd::KV::Range) object.
 
+## txn
+
+Returns a [Net::Etcd::KV::Txn](https://metacpan.org/pod/Net::Etcd::KV::Txn) object.
+
 ## configuration
 
 Initialize configuration checks to see it etcd is installed locally.

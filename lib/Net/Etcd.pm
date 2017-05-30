@@ -27,7 +27,7 @@ Net::Etcd
 
 =cut
 
-our $VERSION = '0.008';
+our $VERSION = '0.009';
 
 =head1 SYNOPSIS
 

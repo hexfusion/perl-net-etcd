@@ -82,6 +82,9 @@ PUBLIC METHODS
   range
     Returns a Net::Etcd::KV::Range object.
 
+  txn
+    Returns a Net::Etcd::KV::Txn object.
+
   configuration
     Initialize configuration checks to see it etcd is installed locally.
 

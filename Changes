@@ -1,5 +1,10 @@
 Revision history for Net::Etcd
 
+0.009
+[ ENHANCEMENTS ]
+ * Add intial support for Txn
+ * Add changepw support for users to change password.
+
 0.008
 [ ANNOUNCEMENT ]
  * Namespace change Etcd3 is now Net::Etcd
