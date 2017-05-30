@@ -64,7 +64,7 @@ has password => (
 
 =head2 add
 
-$etcd->user({ name =>'foo' password => 'bar' })->add
+    $etcd->user({ name =>'foo' password => 'bar' })->add
 
 =cut
 
@@ -79,7 +79,7 @@ sub add {
 
 =head2 delete
 
-$etcd->user({ name =>'foo' })->delete
+    $etcd->user({ name =>'foo' })->delete
 
 =cut
 
