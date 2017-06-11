@@ -49,12 +49,14 @@ a single call to MultiOp. A MultiOp is applied atomically and consists of three 
 
 =head2 endpoint
 
+    /v3alpha/kv/txn
+
 =cut
 
 has endpoint => (
     is      => 'ro',
     isa     => Str,
-    default => '/v3alpha/kv/txn'
+    default => '/kv/txn'
 );
 
 =head2 compare
