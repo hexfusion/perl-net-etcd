@@ -6,6 +6,7 @@ use warnings;
 use Net::Etcd;
 use Test::More;
 use Test::Exception;
+use Math::Int64 qw(int64_rand int64_to_string);
 use Data::Dumper;
 
 my ($host, $port);
@@ -22,12 +23,14 @@ else {
 my $etcd = Net::Etcd->new( { host => $host, port => $port } );
 
 my $lease;
+my $int64 = int64_rand();
+my $lease_id = int64_to_string($int64);
 
 # add lease
 lives_ok(
     sub {
         $lease =
-          $etcd->lease( { ID => 7587821338341002662, TTL => 20 } )->grant;
+          $etcd->lease( { ID => $lease_id, TTL => 20 } )->grant;
     },
     "add a new lease"
 );
@@ -35,7 +38,7 @@ lives_ok(
 cmp_ok( $lease->{response}{success}, '==', 1, "add lease success" );
 
 # add lease to key
-lives_ok( sub {  $lease = $etcd->put( { key => 'foo2', value => 'bar2', lease => 7587821338341002662 } ) },
+lives_ok( sub {  $lease = $etcd->put( { key => 'foo2', value => 'bar2', lease => $lease_id } ) },
     "add a new lease to a key" );
 
 cmp_ok( $lease->{response}{success}, '==', 1, "add lease to key success" );
@@ -48,20 +51,24 @@ lives_ok( sub { $key = $etcd->range( { key => 'foo2' } )->get_value },
 
 cmp_ok( $key, 'eq', 'bar2', "lease key value" );
 
+sleep 2;
+
 # lease keep alive
-lives_ok( sub {  $lease = $etcd->lease( { ID => 7587821338341002662 } )->keepalive },
+lives_ok( sub {  $lease = $etcd->lease( { ID => $lease_id } )->keepalive },
     "lease_keep_alive" );
 
 cmp_ok( $lease->{response}{success}, '==', 1, "reset lease keep alive success" );
 
 # lease ttl
-lives_ok( sub {  $lease = $etcd->lease( { ID => 7587821338341002662, keys => 1 } )->ttl },
+lives_ok( sub {  $lease = $etcd->lease( { ID => $lease_id, keys => 1 } )->ttl },
     "lease_ttl" );
 
 cmp_ok( $lease->{response}{success}, '==', 1, "return lease_ttl success" );
 
+#print STDERR Dumper($lease);
+
 # revoke lease
-lives_ok( sub {  $lease = $etcd->lease( { ID => 7587821338341002662 } )->revoke },
+lives_ok( sub {  $lease = $etcd->lease( { ID => $lease_id } )->revoke },
     "revoke lease" );
 
 #print STDERR Dumper($lease);
