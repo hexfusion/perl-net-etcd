@@ -82,7 +82,7 @@ a given time to live period. All keys attached to the lease will be expired and 
 the lease expires. Each expired key generates a delete event in the event history.
 
 
-    $etcd->lease({ name =>'foo' password => 'bar' })->grant
+    $etcd->lease({ ID => 7587821338341002662,  TTL => 20 })->grant
 
 =cut
 
