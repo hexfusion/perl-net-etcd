@@ -28,7 +28,7 @@ Net::Etcd
 
 =cut
 
-our $VERSION = '0.009';
+our $VERSION = '0.010';
 
 =head1 SYNOPSIS
 
@@ -305,6 +305,18 @@ Returns a L<Net::Etcd::KV::Range> object.
 =head2 txn
 
 Returns a L<Net::Etcd::KV::Txn> object.
+
+=cut
+
+=head2 op
+
+Returns a L<Net::Etcd::KV::Op> object.
+
+=cut
+
+=head2 compare
+
+Returns a L<Net::Etcd::KV::Compare> object.
 
 =cut
 

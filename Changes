@@ -1,4 +1,7 @@
 Revision history for Net::Etcd
+0.010
+[ ENHANCEMENTS ]
+* Add intial support for snapshot
 
 0.009
 [ ENHANCEMENTS ]

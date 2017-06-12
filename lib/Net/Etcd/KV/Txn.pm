@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use Moo;
-use Types::Standard qw(Str Int Bool HashRef ArrayRef);
+use Types::Standard qw(InstanceOf Str Int Bool HashRef ArrayRef);
 use MIME::Base64;
 use Data::Dumper;
 use JSON;
@@ -20,7 +20,7 @@ Net::Etcd::KV::Txn
 
 =cut
 
-our $VERSION = '0.009';
+our $VERSION = '0.010';
 
 =head1 DESCRIPTION
 
@@ -71,8 +71,8 @@ responses in order.
 
 has compare => (
     is       => 'ro',
-    isa      => ArrayRef,
-    required => 1,
+	isa      => ArrayRef,
+	required => 1,
 );
 
 =head2 success
@@ -83,7 +83,7 @@ success is a list of requests which will be applied when compare evaluates to tr
 
 has success => (
     is     => 'ro',
-    isa    => ArrayRef,
+	isa    => ArrayRef,
 );
 
 =head2 failure
@@ -94,7 +94,32 @@ failure is a list of requests which will be applied when compare evaluates to fa
 
 has failure => (
     is     => 'ro',
-    isa    => ArrayRef,
+	isa    => ArrayRef,
 );
+
+=head1 PUBLIC METHODS
+
+=head2 create
+
+create txn
+
+=cut
+
+#TODO hack alert
+
+sub create {
+    my $self = shift;
+    my $compare = $self->compare;
+	my $success = $self->success;
+	my $failure = $self->failure;
+    my $txn ='"compare":[' . join(',', map {$_->json_args} @$compare) . '],';
+	$txn .= '"success":[' . join(',', @$success) . ']' if defined $success;
+    $txn .= ',' if defined $success and defined $failure;
+    $txn .= '"failure":[ ' . join(',', @$failure) . ']' if defined $failure;
+    $self->{json_args} = '{'  . $txn . '}';
+#	print STDERR Dumper($self);
+	$self->request;
+    return $self;
+}
 
 1;
