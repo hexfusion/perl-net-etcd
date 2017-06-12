@@ -51,8 +51,6 @@ lives_ok( sub { $key = $etcd->range( { key => 'foo2' } )->get_value },
 
 cmp_ok( $key, 'eq', 'bar2', "lease key value" );
 
-sleep 2;
-
 # lease keep alive
 lives_ok( sub {  $lease = $etcd->lease( { ID => $lease_id } )->keepalive },
     "lease_keep_alive" );

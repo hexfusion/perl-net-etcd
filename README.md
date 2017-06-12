@@ -93,6 +93,10 @@ Returns a [Net::Etcd::Auth](https://metacpan.org/pod/Net::Etcd::Auth) object.
 
 Returns a [Net::Etcd::Lease](https://metacpan.org/pod/Net::Etcd::Lease) object.
 
+## maintenance
+
+Returns a [Net::Etcd::Maintenance](https://metacpan.org/pod/Net::Etcd::Maintenance) object.
+
 ## user
 
 Returns a [Net::Etcd::User](https://metacpan.org/pod/Net::Etcd::User) object.
