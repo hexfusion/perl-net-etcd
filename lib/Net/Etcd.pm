@@ -258,7 +258,9 @@ sub lease {
     );
 }
 
-=head2 Maintenance
+=head2 maintenance
+
+Returns a L<Net::Etcd::Maintenance> object.
 
 =cut
 
