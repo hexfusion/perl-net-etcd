@@ -9,6 +9,7 @@ lib/Net/Etcd/Auth.pm
 lib/Net/Etcd/Auth/Role.pm
 lib/Net/Etcd/Config.pm
 lib/Net/Etcd/Lease.pm
+lib/Net/Etcd/Maintenance.pm
 lib/Net/Etcd/Role/Actions.pm
 lib/Net/Etcd/KV.pm
 lib/Net/Etcd/KV/Put.pm
