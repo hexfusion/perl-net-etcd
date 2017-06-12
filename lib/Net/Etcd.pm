@@ -12,6 +12,7 @@ use Net::Etcd::Auth;
 use Net::Etcd::Config;
 use Net::Etcd::Watch;
 use Net::Etcd::Lease;
+use Net::Etcd::Maintenance;
 use Net::Etcd::User;
 use Types::Standard qw(Str Int Bool HashRef);
 
@@ -251,6 +252,22 @@ sub lease {
     my ( $self, $options ) = @_;
     my $cb = pop if ref $_[-1] eq 'CODE';
     return Net::Etcd::Lease->new(
+        etcd => $self,
+        cb   => $cb,
+        ( $options ? %$options : () ),
+    );
+}
+
+=head2 maintenance
+
+Returns a L<Net::Etcd::Maintenance> object.
+
+=cut
+
+sub maintenance {
+    my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    return Net::Etcd::Maintenance->new(
         etcd => $self,
         cb   => $cb,
         ( $options ? %$options : () ),
