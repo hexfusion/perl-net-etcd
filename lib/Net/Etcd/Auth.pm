@@ -24,7 +24,7 @@ Net::Etcd::Auth
 
 =cut
 
-our $VERSION = '0.009';
+our $VERSION = '0.010';
 
 =head1 DESCRIPTION
 

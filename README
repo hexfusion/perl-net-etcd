@@ -73,6 +73,9 @@ PUBLIC METHODS
   lease
     Returns a Net::Etcd::Lease object.
 
+  maintenance
+    Returns a Net::Etcd::Maintenance object.
+
   user
     Returns a Net::Etcd::User object.
 
