@@ -24,7 +24,7 @@ use namespace::clean;
 
 =head1 NAME
 
-Net::Etcd
+Net::Etcd - etcd v3 REST API.
 
 =cut
 
