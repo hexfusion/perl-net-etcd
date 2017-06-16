@@ -58,15 +58,17 @@ create op
 
 =cut
 
+#TODO this dirty hack should be a perl data object and then make json.
+
 sub create {
     my $self = shift;
     my @op;
     my $put = $self->request_put;
     my $range = $self->request_range;
     my $delete_range = $self->request_delete_range;
-    push @op, '{"RequestPut":' . $put->json_args . '}' if defined $put;
-    push @op, '{"RequestRange":' . $range->json_args . '}' if defined $range;
-    push @op, '{"RequestDeleteRange":' . $delete_range->json_args . '}' if defined $delete_range;
+    push @op, '{"requestPut":' . $put->json_args . '}' if defined $put;
+    push @op, '{"requestRange":' . $range->json_args . '}' if defined $range;
+    push @op, '{"requestDeleteRange":' . $delete_range->json_args . '}' if defined $delete_range;
     return @op;
 }
 

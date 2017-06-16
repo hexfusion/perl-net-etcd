@@ -38,7 +38,11 @@ Key Value role providing easy access to Put and Range classes
 
 Range gets the keys in the range from the key-value store.
 
+    # get range
     $etcd->range({key =>'test0', range_end => 'test100'})
+
+    # delete range
+    $etcd->range({key =>'test0', range_end => 'test100'})->delete
 
 =cut
 
@@ -51,8 +55,8 @@ sub range {
         cb       => $cb,
         ( $options ? %$options : () ),
     );
-    $range->request;
-    return $range;
+    $range->request unless $range->hold;
+    return $range
 }
 
 =head2 put
@@ -61,7 +65,7 @@ Put puts the given key into the key-value store. A put request increments
 the revision of the key-value store and generates one event in the event
 history.
 
-    $etcd->range({key =>'test0', range_end => 'test100'})
+    $etcd->put({key =>'test0', value=> 'bar'})
 
 =cut
 
@@ -125,7 +129,7 @@ sub compare {
         %$self,
         ( $options ? %$options : () ),
     );
-    return $cmp;
+    return $cmp->json_args;
 }
 
 1;

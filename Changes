@@ -1,4 +1,8 @@
 Revision history for Net::Etcd
+0.011
+[ ENHANCEMENTS ]
+* Add full support for Txn with tests.  Recommended for use with etcd 3.2.0+
+
 0.010
 [ ENHANCEMENTS ]
 * Add intial support for snapshot

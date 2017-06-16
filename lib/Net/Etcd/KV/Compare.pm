@@ -20,7 +20,7 @@ Net::Etcd::KV::Compare
 
 =cut
 
-our $VERSION = '0.009';
+our $VERSION = '0.010';
 
 =head1 DESCRIPTION
 
@@ -57,7 +57,7 @@ key is the subject key for the comparison operation.
 
 has key => (
     is     => 'ro',
-    coerce => sub { return encode_base64( $_[0], '' ) },
+    coerce => sub { return encode_base64( $_[0], '' ) if $_[0] },
 );
 
 
@@ -68,7 +68,7 @@ version is the version of the given key
 =cut
 
 has version => (
-    is       => 'ro',
+    is      => 'ro',
 );
 
 =head2 create_revision 
@@ -99,6 +99,7 @@ value is the value of the given key, in bytes.
 
 has value => (
     is     => 'ro',
+    coerce => sub { return encode_base64( $_[0], '' ) if $_[0] },
 );
 
 1;
