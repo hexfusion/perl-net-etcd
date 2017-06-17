@@ -80,7 +80,7 @@ Delete role
 
 sub delete {
     my ($self) = @_;
-    confess 'name required for ' . __PACKAGE__ . '->delete'
+    confess 'role required for ' . __PACKAGE__ . '->delete'
       unless $self->{role};
     $self->{endpoint} = '/auth/role/delete';
     $self->request;

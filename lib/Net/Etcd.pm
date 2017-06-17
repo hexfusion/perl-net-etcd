@@ -337,6 +337,8 @@ sub BUILD {
         $msg .= ">> Please install etcd - https://coreos.com/etcd/docs/latest/";
         die $msg;
     }
+    # set the intial auth token
+    $self->auth()->authenticate;
 }
 
 =head1 AUTHOR
