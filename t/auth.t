@@ -68,6 +68,8 @@ lives_ok(
     "enable auth"
 );
 
+sleep 1;
+
 # disable auth
 lives_ok(
     sub {
@@ -76,6 +78,8 @@ lives_ok(
     },
     "disable auth"
 );
+
+sleep 1;
 
 
 cmp_ok( $role->{response}{success}, '==', 1, "revoke role success" );
