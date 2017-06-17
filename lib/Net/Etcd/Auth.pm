@@ -111,7 +111,7 @@ sub authenticate {
     $self->request;
     my $auth = from_json($self->{response}{content});
     if ($auth && defined  $auth->{token}) {
-        return $auth->{token};
+        $self->etcd->{auth_token} = $auth->{token};
     }
     return;
 }

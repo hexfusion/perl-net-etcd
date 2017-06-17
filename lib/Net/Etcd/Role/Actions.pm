@@ -89,7 +89,7 @@ has headers => ( is => 'lazy' );
 sub _build_headers {
     my ($self) = @_;
     my $headers;
-    my $token = $self->etcd->auth->authenticate;
+    my $token = $self->etcd->auth_token;
     $headers->{'Content-Type'} = 'application/json';
     $headers->{'Authorization'} = $token if $token;
     return $headers;
