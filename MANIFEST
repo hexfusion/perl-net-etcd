@@ -13,7 +13,7 @@ lib/Net/Etcd/Maintenance.pm
 lib/Net/Etcd/Role/Actions.pm
 lib/Net/Etcd/KV.pm
 lib/Net/Etcd/KV/Compare.pm
-lib/Net/Etcd/KV/MultiOp.pm
+lib/Net/Etcd/KV/Op.pm
 lib/Net/Etcd/KV/Put.pm
 lib/Net/Etcd/KV/Range.pm
 lib/Net/Etcd/KV/Txn.pm
@@ -27,6 +27,7 @@ t/manifest.t
 t/pod-coverage.t
 t/pod-spelling.t
 t/pod.t
+t/txn.t
 t/user.t
 t/watch.t
 .travis.yml
