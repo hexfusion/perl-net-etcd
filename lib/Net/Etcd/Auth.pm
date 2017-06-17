@@ -9,6 +9,7 @@ use warnings;
 =cut
 
 use Moo;
+use JSON;
 use Carp;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
 use Net::Etcd::Auth::Role;
@@ -66,6 +67,13 @@ has name => (
     isa      => Str,
 );
 
+sub _build_name {
+    my ($self) = @_;
+    my $user = $self->etcd->name;
+    return $user if $user;
+    return;
+}
+
 =head2 password
 
 =cut
@@ -75,23 +83,34 @@ has password => (
     isa      => Str,
 );
 
+sub _build_password {
+    my ($self) = @_;
+    my $pwd = $self->etcd->password;
+    return $pwd if $pwd;
+    return;
+}
+
 =head1 PUBLIC METHODS
 
 =head2 authenticate
 
-Enable authentication, this requires name and password.
+Returns token with valid authentication.
 
-    $etcd->auth({ name => $user, password => $pass })->authenticate;
+    my $token = $etcd->auth({ name => $user, password => $pass })->authenticate;
 
 =cut
 
 sub authenticate {
     my ( $self, $options ) = @_;
     $self->{endpoint} = '/auth/authenticate';
-    confess 'name and password required for ' . __PACKAGE__ . '->authenticate'
-      unless ($self->{password} && $self->{name});
+    $self->{headers}{'Content-Type'} = 'application/json';
+    return unless ($self->password && $self->name);
     $self->request;
-    return $self;
+    my $auth = from_json($self->{response}{content});
+    if ($auth && defined  $auth->{token}) {
+        $self->etcd->{auth_token} = $auth->{token};
+    }
+    return;
 }
 
 =head2 enable
