@@ -12,6 +12,7 @@ use Moo;
 use Carp;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
 use Net::Etcd::Auth::Role;
+use Data::Dumper;
 
 with 'Net::Etcd::Role::Actions';
 
@@ -24,7 +25,7 @@ Net::Etcd::Auth
 
 =cut
 
-our $VERSION = '0.010';
+our $VERSION = '0.011';
 
 =head1 DESCRIPTION
 
@@ -57,23 +58,39 @@ has endpoint => (
     isa      => Str,
 );
 
-=head2 password
+=head2 name
+
+Defaults to $etcd->name
 
 =cut
 
 has name => (
-    is       => 'ro',
-    isa      => Str,
+    is       => 'lazy',
 );
 
+sub _build_name {
+    my ($self) = @_;
+	my $user = $self->etcd->name;
+	return $user if $user;
+	return;
+}
+
 =head2 password
+
+Defaults to $etcd->password
 
 =cut
 
 has password => (
-    is       => 'ro',
-    isa      => Str,
+    is       => 'lazy',
 );
+
+sub _build_password {
+    my ($self) = @_;
+	my $pwd = $self->etcd->password;
+	return $pwd if $pwd;
+	return;
+}
 
 =head1 PUBLIC METHODS
 
@@ -88,9 +105,13 @@ Enable authentication, this requires name and password.
 sub authenticate {
     my ( $self, $options ) = @_;
     $self->{endpoint} = '/auth/authenticate';
-    confess 'name and password required for ' . __PACKAGE__ . '->authenticate'
-      unless ($self->{password} && $self->{name});
-    $self->request;
+    $self->{headers}{'Content-Type'} = 'application/json';
+    return unless ($self->password && $self->name);
+#    $self->password;
+#	$self->name;
+#print STDERR Dumper($self);
+$self->request;
+
     return $self;
 }
 
@@ -122,7 +143,7 @@ sub disable {
     my ( $self, $options ) = @_;
     $self->{endpoint} = '/auth/disable';
     confess 'root name and password required for ' . __PACKAGE__ . '->disable'
-      unless ($self->{password} && $self->{name});
+      unless ($self->password && $self->name);
     $self->request;
     return $self;
 }

@@ -22,7 +22,7 @@ Net::Etcd::Role::Actions
 
 =cut
 
-our $VERSION = '0.010';
+our $VERSION = '0.011';
 
 has etcd => (
     is  => 'ro',
@@ -84,8 +84,22 @@ sub init {
 
 =cut
 
-has headers => ( is => 'ro' );
+has headers => ( is => 'lazy' );
 
+sub _build_headers {
+    my ($self) = @_;
+    my $headers;
+    my $auth = $self->etcd->auth->authenticate;
+#	print STDERR Dumper($auth->authenticate);
+    my $auth_token; 
+	$auth_token = $auth->token if $auth;
+
+print STDERR "Auth token " .  $auth_token if $auth_token;
+
+    $headers->{'Content-Type'} = 'application/json';
+    $headers->{'Authorization'} = $auth_token if $auth_token;
+    return $headers;
+}
 =head2 hold
 
 When set will not fire request.
@@ -113,6 +127,8 @@ sub _build_request {
     my $cb = $self->cb;
     my $cv = $self->cv ? $self->cv : AE::cv;
     $cv->begin;
+
+    print STDERR Dumper($self->headers);
     http_request(
         'POST',
         $self->etcd->api_path . $self->{endpoint},

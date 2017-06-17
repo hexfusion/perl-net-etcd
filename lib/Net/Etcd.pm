@@ -28,7 +28,7 @@ Net::Etcd - etcd v3 REST API.
 
 =cut
 
-our $VERSION = '0.010';
+our $VERSION = '0.011';
 
 =head1 SYNOPSIS
 
@@ -65,6 +65,15 @@ our $VERSION = '0.010';
     # attach lease to put
     $etcd->put( { key => 'foo2', value => 'bar2', lease => 7587821338341002662 } );
 
+    # add new user
+    $etcd->user( { name => 'samba', password => 'foo' } )->add;
+
+    # add new user role
+	$role = $etcd->role( { name => 'myrole' } )->add;
+
+    # grant role
+    $etcd->user_role( { user => 'samba', role => 'myrole' } )->grant;
+
 =head1 DESCRIPTION
 
 L<Net::Etcd> is object oriented interface to the v3 REST API provided by the etcd L<grpc-gateway|https://github.com/grpc-ecosystem/grpc-gateway>.
@@ -73,6 +82,8 @@ L<Net::Etcd> is object oriented interface to the v3 REST API provided by the etc
 =head1 ACCESSORS
 
 =head2 host
+
+The etcd host. Defaults to 127.0.0.1
 
 =cut
 
@@ -84,6 +95,8 @@ has host => (
 
 =head2 port
 
+Default 2379.
+
 =cut
 
 has port => (
@@ -92,7 +105,9 @@ has port => (
     default => '2379'
 );
 
-=head2 username
+=head2 name
+
+Username for authentication
 
 =cut
 
@@ -103,6 +118,8 @@ has name => (
 
 =head2 password
 
+Authentication credentials
+
 =cut
 
 has password => (
@@ -112,6 +129,8 @@ has password => (
 
 =head2 ssl
 
+To enable set to 1
+
 =cut
 
 has ssl => (
@@ -119,27 +138,13 @@ has ssl => (
     isa => Bool,
 );
 
-=head2 api_root
-
-=cut
-
-has api_root => ( is => 'lazy' );
-
-sub _build_api_root {
-    my ($self) = @_;
-    return
-        ( $self->ssl ? 'https' : 'http' ) . '://'
-      . $self->host . ':'
-      . $self->port;
-}
-
-=head2 api_prefix
+=head2 api_version
 
 defaults to /v3alpha
 
 =cut
 
-has api_prefix => (
+has api_version => (
     is      => 'ro',
     isa     => Str,
     default => '/v3alpha'
@@ -147,34 +152,32 @@ has api_prefix => (
 
 =head2 api_path
 
+The full api path. Defaults to http://127.0.0.1:2379/v3alpha
+
 =cut
 
 has api_path => ( is => 'lazy' );
 
 sub _build_api_path {
     my ($self) = @_;
-    return $self->api_root . $self->api_prefix;
+    return ( $self->ssl ? 'https' : 'http' ) . '://'
+      . $self->host . ':'. $self->port . $self->api_version;
 }
 
 =head2 auth_token
 
+The token that is passed during authentication.  This is generated during the
+authentication process and stored until no longer valid or username is changed.
+
 =cut
 
-has auth_token => ( is => 'lazy' );
-
-sub _build_auth_token {
-    my ($self) = @_;
-    return Net::Etcd::Auth::Authenticate->new(
-        etcd => $self,
-        %$self
-    )->token;
-}
+has auth_token => ( is => 'rwp' );
 
 =head1 PUBLIC METHODS
 
 =head2 watch
 
-Returns a L<Net::Etcd::Watch> object.
+See L<Net::Etcd::Watch>
 
     $etcd->watch({ key =>'foo', range_end => 'fop' })
 
@@ -192,7 +195,7 @@ sub watch {
 
 =head2 role
 
-Returns a L<Net::Etcd::Auth::Role> object.
+See L<Net::Etcd::Auth::Role>
 
     $etcd->role({ role => 'foo' });
 
@@ -210,7 +213,7 @@ sub role {
 
 =head2 user_role
 
-Returns a L<Net::Etcd::User::Role> object.
+See L<Net::Etcd::User::Role>
 
     $etcd->user_role({ name => 'samba', role => 'foo' });
 
@@ -228,7 +231,11 @@ sub user_role {
 
 =head2 auth
 
-Returns a L<Net::Etcd::Auth> object.
+See L<Net::Etcd::Auth>
+
+    $etcd->auth({ name => 'samba', password => 'foo' })->authenticate;
+	$etcd->auth()->enable;
+	$etcd->auth()->disable
 
 =cut
 
@@ -244,7 +251,9 @@ sub auth {
 
 =head2 lease
 
-Returns a L<Net::Etcd::Lease> object.
+See L<Net::Etcd::Lease>
+
+    $etcd->lease( { ID => 7587821338341002662, TTL => 20 } )->grant;
 
 =cut
 
@@ -260,7 +269,9 @@ sub lease {
 
 =head2 maintenance
 
-Returns a L<Net::Etcd::Maintenance> object.
+See L<Net::Etcd::Maintenance>
+
+    $etcd->maintenance()->snapshot
 
 =cut
 
@@ -276,7 +287,9 @@ sub maintenance {
 
 =head2 user
 
-Returns a L<Net::Etcd::User> object.
+See L<Net::Etcd::User>
+
+    $etcd->user( { name => 'samba', password => 'foo' } )->add;
 
 =cut
 
@@ -292,31 +305,43 @@ sub user {
 
 =head2 put
 
-Returns a L<Net::Etcd::KV::Put> object.
+See L<Net::Etcd::KV::Put>
+
+    $etcd->put({ key =>'foo1', value => 'bar' });
 
 =cut
 
 =head2 range
 
-Returns a L<Net::Etcd::KV::Range> object.
+See L<Net::Etcd::KV::Range>
+
+    $etcd->range({ key =>'test0', range_end => 'test100' });
 
 =cut
 
 =head2 txn
 
-Returns a L<Net::Etcd::KV::Txn> object.
+See L<Net::Etcd::KV::Txn>
+
+    $etcd->txn({ compare => \@compare, success => \@op });
 
 =cut
 
 =head2 op
 
-Returns a L<Net::Etcd::KV::Op> object.
+See L<Net::Etcd::KV::Op>
+
+    $etcd->op({ request_put => $put });
+	$etcd->op({ request_delete_range => $range });
 
 =cut
 
 =head2 compare
 
-Returns a L<Net::Etcd::KV::Compare> object.
+See L<Net::Etcd::KV::Compare>
+
+    $etcd->compare( { key => 'foo', result => 'EQUAL', target => 'VALUE', value => 'baz' });
+    $etcd->compare( { key => 'foo', target => 'CREATE', result => 'NOT_EQUAL', create_revision => '2' });
 
 =cut
 
@@ -350,7 +375,7 @@ The L<etcd|https://github.com/coreos/etcd> developers and community.
 =head1 CAVEATS
 
 The L<etcd|https://github.com/coreos/etcd> v3 API is in heavy development and can change at anytime please see
-https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md
+ L<api_reference_v3|https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md>
 for latest details.
 
 =head1 LICENSE AND COPYRIGHT
