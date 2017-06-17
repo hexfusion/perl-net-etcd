@@ -89,15 +89,9 @@ has headers => ( is => 'lazy' );
 sub _build_headers {
     my ($self) = @_;
     my $headers;
-    my $auth = $self->etcd->auth->authenticate;
-#	print STDERR Dumper($auth->authenticate);
-    my $auth_token; 
-	$auth_token = $auth->token if $auth;
-
-print STDERR "Auth token " .  $auth_token if $auth_token;
-
+    my $token = $self->etcd->auth->authenticate;
     $headers->{'Content-Type'} = 'application/json';
-    $headers->{'Authorization'} = $auth_token if $auth_token;
+    $headers->{'Authorization'} = $token if $token;
     return $headers;
 }
 =head2 hold
@@ -128,7 +122,6 @@ sub _build_request {
     my $cv = $self->cv ? $self->cv : AE::cv;
     $cv->begin;
 
-    print STDERR Dumper($self->headers);
     http_request(
         'POST',
         $self->etcd->api_path . $self->{endpoint},

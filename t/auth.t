@@ -14,7 +14,7 @@ if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $host = $ENV{ETCD_TEST_HOST};
     $port = $ENV{ETCD_TEST_PORT};
 
-    plan tests => 6;
+    plan tests => 13;
 }
 else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
@@ -76,5 +76,31 @@ lives_ok(
     },
     "disable auth"
 );
+
+
+cmp_ok( $role->{response}{success}, '==', 1, "revoke role success" );
+
+# cleanup role
+lives_ok( sub { $role = $etcd->role( { role => 'root' } )->delete;
+    },
+    "delete role" );
+
+#print STDERR Dumper($role);
+
+cmp_ok( $role->{response}{success}, '==', 1, "delete role success" );
+
+
+# remove user
+lives_ok(
+    sub {
+        $user =
+          $etcd->user( { name => 'root' })->delete;
+    },
+    "delete user"
+);
+
+#print STDERR Dumper($user);
+
+cmp_ok( $user->{response}{success}, '==', 1, "delete user success" );
 
 1;
