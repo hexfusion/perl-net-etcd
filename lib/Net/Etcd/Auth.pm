@@ -106,7 +106,6 @@ Returns token with valid authentication.
 sub authenticate {
     my ( $self, $options ) = @_;
     $self->{endpoint} = '/auth/authenticate';
-    $self->{headers}{'Content-Type'} = 'application/json';
     return unless ($self->password && $self->name);
     $self->request;
     my $auth = from_json($self->{response}{content});
@@ -129,6 +128,9 @@ sub enable {
     $self->{endpoint} = '/auth/enable';
     $self->{json_args} = '{}';
     $self->request;
+
+    # init token
+    $self->etcd->auth()->authenticate;
     return $self;
 }
 

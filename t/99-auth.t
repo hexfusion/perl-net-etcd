@@ -14,7 +14,7 @@ if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $host = $ENV{ETCD_TEST_HOST};
     $port = $ENV{ETCD_TEST_PORT};
 
-    plan tests => 6;
+    plan tests => 8;
 }
 else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
@@ -33,7 +33,7 @@ lives_ok(
     "add a new user"
 );
 
-#print STDERR Dumper($user);
+print STDERR Dumper($user);
 
 # add new role
 lives_ok( sub { $role = $etcd->role( { name => 'root' } )->add;
@@ -64,15 +64,17 @@ lives_ok(
     "enable auth"
 );
 
+cmp_ok( $auth->{response}{success}, '==', 1, "enable auth" );
+
 # disable auth
 lives_ok(
     sub {
         $auth =
           $etcd->auth()->disable;
     },  
-    "enable auth"
+    "disable auth"
 );
 
-
+cmp_ok( $auth->{response}{success}, '==', 1, "disable auth" );
 
 1;
