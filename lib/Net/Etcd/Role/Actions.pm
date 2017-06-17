@@ -41,7 +41,7 @@ sub _build_json_args {
     my ($self) = @_;
     my $args;
     for my $key ( keys %{$self} ) {
-        unless ( $key =~ /(?:etcd|cb|cv|json_args|endpoint)$/ ) {
+        unless ( $key =~ /(?:etcd|cb|cv|hold|json_args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
@@ -85,6 +85,15 @@ sub init {
 =cut
 
 has headers => ( is => 'ro' );
+
+=head2 hold
+
+When set will not fire request.
+
+=cut
+
+has hold => ( is => 'ro' );
+
 
 =head2 response
 
