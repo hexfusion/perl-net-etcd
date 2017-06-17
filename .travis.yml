@@ -41,4 +41,4 @@ install:
 script:
   - perl Makefile.PL
   - make
-  - make test 
+  - prove -b -r -s -j$(test-jobs) $(test-files)

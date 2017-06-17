@@ -1,4 +1,9 @@
 Revision history for Net::Etcd
+0.012
+[ ENHANCEMENTS ]
+* Add full support for header based authentication via grpc-gateway.  Requires etcd 3.1.0+
+* Improve POD
+
 0.011
 [ ENHANCEMENTS ]
 * Add full support for Txn with tests.  Recommended for use with etcd 3.2.0+

@@ -19,7 +19,7 @@ Net::Etcd::Put
 
 =cut
 
-our $VERSION = '0.011';
+our $VERSION = '0.012';
 
 =head1 DESCRIPTION
 
