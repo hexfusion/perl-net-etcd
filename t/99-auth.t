@@ -33,7 +33,7 @@ lives_ok(
     "add a new user"
 );
 
-print STDERR Dumper($user);
+#print STDERR Dumper($user);
 
 # add new role
 lives_ok( sub { $role = $etcd->role( { name => 'root' } )->add;
