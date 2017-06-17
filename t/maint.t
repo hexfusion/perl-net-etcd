@@ -18,7 +18,7 @@ else {
 }
 
 my $maint;
-my $etcd = Net::Etcd->new( { host => $host, port => $port } );
+my $etcd = Net::Etcd->new( { host => $host, port => $port, name => 'root', password => 'toor' } );
 
 lives_ok(
     sub {

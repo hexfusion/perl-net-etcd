@@ -18,7 +18,7 @@ else {
 }
 
 my ($watch,$key);
-my $etcd = Net::Etcd->new( { host => $host, port => $port } );
+my $etcd = Net::Etcd->new( { host => $host, port => $port, name => 'root', password => 'toor' } );
 
 our @events;
 # create watch with callback and store events

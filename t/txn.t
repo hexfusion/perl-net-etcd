@@ -18,7 +18,7 @@ else {
 }
 
 my ($put, $comp, $range, @op, @compare, $txn);
-my $etcd = Net::Etcd->new( { host => $host, port => $port } );
+my $etcd = Net::Etcd->new( { host => $host, port => $port, name => 'root', password => 'toor' } );
 
 my @chars = ("A".."Z", "a".."z");
 
