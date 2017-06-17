@@ -14,7 +14,7 @@ if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $host = $ENV{ETCD_TEST_HOST};
     $port = $ENV{ETCD_TEST_PORT};
 
-    plan tests => 5;
+    plan tests => 6;
 }
 else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
@@ -63,5 +63,16 @@ lives_ok(
     },
     "enable auth"
 );
+
+# disable auth
+lives_ok(
+    sub {
+        $auth =
+          $etcd->auth()->disable;
+    },  
+    "enable auth"
+);
+
+
 
 1;
