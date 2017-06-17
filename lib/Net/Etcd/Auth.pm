@@ -148,6 +148,7 @@ sub disable {
     confess 'root name and password required for ' . __PACKAGE__ . '->disable'
       unless ($self->password && $self->name);
     $self->request;
+    $self->etcd->clear_auth_token;
     return $self;
 }
 

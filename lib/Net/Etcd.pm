@@ -171,7 +171,10 @@ authentication process and stored until no longer valid or username is changed.
 
 =cut
 
-has auth_token => ( is => 'rwp' );
+has auth_token => (
+    is      => 'rwp',
+    clearer => 1,
+);
 
 =head1 PUBLIC METHODS
 
