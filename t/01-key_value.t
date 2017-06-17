@@ -18,7 +18,7 @@ else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
 }
 
-my $etcd = Net::Etcd->new( { host => $host, port => $port } } );
+my $etcd = Net::Etcd->new( { host => $host, port => $port } );
 
 my $key;
 
