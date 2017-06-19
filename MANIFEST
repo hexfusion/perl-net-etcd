@@ -7,6 +7,7 @@ README.md
 lib/Net/Etcd.pm
 lib/Net/Etcd/Auth.pm
 lib/Net/Etcd/Auth/Role.pm
+lib/Net/Etcd/Auth/RolePermission.pm
 lib/Net/Etcd/Config.pm
 lib/Net/Etcd/Lease.pm
 lib/Net/Etcd/Maintenance.pm

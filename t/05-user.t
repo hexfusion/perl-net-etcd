@@ -58,6 +58,17 @@ cmp_ok( $role->{response}{success}, '==', 1, "get role success" );
 
 #print STDERR Dumper($role);
 
+lives_ok(
+    sub {
+        $role =
+          $etcd->role_perm( { name => 'myrole', key => 'foo', permType =>'READ' } )->grant;
+    },
+    "role_perm grant"
+);
+
+#print STDERR Dumper($role);
+
+cmp_ok( $role->{response}{success}, '==', 1, "role_perm grant success" );
 
 # grant role
 lives_ok(
@@ -81,9 +92,17 @@ lives_ok(
     "list role"
 );
 
-cmp_ok( $role->{response}{success}, '==', 1, "add role to user success" );
+cmp_ok( $role->{response}{success}, '==', 1, "list role success" );
 #print STDERR Dumper($role);
 
+# revoke role
+lives_ok(
+    sub {
+        $role =
+          $etcd->role_perm( { role => 'myrole', key => 'foo' } )->revoke;
+    },
+    "role_perm revoke"
+);
 
 # revoke role
 lives_ok(
