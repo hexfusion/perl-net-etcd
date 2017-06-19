@@ -9,6 +9,7 @@ use Moo;
 use JSON;
 use MIME::Base64;
 use Net::Etcd::Auth;
+use Net::Etcd::Auth::RolePermission;
 use Net::Etcd::Config;
 use Net::Etcd::Watch;
 use Net::Etcd::Lease;
@@ -28,7 +29,7 @@ Net::Etcd - etcd v3 REST API.
 
 =cut
 
-our $VERSION = '0.012';
+our $VERSION = '0.013';
 
 =head1 SYNOPSIS
 
@@ -70,6 +71,9 @@ our $VERSION = '0.012';
 
     # add new user role
 	$role = $etcd->role( { name => 'myrole' } )->add;
+
+    # grant read permission for the foo key to myrole
+    $etcd->role_perm( { name => 'myrole', key => 'foo', permType => 'READWRITE' } )->grant;
 
     # grant role
     $etcd->user_role( { user => 'samba', role => 'myrole' } )->grant;
@@ -212,6 +216,24 @@ sub role {
         cb   => $cb,
         ( $options ? %$options : () ),
     );
+}
+
+=head2 role_perm
+
+See L<Net::Etcd::Auth::RolePermission>
+
+Grants or revoke permission of a specified key or range to a specified role.
+
+=cut
+
+sub role_perm {
+    my ( $self, $options ) = @_; 
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    my $perm = Net::Etcd::Auth::RolePermission->new(
+        etcd     => $self,
+        cb       => $cb,
+        ( $options ? %$options : () ),
+    );  
 }
 
 =head2 user_role

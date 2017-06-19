@@ -55,6 +55,9 @@ cmp_ok( $key, 'eq', 'bar2', "lease key value" );
 lives_ok( sub {  $lease = $etcd->lease( { ID => $lease_id } )->keepalive },
     "lease_keep_alive" );
 
+#print STDERR Dumper($lease);
+
+
 cmp_ok( $lease->{response}{success}, '==', 1, "reset lease keep alive success" );
 
 # lease ttl

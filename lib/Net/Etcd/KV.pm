@@ -24,7 +24,7 @@ Net::Etcd::KV
 
 =cut
 
-our $VERSION = '0.012';
+our $VERSION = '0.013';
 
 =head1 DESCRIPTION
 

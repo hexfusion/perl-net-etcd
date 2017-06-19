@@ -14,7 +14,7 @@ if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $host = $ENV{ETCD_TEST_HOST};
     $port = $ENV{ETCD_TEST_PORT};
 
-    plan tests => 16;
+    plan tests => 19;
 }
 else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
@@ -58,6 +58,17 @@ cmp_ok( $role->{response}{success}, '==', 1, "get role success" );
 
 #print STDERR Dumper($role);
 
+lives_ok(
+    sub {
+        $role =
+          $etcd->role_perm( { name => 'myrole', key => 'foo', permType =>'READ' } )->grant;
+    },
+    "role_perm grant"
+);
+
+#print STDERR Dumper($role);
+
+cmp_ok( $role->{response}{success}, '==', 1, "role_perm grant success" );
 
 # grant role
 lives_ok(
@@ -81,9 +92,17 @@ lives_ok(
     "list role"
 );
 
-cmp_ok( $role->{response}{success}, '==', 1, "add role to user success" );
+cmp_ok( $role->{response}{success}, '==', 1, "list role success" );
 #print STDERR Dumper($role);
 
+# revoke role
+lives_ok(
+    sub {
+        $role =
+          $etcd->role_perm( { role => 'myrole', key => 'foo' } )->revoke;
+    },
+    "role_perm revoke"
+);
 
 # revoke role
 lives_ok(
