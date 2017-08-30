@@ -29,7 +29,7 @@ Net::Etcd - etcd v3 REST API.
 
 =cut
 
-our $VERSION = '0.013';
+our $VERSION = '0.014';
 
 =head1 SYNOPSIS
 
@@ -53,6 +53,9 @@ our $VERSION = '0.013';
 
     # return array { key => value } pairs from range request.
     my @users = $range->all
+
+    # delete single key
+    $etcd->deleterange({ key => 'test0' });
 
     # watch key range, streaming.
     $watch = $etcd->watch( { key => 'foo', range_end => 'fop'}, sub {
@@ -333,6 +336,14 @@ sub user {
 See L<Net::Etcd::KV::Put>
 
     $etcd->put({ key =>'foo1', value => 'bar' });
+
+=cut
+
+=head2 deleterange
+
+See L<Net::Etcd::KV::DeleteRange>
+
+    $etcd->deleterange({ key=>'test0' });
 
 =cut
 
