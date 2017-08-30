@@ -12,7 +12,7 @@ my ($host, $port);
 if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $host = $ENV{ETCD_TEST_HOST};
     $port = $ENV{ETCD_TEST_PORT};
-    plan tests => 6;
+    plan tests => 8;
 }
 else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
@@ -55,5 +55,15 @@ lives_ok(
 #print STDERR Dumper($key);
 
 cmp_ok( $key->{response}{success}, '==', 1, "kv delete success" );
+
+# verify delete
+lives_ok(
+    sub {
+        $key = $etcd->range( { key => 'foo1' } )
+    },
+    "kv range against deleted key"
+);
+
+is( $key->get_value, undef, "key undef as expected");
 
 1;
