@@ -73,7 +73,7 @@ our $VERSION = '0.014';
     $etcd->user( { name => 'samba', password => 'foo' } )->add;
 
     # add new user role
-	$role = $etcd->role( { name => 'myrole' } )->add;
+    $role = $etcd->role( { name => 'myrole' } )->add;
 
     # grant read permission for the foo key to myrole
     $etcd->role_perm( { name => 'myrole', key => 'foo', permType => 'READWRITE' } )->grant;
@@ -230,13 +230,13 @@ Grants or revoke permission of a specified key or range to a specified role.
 =cut
 
 sub role_perm {
-    my ( $self, $options ) = @_; 
+    my ( $self, $options ) = @_;
     my $cb = pop if ref $_[-1] eq 'CODE';
     my $perm = Net::Etcd::Auth::RolePermission->new(
         etcd     => $self,
         cb       => $cb,
         ( $options ? %$options : () ),
-    );  
+    );
 }
 
 =head2 user_role
@@ -262,8 +262,8 @@ sub user_role {
 See L<Net::Etcd::Auth>
 
     $etcd->auth({ name => 'samba', password => 'foo' })->authenticate;
-	$etcd->auth()->enable;
-	$etcd->auth()->disable
+    $etcd->auth()->enable;
+    $etcd->auth()->disable
 
 =cut
 
@@ -368,7 +368,7 @@ See L<Net::Etcd::KV::Txn>
 See L<Net::Etcd::KV::Op>
 
     $etcd->op({ request_put => $put });
-	$etcd->op({ request_delete_range => $range });
+    $etcd->op({ request_delete_range => $range });
 
 =cut
 
@@ -398,13 +398,17 @@ sub BUILD {
         $msg .= ">> Please install etcd - https://coreos.com/etcd/docs/latest/";
         die $msg;
     }
-	# set the intial auth token
+    # set the intial auth token
     $self->auth()->authenticate;
 }
 
 =head1 AUTHOR
 
-Sam Batschelet, <sbatschelet at mac.com>
+Sam Batschelet (hexfusion)
+
+=head1 CONTRIBUTORS
+
+Ananth Kavuri
 
 =head1 ACKNOWLEDGEMENTS
 
@@ -415,6 +419,8 @@ The L<etcd|https://github.com/coreos/etcd> developers and community.
 The L<etcd|https://github.com/coreos/etcd> v3 API is in heavy development and can change at anytime please see
  L<api_reference_v3|https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md>
 for latest details.
+
+Authentication provided by this module will only work with etcd v3.3.0+
 
 =head1 LICENSE AND COPYRIGHT
 
