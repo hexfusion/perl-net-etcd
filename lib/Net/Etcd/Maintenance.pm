@@ -7,7 +7,9 @@ use warnings;
 =encoding utf8
 
 =cut
+
 use Moo;
+use Types::Standard qw(Str);
 
 with 'Net::Etcd::Role::Actions';
 use namespace::clean;
@@ -25,6 +27,17 @@ our $VERSION = '0.014';
 Provides support for maintenance related actions.
 
 =cut
+
+=head1 ACCESSORS
+
+=head2 endpoint
+
+=cut
+
+has endpoint => (
+    is      => 'rwp',
+    isa     => Str,
+);
 
 =head1 PUBLIC METHODS
 
