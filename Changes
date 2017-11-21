@@ -1,4 +1,7 @@
 Revision history for Net::Etcd
+0.015
+[ ENHANCEMENTS ]
+* Add ability to retry_auth. This feature is very useful for refreshing stale tokens. Closes GH #26
 
 0.014
 [ BUG FIX ]

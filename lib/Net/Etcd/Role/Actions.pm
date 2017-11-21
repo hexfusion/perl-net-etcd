@@ -23,7 +23,7 @@ Net::Etcd::Role::Actions
 
 =cut
 
-our $VERSION = '0.014';
+our $VERSION = '0.015';
 
 has etcd => (
     is  => 'ro',
