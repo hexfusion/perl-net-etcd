@@ -10,6 +10,7 @@ use JSON;
 use MIME::Base64;
 use Types::Standard qw(InstanceOf);
 use AnyEvent::HTTP;
+use Carp;
 use Data::Dumper;
 
 use namespace::clean;
@@ -22,7 +23,7 @@ Net::Etcd::Role::Actions
 
 =cut
 
-our $VERSION = '0.014';
+our $VERSION = '0.015';
 
 has etcd => (
     is  => 'ro',
@@ -84,14 +85,19 @@ sub init {
 
 =cut
 
-has headers => ( is => 'lazy' );
+has headers => (
+    is      => 'lazy',
+    clearer => 1
+);
 
 sub _build_headers {
     my ($self) = @_;
     my $headers;
     my $token = $self->etcd->auth_token;
     $headers->{'Content-Type'} = 'application/json';
-    $headers->{'Authorization'} = $token if $token;
+    unless ( $self->endpoint =~ m/authenticate/ ) {
+        $headers->{'Authorization'} = $token if $token;
+    }
     return $headers;
 }
 =head2 hold
@@ -102,12 +108,22 @@ When set will not fire request.
 
 has hold => ( is => 'ro' );
 
-
 =head2 response
 
 =cut
 
 has response => ( is => 'ro' );
+
+=head2 retry_auth
+
+When set will retry authentication request and update token
+
+=cut
+
+has retry_auth => (
+    is      => 'ro',
+    default => 0
+);
 
 =head2 request
 
@@ -117,6 +133,11 @@ has request => ( is => 'lazy', );
 
 sub _build_request {
     my ($self) = @_;
+    if ($self->{retry_auth} > 1) {
+        confess "Error: Unable to authenticate, check your username and password";
+        $self->{retry_auth} = 0;
+        return;
+    }
     $self->init;
     my $cb = $self->cb;
     my $cv = $self->cv ? $self->cv : AE::cv;
@@ -142,11 +163,22 @@ sub _build_request {
             my (undef, $hdr) = @_;
             #print STDERR Dumper($hdr);
             my $status = $hdr->{Status};
-            $self->{response}{success} = 1 if $status == 200;
+            my $success = $status == 200 ? 1 : 0;
+            $self->{response}{success} = $success;
+            $self->{retry_auth}++ if $status == 401;
             $cv->end;
         }
     );
     $cv->recv;
+    $self->clear_headers;
+
+    if ( defined $self->{retry_auth} && $self->{retry_auth} ) {
+        my $auth = $self->etcd->auth()->authenticate;
+        if ( $auth->{response}{success} ) {
+            $self->{retry_auth} = 0;
+            $self->request;
+        }
+    }
     return $self;
 }
 
