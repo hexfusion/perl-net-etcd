@@ -10,7 +10,6 @@ use MIME::Base64;
 use JSON;
 
 with 'Net::Etcd::Role::Actions';
-#extends 'Net::Etcd::KV';
 
 use namespace::clean;
 
