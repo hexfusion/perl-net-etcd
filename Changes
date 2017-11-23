@@ -1,4 +1,11 @@
 Revision history for Net::Etcd
+0.016
+[ ENHANCEMENTS ]
+* Added status, defragment, version and status methods to Maintenance class.
+* Added ability to check $etcd->version
+* Add is_success and content helper methods to Action role.
+* Updated POD.
+
 0.015
 [ ENHANCEMENTS ]
 * Add ability to retry_auth. This feature is very useful for refreshing stale tokens. Closes GH #26

@@ -23,7 +23,7 @@ Net::Etcd::Role::Actions
 
 =cut
 
-our $VERSION = '0.015';
+our $VERSION = '0.016';
 
 has etcd => (
     is  => 'ro',
@@ -224,6 +224,35 @@ sub all {
         $row->{key}   = decode_base64( $row->{key} );
     }
     return $kvs;
+}
+
+=head2 is_success
+
+Success is returned if the response is a 200
+
+=cut
+
+sub is_success {
+    my ($self)   = @_;
+    my $response = $self->response;
+    if ( defined $response->{success} ) {
+        return $response->{success};
+    }
+    return;
+}
+
+=head2 content
+
+returns JSON decoded content hash
+
+=cut
+
+sub content {
+    my ($self)   = @_;
+    my $response = $self->response;
+    my $content  = from_json( $response->{content} );
+    return $content if $content;
+    return;
 }
 
 1;

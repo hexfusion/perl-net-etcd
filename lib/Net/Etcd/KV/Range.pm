@@ -10,7 +10,6 @@ use MIME::Base64;
 use JSON;
 
 with 'Net::Etcd::Role::Actions';
-#extends 'Net::Etcd::KV';
 
 use namespace::clean;
 
@@ -20,7 +19,7 @@ Net::Etcd::Range
 
 =cut
 
-our $VERSION = '0.015';
+our $VERSION = '0.016';
 
 =head1 DESCRIPTION
 
