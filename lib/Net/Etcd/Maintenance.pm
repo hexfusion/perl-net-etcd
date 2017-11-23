@@ -20,7 +20,7 @@ Net::Etcd::Maintenance
 
 =cut
 
-our $VERSION = '0.015';
+our $VERSION = '0.016';
 =head1 SYNOPSIS
 
     # defrag member's backend database

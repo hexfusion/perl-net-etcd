@@ -19,7 +19,7 @@ Net::Etcd::Range
 
 =cut
 
-our $VERSION = '0.015';
+our $VERSION = '0.016';
 
 =head1 DESCRIPTION
 
