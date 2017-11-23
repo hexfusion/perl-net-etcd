@@ -40,7 +40,10 @@ our $VERSION = '0.015';
     $etcd = Net::Etcd->new({ host => $host, port => $port, ssl => 1 });
 
     # put key
-    $result = $etcd->put({ key =>'foo1', value => 'bar' });
+    $put_key = $etcd->put({ key =>'foo1', value => 'bar' });
+
+    # check for success of a transaction
+    $put_key->is_success;
 
     # get single key
     $key = $etcd->range({ key =>'test0' });
@@ -81,10 +84,16 @@ our $VERSION = '0.015';
     # grant role
     $etcd->user_role( { user => 'samba', role => 'myrole' } )->grant;
 
+    # defrag member's backend database
+    $defrag = $etcd->maintenance()->defragment;
+    print "Defrag request complete!" if $defrag->is_success;
+
+    # member version
+    $v = $etcd->version;
+
 =head1 DESCRIPTION
 
 L<Net::Etcd> is object oriented interface to the v3 REST API provided by the etcd L<grpc-gateway|https://github.com/grpc-ecosystem/grpc-gateway>.
-
 
 =head1 ACCESSORS
 
@@ -184,6 +193,25 @@ has auth_token => (
 );
 
 =head1 PUBLIC METHODS
+
+=head2 version
+
+Returns the etcd member version
+
+    $etcd->version()
+
+=cut
+
+sub version {
+    my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    my $member = Net::Etcd::Maintenance->new(
+        etcd => $self,
+        cb   => $cb,
+        ( $options ? %$options : () ),
+    );
+    return $member->version;
+}
 
 =head2 watch
 

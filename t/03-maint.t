@@ -11,7 +11,7 @@ my ($host, $port);
 if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $host = $ENV{ETCD_TEST_HOST};
     $port = $ENV{ETCD_TEST_PORT};
-    plan tests => 6;
+    plan tests => 8;
 }
 else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
@@ -39,17 +39,29 @@ lives_ok(
     "check status"
 );
 
-cmp_ok( $maint->{response}{success}, '==', 1, "check status success" );
+#print STDERR Dumper($maint);
+cmp_ok( $maint->is_success, '==', 1, "check status success" );
 
 # defragment
 lives_ok(
     sub {
         $maint = $etcd->maintenance()->defragment;
     },
-    "defragment"
+    "defragment request"
 );
 
-cmp_ok( $maint->{response}{success}, '==', 1, "defragment success" );
+#print STDERR Dumper($maint);
+cmp_ok( $maint->is_success, '==', 1, "defragment request success" );
+my $version;
 
-print STDERR Dumper($maint);
+# version helper
+lives_ok(
+    sub {
+        $version = $etcd->version;
+    },
+    "version"
+);
+
+cmp_ok( $version, 'ne', "", "version success" );
+
 1;
