@@ -100,6 +100,22 @@ sub _build_headers {
     }
     return $headers;
 }
+
+has tls_ctx => ( is  => 'lazy', );
+
+sub _build_tls_ctx {
+    my ($self) = @_;
+    my $cacert = $self->etcd->cacert;
+    if ($cacert) {
+        my $tls =({
+            verify  => 0,
+            ca_path => $cacert,
+		});
+        return $tls;
+    }
+    return 'low'; #default
+}
+
 =head2 hold
 
 When set will not fire request.
@@ -148,6 +164,7 @@ sub _build_request {
         $self->etcd->api_path . $self->{endpoint},
         headers => $self->headers,
         body => $self->json_args,
+        tls_ctx => $self->tls_ctx,
         on_header => sub {
             my($headers) = @_;
             $self->{response}{headers} = $headers;
