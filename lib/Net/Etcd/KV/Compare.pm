@@ -20,7 +20,7 @@ Net::Etcd::KV::Compare
 
 =cut
 
-our $VERSION = '0.016';
+our $VERSION = '0.017';
 
 =head1 DESCRIPTION
 

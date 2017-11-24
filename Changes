@@ -1,4 +1,10 @@
 Revision history for Net::Etcd
+0.017
+[ ENHANCEMENTS ]
+* Add TLS support
+* Added cacert accessor.
+* Updated Travis to setup TLS etcd and run all tests using TLS.
+
 0.016
 [ ENHANCEMENTS ]
 * Added status, defragment, version and status methods to Maintenance class.
