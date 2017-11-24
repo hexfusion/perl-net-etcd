@@ -1,0 +1,19 @@
+{
+    "CN": "travis1",
+    "hosts": [
+        "travis1.local",
+        "travis1"
+    ],
+    "key": {
+        "algo": "ecdsa",
+        "size": 256
+    },
+    "names": [
+        {
+            "C": "US",
+            "L": "NY",
+            "ST": "Binghamton"
+        }
+    ]
+}
+
