@@ -148,4 +148,19 @@ sub keepalive {
     return $self;
 }
 
+=head2 leases
+lists all existing leases.
+
+    $etcd->lease()->leases
+
+=cut
+
+sub leases {
+    my $self = shift;
+    $self->{endpoint} = '/kv/lease/leases';
+    $self->{json_args} = '{}';
+    $self->request;
+    return $self;
+}
+
 1;
