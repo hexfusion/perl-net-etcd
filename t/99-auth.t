@@ -13,7 +13,7 @@ my $config;
 if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
     $config->{host}     = $ENV{ETCD_TEST_HOST};
     $config->{port}     = $ENV{ETCD_TEST_PORT};
-    $config->{cacert}   = $ENV{ETCD_CAPATH} if $ENV{ETCD_CAPATH};
+    $config->{cacert}   = $ENV{ETCD_TEST_CAPATH} if $ENV{ETCD_TEST_CAPATH};
     $config->{name}     = 'root';
     $config->{password} = 'toor';
     plan tests => 8;
