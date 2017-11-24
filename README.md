@@ -86,6 +86,10 @@ Username for authentication
 
 Authentication credentials
 
+## cacert
+
+Path to cacert
+
 ## ssl
 
 To enable set to 1

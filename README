@@ -77,6 +77,9 @@ ACCESSORS
   password
     Authentication credentials
 
+  cacert
+    Path to cacert
+
   ssl
     To enable set to 1
 
