@@ -5,7 +5,7 @@ MYMETA.*
 *.bak
 .*.swp
 *.tar.gz
-*default.etcd/
+*.etcd/
 blib
 pm_to_blib
 sql
