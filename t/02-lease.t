@@ -9,18 +9,20 @@ use Test::Exception;
 use Math::Int64 qw(int64_rand int64_to_string);
 use Data::Dumper;
 
-my ($host, $port);
+my $config;
 
 if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
-    $host = $ENV{ETCD_TEST_HOST};
-    $port = $ENV{ETCD_TEST_PORT};
+    $config->{host}   = $ENV{ETCD_TEST_HOST};
+    $config->{port}   = $ENV{ETCD_TEST_PORT};
+    $config->{cacert} = $ENV{ETCD_CAPATH} if $ENV{ETCD_CAPATH};
     plan tests => 14;
 }
+
 else {
     plan skip_all => "Please set environment variable ETCD_TEST_HOST and ETCD_TEST_PORT.";
 }
 
-my $etcd = Net::Etcd->new( { host => $host, port => $port } );
+my $etcd = Net::Etcd->new( $config );
 
 my $lease;
 my $int64 = int64_rand();
