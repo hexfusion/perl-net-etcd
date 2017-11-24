@@ -1,0 +1,15 @@
+{
+    "CN": "Net::Etcd testing CA",
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "US",
+            "L": "NY",
+            "O": "Net::Etcd",
+            "ST": "Binghamton"
+        }
+    ]
+}

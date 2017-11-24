@@ -6,11 +6,14 @@ use Net::Etcd;
 use Test::More;
 use Test::Exception;
 use Data::Dumper;
-my ($host, $port);
+
+my $config;
 
 if ( $ENV{ETCD_TEST_HOST} and $ENV{ETCD_TEST_PORT}) {
-    $host = $ENV{ETCD_TEST_HOST};
-    $port = $ENV{ETCD_TEST_PORT};
+
+    $config->{host}   = $ENV{ETCD_TEST_HOST};
+    $config->{port}   = $ENV{ETCD_TEST_PORT};
+    $config->{cacert} = $ENV{ETCD_TEST_CAPATH} if $ENV{ETCD_TEST_CAPATH};
     plan tests => 8;
 }
 else {
@@ -18,7 +21,7 @@ else {
 }
 
 my $maint;
-my $etcd = Net::Etcd->new( { host => $host, port => $port } );
+my $etcd = Net::Etcd->new( $config );
 
 # snapshot
 lives_ok(

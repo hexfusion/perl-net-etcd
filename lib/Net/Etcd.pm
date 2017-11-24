@@ -29,7 +29,7 @@ Net::Etcd - etcd v3 REST API.
 
 =cut
 
-our $VERSION = '0.016';
+our $VERSION = '0.017';
 
 =head1 SYNOPSIS
 
@@ -143,6 +143,17 @@ has password => (
     isa => Str
 );
 
+=head2 cacert
+
+Path to cacert
+
+=cut
+
+has cacert => (
+    is  => 'ro',
+    isa => Str,
+);
+
 =head2 ssl
 
 To enable set to 1
@@ -176,7 +187,7 @@ has api_path => ( is => 'lazy' );
 
 sub _build_api_path {
     my ($self) = @_;
-    return ( $self->ssl ? 'https' : 'http' ) . '://'
+    return ( $self->ssl || $self->cacert ? 'https' : 'http' ) . '://'
       . $self->host . ':'. $self->port . $self->api_version;
 }
 
@@ -427,7 +438,7 @@ sub BUILD {
         die $msg;
     }
     # set the intial auth token
-    $self->auth()->authenticate;
+    # $self->auth()->authenticate;
 }
 
 =head1 AUTHOR
