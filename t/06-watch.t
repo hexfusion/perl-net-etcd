@@ -41,7 +41,7 @@ lives_ok(
 );
 
 #print STDERR Dumper($key);
-cmp_ok( $key->{response}{success}, '==', 1, "kv put success" );
+cmp_ok( $key->is_success, '==', 1, "kv put success" );
 
 # get range
 lives_ok(
@@ -51,7 +51,7 @@ lives_ok(
     "kv range"
 );
 
-cmp_ok( $key->{response}{success}, '==', 1, "kv range success" );
+cmp_ok( $key->is_success, '==', 1, "kv range success" );
 #print STDERR Dumper($key);
 
 cmp_ok( scalar @events, '==', 2, "number of async events stored. (create_watch, create key)" );
@@ -65,6 +65,6 @@ lives_ok(
     "kv range_delete"
 );
 
-cmp_ok( $key->{response}{success}, '==', 1, "kv delete success" );
+cmp_ok( $key->is_success, '==', 1, "kv delete success" );
 
 1;

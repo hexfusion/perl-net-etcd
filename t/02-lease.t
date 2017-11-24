@@ -35,13 +35,13 @@ lives_ok(
     "add a new lease"
 );
 
-cmp_ok( $lease->{response}{success}, '==', 1, "add lease success" );
+cmp_ok( $lease->is_success, '==', 1, "add lease success" );
 
 # add lease to key
 lives_ok( sub {  $lease = $etcd->put( { key => 'foo2', value => 'bar2', lease => $lease_id } ) },
     "add a new lease to a key" );
 
-cmp_ok( $lease->{response}{success}, '==', 1, "add lease to key success" );
+cmp_ok( $lease->is_success, '==', 1, "add lease to key success" );
 
 my $key;
 
@@ -58,13 +58,13 @@ lives_ok( sub {  $lease = $etcd->lease( { ID => $lease_id } )->keepalive },
 #print STDERR Dumper($lease);
 
 
-cmp_ok( $lease->{response}{success}, '==', 1, "reset lease keep alive success" );
+cmp_ok( $lease->is_success, '==', 1, "reset lease keep alive success" );
 
 # lease ttl
 lives_ok( sub {  $lease = $etcd->lease( { ID => $lease_id, keys => 1 } )->ttl },
     "lease_ttl" );
 
-cmp_ok( $lease->{response}{success}, '==', 1, "return lease_ttl success" );
+cmp_ok( $lease->is_success, '==', 1, "return lease_ttl success" );
 
 #print STDERR Dumper($lease);
 
@@ -74,7 +74,7 @@ lives_ok( sub {  $lease = $etcd->lease( { ID => $lease_id } )->revoke },
 
 #print STDERR Dumper($lease);
 
-cmp_ok( $lease->{response}{success}, '==', 1, "revoke lease success" );
+cmp_ok( $lease->is_success, '==', 1, "revoke lease success" );
 
 # validate key
 lives_ok( sub { $key = $etcd->range( { key => 'foo2' } )->get_value },

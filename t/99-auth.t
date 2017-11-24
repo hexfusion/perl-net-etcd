@@ -53,7 +53,7 @@ lives_ok(
 
 #print STDERR Dumper($role);
 
-cmp_ok( $role->{response}{success}, '==', 1, "grant role success" );
+cmp_ok( $role->is_success, '==', 1, "grant role success" );
 
 # enable auth
 lives_ok(
@@ -64,7 +64,7 @@ lives_ok(
     "enable auth"
 );
 
-cmp_ok( $auth->{response}{success}, '==', 1, "enable auth" );
+cmp_ok( $auth->is_success, '==', 1, "enable auth" );
 
 # disable auth
 lives_ok(
@@ -75,6 +75,6 @@ lives_ok(
     "disable auth"
 );
 
-cmp_ok( $auth->{response}{success}, '==', 1, "disable auth" );
+cmp_ok( $auth->is_success, '==', 1, "disable auth" );
 
 1;

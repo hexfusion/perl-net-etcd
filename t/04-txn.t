@@ -33,7 +33,7 @@ lives_ok(
     "put random key"
 );
 
-cmp_ok( $put->{response}{success}, '==', 1, "create static key success" );
+cmp_ok( $put->is_success, '==', 1, "create static key success" );
 
 lives_ok(
     sub {
@@ -42,7 +42,7 @@ lives_ok(
     "put key"
 );
 
-cmp_ok( $put->{response}{success}, '==', 1, "put key success" );
+cmp_ok( $put->is_success, '==', 1, "put key success" );
 
 #print STDERR Dumper($put);
 
@@ -81,7 +81,7 @@ lives_ok(
     "txn create"
 );
 
-cmp_ok( $txn->{response}{success}, '==', 1, "txn create success" );
+cmp_ok( $txn->is_success, '==', 1, "txn create success" );
 
 #print STDERR Dumper($txn);
 
@@ -122,7 +122,7 @@ lives_ok(
     "compare create"
 );
 
-cmp_ok( $txn->{response}{success}, '==', 1, "txn create cleanup success" );
+cmp_ok( $txn->is_success, '==', 1, "txn create cleanup success" );
 #print STDERR Dumper($txn);
 
 1;
