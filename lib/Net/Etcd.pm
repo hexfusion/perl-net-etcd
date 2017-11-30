@@ -92,6 +92,9 @@ our $VERSION = '0.017';
     # member version
     $v = $etcd->version;
 
+    # list members
+    $etcd->member()->list;
+
 =head1 DESCRIPTION
 
 L<Net::Etcd> is object oriented interface to the v3 REST API provided by the etcd L<grpc-gateway|https://github.com/grpc-ecosystem/grpc-gateway>.
