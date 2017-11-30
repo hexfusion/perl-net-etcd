@@ -2,5 +2,5 @@
 
 # start etcd using the TLS certs from testing.
 etcd --name infra0 --cert-file=t/tls/server.pem \
---key-file=t/tls/server-key.pem --advertise-client-urls=https://127.0.0.1:2379 \
+--key-file=$PWD/t/tls/server-key.pem --advertise-client-urls=https://127.0.0.1:2379 \
 --listen-client-urls=https://127.0.0.1:2379
