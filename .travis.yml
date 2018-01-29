@@ -5,7 +5,7 @@ addons:
     - travis1
 env:
   global:
-    - ETCD_VER=v3.3.0-rc.0
+    - ETCD_VER=v3.3.0-rc.4
     - ETCDCTL_API=3
     - ETCD_TEST_HOST=127.0.0.1
     - ETCD_TEST_PORT=2379
