@@ -171,11 +171,10 @@ sub _build_request {
         },
         on_body   => sub {
             my ($data, $hdr) = @_;
-            $self->{response}{content} = $data;
+            $self->{response}{content} .= $data;
             $cb->($data, $hdr) if $cb;
             my $status = $hdr->{Status};
             $self->check_hdr($status);
-            $cv->end;
             1
         },
         sub {
