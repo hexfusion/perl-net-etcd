@@ -36,7 +36,7 @@ lives_ok(
     "list members"
 );
 
-print STDERR Dumper($member);
+#print STDERR Dumper($member);
 cmp_ok( $member->is_success, '==', 1, "list member success" );
 
 1;
