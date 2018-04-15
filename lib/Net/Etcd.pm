@@ -1,5 +1,7 @@
 use utf8;
+
 package Net::Etcd;
+
 # ABSTRACT: Provide access to the etcd v3 API.
 
 use strict;
@@ -132,7 +134,7 @@ Username for authentication, defaults to $ENV{ETCD_CLIENT_USERNAME}
 =cut
 
 has name => (
-    is  => 'ro',
+    is      => 'ro',
     default => $ENV{ETCD_CLIENT_USERNAME}
 );
 
@@ -143,20 +145,54 @@ Authentication credentials, defaults to $ENV{ETCD_CLIENT_PASSWORD}
 =cut
 
 has password => (
-    is  => 'ro',
+    is      => 'ro',
     default => $ENV{ETCD_CLIENT_PASSWORD}
+);
+
+=head2 ca_file
+
+Path to ca_file, defaults to $ENV{ETCD_CLIENT_CA_FILE}
+
+=cut
+
+has ca_file => (
+    is      => 'ro',
+    default => $ENV{ETCD_CLIENT_CA_FILE}
+);
+
+=head2 key_file
+
+Path to key_file, defaults to $ENV{ETCD_CLIENT_KEY_FILE}
+
+=cut
+
+has key_file => (
+    is      => 'ro',
+    default => $ENV{ETCD_CLIENT_KEY_FILE}
+);
+
+=head2 cert_file
+
+Path to cert_file, defaults to $ENV{ETCD_CLIENT_CERT_FILE}
+
+=cut
+
+has cert_file => (
+    is      => 'ro',
+    default => $ENV{ETCD_CLIENT_CERT_FILE}
 );
 
 =head2 cacert
 
-Path to cacert, defaults to $ENV{ETCD_CERT_FILE}
+Path to cacert, defaults to $ENV{ETCD_CLIENT_CACERT_FILE}.
 
 =cut
 
 has cacert => (
-    is  => 'ro',
-    default => $ENV{ETCD_CERT_FILE}
+    is      => 'ro',
+    default => $ENV{ETCD_CLIENT_CACERT_FILE}
 );
+
 
 =head2 ssl
 
@@ -171,14 +207,14 @@ has ssl => (
 
 =head2 api_version
 
-defaults to /v3alpha
+defaults to /v3beta
 
 =cut
 
 has api_version => (
     is      => 'ro',
     isa     => Str,
-    default => '/v3alpha'
+    default => '/v3beta'
 );
 
 =head2 api_path
@@ -191,8 +227,15 @@ has api_path => ( is => 'lazy' );
 
 sub _build_api_path {
     my ($self) = @_;
-    return ( $self->ssl || $self->cacert ? 'https' : 'http' ) . '://'
-      . $self->host . ':'. $self->port . $self->api_version;
+    return ( $self->{ssl}
+          || $self->{ca_file}
+          || $self->{key_file}
+          || $self->{cafile}
+          || $self->{cert_file} ? 'https' : 'http' )
+      . '://'
+      . $self->host . ':'
+      . $self->port
+      . $self->api_version;
 }
 
 =head2 auth_token
@@ -276,8 +319,8 @@ sub role_perm {
     my ( $self, $options ) = @_;
     my $cb = pop if ref $_[-1] eq 'CODE';
     my $perm = Net::Etcd::Auth::RolePermission->new(
-        etcd     => $self,
-        cb       => $cb,
+        etcd => $self,
+        cb   => $cb,
         ( $options ? %$options : () ),
     );
 }

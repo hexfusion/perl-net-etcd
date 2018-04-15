@@ -1,9 +1,6 @@
 {
-    "CN": "travis1",
+    "CN": "etcd1",
     "hosts": [
-        "travis1.local",
-        "travis1",
-        "localhost",
         "etcd1"
     ],
     "key": {
@@ -18,4 +15,3 @@
         }
     ]
 }
-
