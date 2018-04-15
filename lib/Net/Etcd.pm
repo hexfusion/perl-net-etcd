@@ -517,7 +517,7 @@ Authentication provided by this module will only work with etcd v3.3.0+
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2017 Sam Batschelet (hexfusion).
+Copyright 2018 Sam Batschelet (hexfusion).
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published

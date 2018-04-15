@@ -1,5 +1,5 @@
 [![Build Status](https://api.travis-ci.org/hexfusion/perl-net-etcd.svg?branch=master)](https://travis-ci.org/hexfusion/perl-net-etcd)
-i
+
 # NAME
 
 Net::Etcd - etcd v3 REST API.
@@ -250,7 +250,7 @@ Authentication provided by this module will only work with etcd v3.3.0+
 
 # LICENSE AND COPYRIGHT
 
-Copyright 2017 Sam Batschelet (hexfusion).
+Copyright 2018 Sam Batschelet (hexfusion).
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
