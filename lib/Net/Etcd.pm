@@ -7,9 +7,10 @@ package Net::Etcd;
 use strict;
 use warnings;
 
-use Moo;
 use JSON;
 use MIME::Base64;
+use Types::Standard qw(Str Int Bool HashRef);
+
 use Net::Etcd::Auth;
 use Net::Etcd::Auth::RolePermission;
 use Net::Etcd::Config;
@@ -18,10 +19,9 @@ use Net::Etcd::Lease;
 use Net::Etcd::Maintenance;
 use Net::Etcd::Member;
 use Net::Etcd::User;
-use Types::Standard qw(Str Int Bool HashRef);
 
+use Moo;
 with('Net::Etcd::KV');
-
 use namespace::clean;
 
 =encoding utf8
