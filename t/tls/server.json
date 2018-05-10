@@ -4,7 +4,8 @@
         "travis1.local",
         "travis1",
         "localhost",
-        "etcd1"
+        "etcd1",
+        "127.0.0.1"
     ],
     "key": {
         "algo": "ecdsa",
