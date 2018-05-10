@@ -83,7 +83,7 @@ lives_ok( sub { $lease = $etcd->lease()->leases }, "lease_leases" );
 
 cmp_ok( $lease->is_success, '==', 1, "return lease_leases success" );
 
-#print STDERR Dumper($lease);
+print STDERR Dumper($lease);
 
 # revoke lease
 lives_ok( sub { $lease = $etcd->lease( { ID => $lease_id } )->revoke },

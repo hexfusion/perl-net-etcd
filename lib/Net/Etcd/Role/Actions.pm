@@ -5,6 +5,7 @@ package Net::Etcd::Role::Actions;
 use strict;
 use warnings;
 
+use Devel::NYTProf;
 use Moo::Role;
 use AE;
 use JSON;

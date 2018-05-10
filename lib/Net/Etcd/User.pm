@@ -71,8 +71,8 @@ has password => (
 sub add {
     my $self = shift;
     $self->{endpoint} = '/auth/user/add';
-    confess 'password required for ' . __PACKAGE__ . '->add'
-      unless $self->{password};
+    #    confess 'password required for ' . __PACKAGE__ . '->add'
+    #  unless $self->{password};
     $self->request;
     return $self;
 }

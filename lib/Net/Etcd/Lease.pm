@@ -4,14 +4,13 @@ package Net::Etcd::Lease;
 use strict;
 use warnings;
 
-use Moo;
 use Types::Standard qw(Str Int Bool HashRef ArrayRef);
-use Data::Dumper;
 use Carp;
 use JSON;
+use Data::Dumper;
 
+use Moo;
 with 'Net::Etcd::Role::Actions';
-
 use namespace::clean;
 
 =head1 NAME
@@ -91,8 +90,12 @@ sub grant {
     $self->{endpoint} = '/lease/grant';
     confess 'TTL and ID are required for ' . __PACKAGE__ . '->grant'
       unless ($self->{ID} &&  $self->{TTL});
-    $self->request;
-    return $self;
+    my $resp = $self->request;
+    my $data = $resp->content;
+    print STDERR Dumper($data);
+    my $result = $data->{result};
+
+    return Net::Etcd::LeaseResponse->new(%$data);
 }
 
 =head2 revoke
@@ -108,8 +111,12 @@ sub revoke {
     $self->{endpoint} = '/kv/lease/revoke';
     confess 'ID is required for ' . __PACKAGE__ . '->revoke'
       unless $self->{ID};
-    $self->request;
-    return $self;
+    my $resp = $self->request;
+    my $data = $resp->content;
+    print STDERR Dumper($data);
+    my $result = $data->{result};
+
+    return Net::Etcd::LeaseResponse->new(%$data);
 }
 
 =head2 ttl
@@ -125,8 +132,13 @@ sub ttl {
     $self->{endpoint} = '/kv/lease/timetolive';
     confess 'ID is required for ' . __PACKAGE__ . '->ttl'
       unless $self->{ID};
-    $self->request;
-    return $self;
+    my $resp = $self->request;
+    my $data = $resp->content;
+    print STDERR Dumper($data);
+    my $result = $data->{result};
+
+    return Net::Etcd::LeaseResponse->new(%$data);
+
 }
 
 
@@ -144,8 +156,12 @@ sub keepalive {
     $self->{endpoint} = '/lease/keepalive';
     confess 'ID is required for ' . __PACKAGE__ . '->keepalive'
       unless $self->{ID};
-    $self->request;
-    return $self;
+    my $resp = $self->request;
+    my $data = $resp->content;
+    print STDERR Dumper($data);
+    my $result = $data->{result};
+
+    return Net::Etcd::LeaseResponse->new(%$data);
 }
 
 =head2 leases
@@ -159,8 +175,109 @@ sub leases {
     my $self = shift;
     $self->{endpoint} = '/kv/lease/leases';
     $self->{json_args} = '{}';
-    $self->request;
-    return $self;
+    my $resp = $self->request;
+    my $data = $resp->content;
+    print STDERR Dumper($data);
+    my $result = $data->{result};
+
+    return Net::Etcd::LeaseResponse->new(%$data);
 }
+
+package Net::Etcd::LeaseResponse;
+
+use strict;
+use warnings;
+
+use Types::Standard qw(Str Int Bool HashRef ArrayRef);
+use Carp;
+use JSON;
+
+use Moo;
+use namespace::clean;
+with 'Net::Etcd::Role::Response';
+
+=head1 NAME
+
+Net::Etcd::LeaseResponse
+
+=cut
+
+=head1 ACCESSORS
+
+=head2 TTL
+
+TTL is the advisory time-to-live in seconds.
+
+=cut
+
+has TTL => (
+    is       => 'ro',
+    isa      => Str,
+);
+
+=head2 ID
+
+ID is the requested ID for the lease. If ID is set to 0, the lessor chooses an ID.
+
+=cut
+
+has ID => (
+    is       => 'ro',
+    isa      => Int,
+);
+
+=head2 grantedTTL 
+
+GrantedTTL is the initial granted time in seconds upon lease creation/renewal.
+
+=cut
+
+has grantedTTL => (
+    is       => 'ro',
+    isa      => Int,
+);
+
+=head2 keys 
+
+Keys is the list of keys attached to this lease.
+
+=cut
+
+has keys => (
+    is       => 'ro',
+    isa      => Int,
+);
+
+=head2 leases
+
+(slice of) LeaseStatus
+
+=cut
+
+has leases => (
+    is       => 'ro',
+);
+
+=head2 header
+
+Response header
+
+=cut
+
+has header => (
+    is       => 'ro',
+    isa      => HashRef,
+);
+
+=head2 error 
+
+error message
+
+=cut
+
+has error => (
+    is       => 'ro',
+    isa      => Str,
+);
 
 1;
