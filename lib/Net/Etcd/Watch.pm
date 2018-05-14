@@ -16,7 +16,7 @@ use namespace::clean;
 
 =head1 NAME
 
-Net::Etcd::Range
+Net::Etcd::Watch
 
 =cut
 

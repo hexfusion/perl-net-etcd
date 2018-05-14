@@ -24,7 +24,7 @@ our $VERSION = '0.020';
 =head1 SYNOPSIS
 
     # list members
-    $defrag = $etcd->member()->list;
+    $members = $etcd->member()->list;
 
 =head1 DESCRIPTION
 
