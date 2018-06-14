@@ -31,6 +31,7 @@ WriteMakefile(
         'AnyEvent::HTTP'        => 0,
         'JSON'                  => 0,
         'Math::Int64'           => 0,
+        'Crypt::JWT'            => 0,
     },
     dist => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     META_MERGE => {
