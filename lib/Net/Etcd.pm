@@ -238,18 +238,6 @@ sub _build_api_path {
       . $self->api_version;
 }
 
-=head2 token_type
-
-Defaults to simple, also supports jwt.
-
-=cut
-
-has token_type => (
-    is      => 'ro',
-    isa     => Str,
-    default => 'simple'
-);
-
 =head2 auth_token
 
 The token that is passed during authentication.  This is generated during the
