@@ -30,6 +30,7 @@ env:
     - ETCD_PEER_CLIENT_CERT_AUTH=1
 language: perl
 perl:
+  - "5.26"
   - "5.24"
   - "5.22"
   - "5.20"
@@ -40,7 +41,7 @@ perl:
   - "5.10"
 matrix:
   include:
-    - perl: 5.24
+    - perl: 5.26
       env: COVERAGE=1   # enables coverage+coveralls reporting
 before_install:
   - curl https://coreos.com/dist/pubkeys/app-signing-pubkey.gpg | sudo apt-key add -
