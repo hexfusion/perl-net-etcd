@@ -7,7 +7,7 @@ addons:
 env:
   global:
     - PATH=$PATH:/tmp/test-etcd/
-    - ETCD_VER=v3.3.7
+    - ETCD_VER=v3.3.8
     - ETCDCTL_API=3
     - ETCD_TEST_HOST=etcd1
     - ETCD_TEST_PORT=2379
@@ -30,6 +30,7 @@ env:
     - ETCD_PEER_CLIENT_CERT_AUTH=1
 language: perl
 perl:
+  - "5.28"
   - "5.26"
   - "5.24"
   - "5.22"
