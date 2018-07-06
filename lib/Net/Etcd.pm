@@ -487,16 +487,6 @@ See L<Net::Etcd::KV::Compare>
 
 =cut
 
-=head2 configuration
-
-Initialize configuration checks to see if etcd is installed locally.
-
-=cut
-
-sub configuration {
-    Net::Etcd::Config->configuration;
-}
-
 =head1 AUTHOR
 
 Sam Batschelet (hexfusion)
