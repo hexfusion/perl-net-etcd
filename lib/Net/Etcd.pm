@@ -193,7 +193,6 @@ has cacert => (
     default => $ENV{ETCD_CLIENT_CACERT_FILE}
 );
 
-
 =head2 ssl
 
 To enable set to 1
@@ -312,6 +311,9 @@ sub role {
 See L<Net::Etcd::Auth::RolePermission>
 
 Grants or revoke permission of a specified key or range to a specified role.
+
+    $etcd->role_perm(
+        { name => 'myrole', key => 'bar', permType => 'READ', prefix => 1 } )->grant;
 
 =cut
 
