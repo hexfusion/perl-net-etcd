@@ -1,5 +1,10 @@
 Revision history for Net::Etcd
 
+0.022
+
+[ BREAKING ]
+* Remove Net::Etcd::Config.
+
 0.021
 [ ENHANCEMENTS ]
 * Add support for prefix => 'true'.
