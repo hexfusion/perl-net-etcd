@@ -227,10 +227,6 @@ See [Net::Etcd::KV::Compare](https://metacpan.org/pod/Net::Etcd::KV::Compare)
     $etcd->compare( { key => 'foo', result => 'EQUAL', target => 'VALUE', value => 'baz' });
     $etcd->compare( { key => 'foo', target => 'CREATE', result => 'NOT_EQUAL', create_revision => '2' });
 
-## configuration
-
-Initialize configuration checks to see if etcd is installed locally.
-
 # AUTHOR
 
 Sam Batschelet (hexfusion)
