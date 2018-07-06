@@ -111,11 +111,17 @@ and password.
 
 sub authenticate {
     my ( $self, $options ) = @_;
+    local $@;
     $self->{endpoint} = '/auth/authenticate';
     return unless ($self->password && $self->name);
     $self->request;
-    my $auth = from_json($self->{response}{content});
-    if ($auth && defined  $auth->{token}) {
+    my $auth;
+    eval { $auth = from_json($self->{response}{content}) };
+    if ($@) {
+        $self->{response}{content} = 'error: ' . $@;
+        return;
+    }
+    if ($auth && defined $auth->{token}) {
         $self->etcd->{auth_token} = $auth->{token};
     }
     return;
