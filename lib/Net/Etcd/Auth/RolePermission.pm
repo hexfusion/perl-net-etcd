@@ -98,8 +98,7 @@ has permType =>(
 
 =head2 prefix
 
-This is a helper accessor which is an alias for range_end => "\0" if passed a true value.
-If range_end is also passed prefix will superceed it's value.
+set to true to grant a prefix permission, C<range_end> will be ignored.
 
 =cut
 
