@@ -504,6 +504,7 @@ Sam Batschelet (hexfusion)
 =head1 CONTRIBUTORS
 
 Ananth Kavuri
+Michael Fung
 
 =head1 ACKNOWLEDGEMENTS
 
