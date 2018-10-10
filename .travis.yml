@@ -7,7 +7,7 @@ addons:
 env:
   global:
     - PATH=$PATH:/tmp/test-etcd/
-    - ETCD_VER=v3.3.9
+    - ETCD_VER=v3.3.10
     - ETCDCTL_API=3
     - ETCD_TEST_HOST=etcd1
     - ETCD_TEST_PORT=2379
