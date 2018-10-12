@@ -9,7 +9,7 @@ use warnings;
 =cut
 
 use Moo;
-use Types::Standard qw(Str);
+use Types::Standard qw(Str ArrayRef);
 
 with 'Net::Etcd::Role::Actions';
 use namespace::clean;
@@ -43,6 +43,16 @@ has endpoint => (
     isa     => Str,
 );
 
+=head2 peer_urls
+
+=cut
+
+has peerURLs => (
+    is      => 'ro',
+    isa     => ArrayRef,
+);
+
+
 =head1 PUBLIC METHODS
 
 =head2 list
@@ -59,5 +69,22 @@ sub list {
     $self->request;
     return $self;
 }
+
+=head2 add
+
+adds a member into the cluster.
+
+=cut
+
+sub add {
+    my ( $self, $options ) = @_;
+    my $cb = pop if ref $_[-1] eq 'CODE';
+    $self->{endpoint} = '/cluster/member/add';
+    $self->request;
+    return $self;
+}
+
+
+
 
 1;
