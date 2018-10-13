@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use Moo;
-use Types::Standard qw(Str Int Bool HashRef ArrayRef);
+use Types::Standard qw(Str Int Any HashRef ArrayRef);
 use Data::Dumper;
 use Carp;
 use JSON;
@@ -69,7 +69,7 @@ keys is true to query all the keys attached to this lease.
 
 has keys => (
     is       => 'ro',
-    isa      => Bool,
+    isa      => Any,
     coerce => sub { no strict 'refs'; return $_[0] ? JSON::true : JSON::false }
 );
 

@@ -1,5 +1,11 @@
 Revision history for Net::Etcd
 
+0.023
+[ BUG FIX ]
+* Fix a bug where the Bool type would fail under certain circumstances when setting keys => 1 for ttl.
+While I could replicate, travis tests failed consistantly, we will resolve this better in the future.
+Reference bless( do{\(my $o = 1)}, 'JSON::PP::Boolean' ) did not pass type constraint "Bool" (in $args->{"keys"})
+
 0.022
 [ ENHANCEMENTS ]
 * Improve support for prefix inline with etcd API. Fixes GH #53 Thanks Michael Fung!
@@ -27,7 +33,7 @@ Revision history for Net::Etcd
 0.018
 [ ENHANCEMENTS ]
 * Added Member class and tests.
-* Added ENV defaults for name 'ETCD_CLIENT_USERNAME', password 'ETCD_CLIENT_PASSWORD' and cacert 'ETCD_CERT_FILE' accessors. 
+* Added ENV defaults for name 'ETCD_CLIENT_USERNAME', password 'ETCD_CLIENT_PASSWORD' and cacert 'ETCD_CERT_FILE' accessors.
 * Updated TLS example.
 
 0.017
@@ -49,7 +55,7 @@ Revision history for Net::Etcd
 
 0.014
 [ BUG FIX ]
-* Resolved bug which prevented range delete transaction from completing. Closed via GH #25 Thanks Ananth Kavuri! 
+* Resolved bug which prevented range delete transaction from completing. Closed via GH #25 Thanks Ananth Kavuri!
 
 [ ANNOUNCEMENT ]
 * Added class Net::Etcd::KV::RangeDelete

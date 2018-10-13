@@ -43,7 +43,7 @@ sub _build_json_args {
     my ($self) = @_;
     my $args;
     for my $key ( keys %{$self} ) {
-        unless ( $key =~ /(?:etcd|cb|cv|hold|json_args|endpoint)$/ ) {
+        unless ( $key =~ /(?:retry_auth|etcd|cb|cv|hold|json_args|endpoint)$/ ) {
             $args->{$key} = $self->{$key};
         }
     }
