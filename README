@@ -3,7 +3,7 @@ NAME
 
 SYNOPSIS
         Etcd v3.1.0 or greater is required.   To use the v3 API make sure to set environment
-        variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/coreos/etcd/releases.
+        variable ETCDCTL_API=3.  Precompiled binaries can be downloaded at https://github.com/etcd-io/etcd/releases.
 
         $etcd = Net::Etcd->new(); # host: 127.0.0.1 port: 2379
         $etcd = Net::Etcd->new({ host => $host, port => $port, ssl => 1 });
@@ -205,12 +205,12 @@ CONTRIBUTORS
     Ananth Kavuri Michael Fung
 
 ACKNOWLEDGEMENTS
-    The etcd <https://github.com/coreos/etcd> developers and community.
+    The etcd <https://github.com/etcd-io/etcd> developers and community.
 
 CAVEATS
-    The etcd <https://github.com/coreos/etcd> v3 API is in heavy development
+    The etcd <https://github.com/etcd-io/etcd> v3 API is in heavy development
     and can change at anytime please see api_reference_v3
-    <https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_
+    <https://github.com/etcd-io/etcd/blob/master/Documentation/dev-guide/api_
     reference_v3.md> for latest details.
 
     Authentication provided by this module will only work with etcd v3.3.0+
