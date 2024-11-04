@@ -178,13 +178,16 @@ sub _build_request {
         want_body_handle => 1,
         sub {
             my ( $handle, $hdr ) = @_;
+            my $prepare_response = sub {
+                my ( $content ) = @_;
+                $self->{response}{content} = $content;
+                $cb->( $content, $hdr ) if $cb;
+                $self->check_hdr( $hdr->{Status} );
+            };
             my $json_reader = sub {
                 my ( $handle, $json ) = @_;
                 return unless $json;
-                $self->{response}{content} = JSON::encode_json($json);
-                $cb->( $json, $hdr ) if $cb;
-                my $status = $hdr->{Status};
-                $self->check_hdr($status);
+                $prepare_response->( JSON::encode_json($json) );
                 $cv->send;
             };
             my $chunk_reader = sub {
@@ -207,14 +210,19 @@ sub _build_request {
                                   and die 'bad chunk (missing last empty line)';
                             }
                         );
-                        $self->{response}{content} = $chunk;
-                        $cb->( $chunk, $hdr ) if $cb;
-                        my $status = $hdr->{Status};
-                        $self->check_hdr($status);
+                        $prepare_response->( $chunk );
                         $cv->send;
                     }
                 );
             };
+
+            unless ( defined $handle ) {
+                $self->{response}{headers} = $hdr;
+                $prepare_response->( undef );
+                $cv->send;
+                $cv->end;
+                return;
+            }
 
             if ( ( $hdr->{'transfer-encoding'} || '' ) =~ /\bchunked\b/i ) {
                 $handle->on_read(
